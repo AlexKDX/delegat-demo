@@ -148,10 +148,12 @@ for i, st in enumerate(STORIES, 1):
     (d / 'index.html').write_text(PAGE.format(n=i, name=st['name'], about=st['about'], ver=VER, bg=BG,
                                               story=json.dumps(st, ensure_ascii=False)), encoding='utf-8')
 
+import re
+strip = lambda h: re.sub(r'<[^>]+>', '', h)
 cards = '\n'.join(
     f'<a class="c" href="{i:02d}/"><span class="n">{i:02d}</span><span class="t">{st["name"]}</span>'
     f'<span class="d">{st["about"][0].upper() + st["about"][1:]}.</span>'
-    f'<span class="q">«{st["caps"][1]["h"].replace("<span class=\\"hot\\">", "").replace("</span>", "").replace("<em>", "").replace("</em>", "")}»</span></a>'
+    f'<span class="q">«{strip(st["caps"][1]["h"])}»</span></a>'
     for i, st in enumerate(STORIES, 1))
 (ROOT / 'index.html').write_text(f'''<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

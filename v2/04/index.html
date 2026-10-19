@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vostok.ai · Пропущенный звонок</title>
+<meta name="description" content="Восток AI — бизнес теряет миллионы на звонках, которые никто не взял. Забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Manrope:wght@800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../_engine/engine.css?v=1">
+<style>
+/* Вариант 04 · Пропущенный звонок: бизнес теряет миллионы на звонках, которые никто не взял. Тема «Claude · ночь». */
+:root{--ink:#141413;--fg:#F0EFEA;--muted:#a3a29c;--acc:#D97757;--acc-ink:#141413;--hot:#6A9BCC;--card:#1c1c1a;--card-2:#232320;--card-line:#ffffff12;--card-fg:#F0EFEA;--card-muted:#91918D;--scrim:20,20,19}
+</style></head>
+<body>
+<section class="stage" id="stage"></section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+window.STORY = {"name": "Пропущенный звонок", "about": "бизнес теряет миллионы на звонках, которые никто не взял", "top": {"week": "автосервис · год", "clock": "входящие звонки"}, "num": {"peak": 54.1, "after": 0, "dec": 1}, "unit": ["млн ₽ в год — столько может терять автосервис на пропущенных звонках", "млн ₽ потерь · с агентом"], "caps": [{"k": "Телефон звонит", "h": "Все заняты. <span class=\"hot\">Звонок уходит в пустоту.</span>"}, {"k": "Оценка Nodul, 2026", "h": "Автосервис теряет до <span class=\"hot\">54 млн ₽ в год</span>, стоматология — до 96 млн."}, {"k": "Подключаем агента", "h": "Агент перезванивает, пишет клиенту <em>и записывает его сам.</em>"}], "result": [{"t": "Каждый пропущенный"}, {"t": "= перезвон за минуту", "c": "eq"}, {"t": "и запись в календарь без участия людей", "c": "money sub"}], "note": "Источник: оценка Nodul по 8 сферам бизнеса, май 2026. Цифры — верхняя граница для бизнеса с большим входящим потоком.", "prefer": ["call"], "n": 4};
+window.THEME_BG = el => {
+  el.style.background = 'repeating-linear-gradient(135deg,#ffffff05 0 1px,transparent 1px 14px),#141413';
+  ['#D97757', '#CC785C', '#6A9BCC'].forEach((col, i) => { const g = document.createElement('div'); g.style.cssText = `position:absolute;width:60vmax;height:60vmax;border-radius:50%;left:${[10, 60, 30][i]}%;top:${[60, 10, 80][i]}%;margin:-30vmax 0 0 -30vmax;background:radial-gradient(circle,${col}${i == 2 ? '22' : '38'},transparent 62%);filter:blur(20px)`; el.append(g); gsap.to(g, {scale: 1.25, opacity: .6, x: (i - 1) * 120, duration: 8 + i * 3, yoyo: true, repeat: -1, ease: 'sine.inOut'}); });
+  return {};
+};
+</script>
+<script src="../_engine/engine.js?v=1"></script>
+</body></html>

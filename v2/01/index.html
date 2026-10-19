@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vostok.ai · Половина дня</title>
+<meta name="description" content="Восток AI — рутина съедает до 4 часов в день у каждого офисного сотрудника. Забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Manrope:wght@800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../_engine/engine.css?v=1">
+<style>
+/* Вариант 01 · Половина дня: рутина съедает до 4 часов в день у каждого офисного сотрудника. Тема «Claude · ночь». */
+:root{--ink:#141413;--fg:#F0EFEA;--muted:#a3a29c;--acc:#D97757;--acc-ink:#141413;--hot:#6A9BCC;--card:#1c1c1a;--card-2:#232320;--card-line:#ffffff12;--card-fg:#F0EFEA;--card-muted:#91918D;--scrim:20,20,19}
+</style></head>
+<body>
+<section class="stage" id="stage"></section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+window.STORY = {"name": "Половина дня", "about": "рутина съедает до 4 часов в день у каждого офисного сотрудника", "top": {"mode": "clock"}, "num": {"peak": 84, "after": 30}, "unit": ["часов рутины в месяц · у одного сотрудника", "часов рутины в месяц · с агентом"], "caps": [{"k": "Обычный рабочий день", "h": "До 4 часов в день <span class=\"hot\">уходит на рутину.</span>", "p": "Документы, переписка, рассылки, поиск файлов — по данным НАФИ и «Яндекс 360»."}, {"k": "Это половина рабочего дня", "h": "Вы платите за продажи. <span class=\"hot\">Получаете копирование.</span>"}, {"k": "Подключаем агента", "h": "Агент забирает <em>до двух третей рутины.</em>"}], "result": [{"t": "54 часа в месяц"}, {"t": "на каждого сотрудника", "c": "eq"}, {"t": "возвращаются в работу с клиентами", "c": "money sub"}], "note": "84 ч = 4 ч в день × 21 рабочий день. Источники: НАФИ и «Яндекс 360», опрос 1 400 сотрудников, апрель 2025; McKinsey, «The economic potential of generative AI», 2023 — ИИ может высвободить до 60–70% времени.", "prefer": ["doc", "mail", "xls"], "n": 1};
+window.THEME_BG = el => {
+  el.style.background = 'repeating-linear-gradient(135deg,#ffffff05 0 1px,transparent 1px 14px),#141413';
+  ['#D97757', '#CC785C', '#6A9BCC'].forEach((col, i) => { const g = document.createElement('div'); g.style.cssText = `position:absolute;width:60vmax;height:60vmax;border-radius:50%;left:${[10, 60, 30][i]}%;top:${[60, 10, 80][i]}%;margin:-30vmax 0 0 -30vmax;background:radial-gradient(circle,${col}${i == 2 ? '22' : '38'},transparent 62%);filter:blur(20px)`; el.append(g); gsap.to(g, {scale: 1.25, opacity: .6, x: (i - 1) * 120, duration: 8 + i * 3, yoyo: true, repeat: -1, ease: 'sine.inOut'}); });
+  return {};
+};
+</script>
+<script src="../_engine/engine.js?v=1"></script>
+</body></html>

@@ -86,7 +86,8 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { const lenis = new
   tl.to(state, {f: set - 1, duration: 10}, 0).to('#hint', {autoAlpha: 0, duration: .3}, .1);
   caps.forEach(cp => {
     const a = +cp.dataset.from * 10, b = +cp.dataset.to * 10;
-    tl.to(cp, {autoAlpha: 1, duration: .01}, a)
+    if (a === 0) { gsap.set(cp, {autoAlpha: 1}); gsap.set(cp.querySelectorAll('.w i'), {yPercent: 0}); gsap.set(cp.querySelectorAll('.k,p,.cta'), {autoAlpha: 1, y: 0}); }
+    else tl.to(cp, {autoAlpha: 1, duration: .01}, a)
       .to(cp.querySelectorAll('.w i'), {yPercent: 0, stagger: .06, duration: .7, ease: 'power3.out'}, a)
       .to(cp.querySelectorAll('.k,p,.cta'), {autoAlpha: 1, y: 0, stagger: .1, duration: .5, ease: 'power2.out'}, a + .25);
     if (b < 10) tl.to(cp.querySelectorAll('.w i'), {yPercent: -115, stagger: .03, duration: .45, ease: 'power2.in'}, b)

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ключи — Делегат</title>
+<meta name="description" content="Отдайте нам ключи от рутины. Главное остаётся вашим.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one pinned full-bleed canvas scrubbed by scroll with eased frame interpolation; masked word-by-word captions; film grain over everything. */
+:root{--ink:#030405;--fg:#f3f5f6;--muted:#a3adb4;--acc:#5ef2c0;--display:"Onest",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--fg);font:16px/1.5 var(--display);-webkit-font-smoothing:antialiased}
+.top{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:20px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));pointer-events:none}
+.brand{font-weight:800;font-size:19px;pointer-events:auto}.brand b{color:var(--acc)}
+.back{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;pointer-events:auto}
+.stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:#000}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#000c 0%,#0006 34%,#0000 60%),linear-gradient(0deg,#000a 0%,#0000 40%)}
+.grain{position:absolute;inset:-50%;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:g .9s steps(6) infinite}
+@keyframes g{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}}
+.cap{position:absolute;left:max(24px,env(safe-area-inset-left,0px));bottom:max(11vh,80px);max-width:min(640px,88vw);z-index:5}
+.cap .k{font:500 12px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--acc);margin-bottom:12px;display:block}
+.cap h2{margin:0;font:800 clamp(32px,5vw,74px)/.98 var(--display);letter-spacing:-.04em;text-wrap:balance;text-shadow:0 2px 30px #0008}
+.cap h2 .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.1em}
+.cap h2 .w i{display:inline-block;font-style:normal}
+.cap h2 em{font-style:normal;color:var(--acc)}
+.cap p{margin:16px 0 0;color:#d5dbdf;font-size:clamp(15px,1.4vw,19px);max-width:42ch;text-shadow:0 1px 16px #000}
+.cta{display:inline-flex;margin-top:26px;padding:17px 28px;border-radius:999px;background:var(--acc);color:#04120d;font-weight:700;text-decoration:none;box-shadow:0 10px 60px -10px #5ef2c088}
+.cta:focus-visible{outline:2px solid var(--fg);outline-offset:4px}
+.load{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--acc);transform-origin:left;transform:scaleX(0);z-index:6;transition:opacity .6s}
+.hint{position:absolute;left:0;right:0;bottom:22px;text-align:center;font:500 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--muted);z-index:5}
+.after{min-height:60vh;display:grid;place-items:center;padding:80px 20px;color:var(--muted);text-align:center}
+@media (max-width:760px){.shade{background:linear-gradient(0deg,#000d 0%,#0007 45%,#0000 75%)}}
+@media (prefers-reduced-motion:reduce){.grain{animation:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Делегат<b>.</b></div><a class="back" href="../">← все сюжеты</a></header>
+<section class="stage" id="stage">
+  <canvas id="c"></canvas>
+  <div class="shade"></div>
+  <div class="grain"></div>
+  <div class="cap" data-from="0" data-to="0.22"><span class="k">Почта · заявки · склад · отчёты</span><h2>У каждого процесса <em>есть ключ.</em></h2></div>
+  <div class="cap" data-from="0.3" data-to="0.62"><span class="k">Делегирование</span><h2>Отдайте нам <em>ключи от рутины.</em></h2><p>Почту, заявки, склад и отчёты ведёт агент. Каждый день, без выходных.</p></div>
+  <div class="cap" data-from="0.72" data-to="1"><span class="k">Стратегия</span><h2>Главное — <em>остаётся вашим.</em></h2><a class="cta" href="#after">Бесплатный аудит рутины →</a></div>
+  <div class="hint" id="hint">листайте</div>
+  <div class="load" id="load"></div>
+</section>
+<section class="after" id="after"><p>Здесь начинается обычный сайт: аудит, услуги, кейсы, команда, форма.</p></section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { const lenis = new Lenis({lerp: .07}); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+
+(async () => {
+  const meta = await fetch('seq/meta.json').then(r => r.json());
+  const mobile = matchMedia('(max-width: 760px)').matches, set = mobile ? meta.mobile : meta.desktop, dir = mobile ? 'mobile' : 'desktop';
+  const c = document.getElementById('c'), ctx = c.getContext('2d'), load = document.getElementById('load');
+  const pad = n => String(n).padStart(4, '0'), imgs = new Array(set);
+  let loaded = 0;
+  const get = i => imgs[i] || (imgs[i] = new Promise(res => { const im = new Image(); im.decoding = 'async'; im.onload = () => { loaded++; load.style.transform = `scaleX(${loaded / set})`; if (loaded === set) load.style.opacity = 0; res(im); }; im.onerror = () => res(null); im.src = `seq/${dir}/${pad(i + 1)}.jpg`; }));
+  const fit = () => { const r = Math.min(devicePixelRatio, 2); c.width = innerWidth * r; c.height = innerHeight * r; last = -1; };
+  const draw = im => { if (!im) return; const s = Math.max(c.width / im.width, c.height / im.height), w = im.width * s, h = im.height * s; ctx.drawImage(im, (c.width - w) / 2, (c.height - h) / 2, w, h); };
+  let last = -1; fit(); addEventListener('resize', fit);
+  draw(await get(0));
+  for (let i = 1; i < set; i++) get(i);
+
+  // captions: masked words
+  document.querySelectorAll('.cap h2').forEach(h => {
+    const walk = n => [...n.childNodes].forEach(ch => {
+      if (ch.nodeType === 3) { const f = document.createDocumentFragment(); ch.textContent.split(/(\s+)/).forEach(t => { if (!t.trim()) { f.append(t); return; } const w = document.createElement('span'); w.className = 'w'; w.innerHTML = '<i>' + t + '</i>'; f.append(w); }); ch.replaceWith(f); }
+      else if (ch.nodeType === 1) walk(ch);
+    });
+    walk(h);
+  });
+  const caps = [...document.querySelectorAll('.cap')];
+  caps.forEach(cp => { gsap.set(cp, {autoAlpha: 0}); gsap.set(cp.querySelectorAll('.w i'), {yPercent: 115}); gsap.set(cp.querySelectorAll('.k,p,.cta'), {autoAlpha: 0, y: 16}); });
+
+  const state = {f: 0};
+  const tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: '#stage', start: 'top top', end: `+=${meta.scroll || 500}%`, pin: true, scrub: 1.2}});
+  tl.to(state, {f: set - 1, duration: 10}, 0).to('#hint', {autoAlpha: 0, duration: .3}, .1);
+  caps.forEach(cp => {
+    const a = +cp.dataset.from * 10, b = +cp.dataset.to * 10;
+    if (a === 0) { gsap.set(cp, {autoAlpha: 1}); gsap.set(cp.querySelectorAll('.w i'), {yPercent: 0}); gsap.set(cp.querySelectorAll('.k,p,.cta'), {autoAlpha: 1, y: 0}); }
+    else tl.to(cp, {autoAlpha: 1, duration: .01}, a)
+      .to(cp.querySelectorAll('.w i'), {yPercent: 0, stagger: .06, duration: .7, ease: 'power3.out'}, a)
+      .to(cp.querySelectorAll('.k,p,.cta'), {autoAlpha: 1, y: 0, stagger: .1, duration: .5, ease: 'power2.out'}, a + .25);
+    if (b < 10) tl.to(cp.querySelectorAll('.w i'), {yPercent: -115, stagger: .03, duration: .45, ease: 'power2.in'}, b)
+      .to(cp.querySelectorAll('.k,p,.cta'), {autoAlpha: 0, duration: .3}, b)
+      .to(cp, {autoAlpha: 0, duration: .01}, b + .5);
+  });
+  // eased frame interpolation: render the nearest loaded frame each tick
+  let shown = 0;
+  gsap.ticker.add(async () => {
+    shown += (state.f - shown) * .22;
+    const i = Math.max(0, Math.min(set - 1, Math.round(shown)));
+    if (i === last) return; last = i;
+    const im = await imgs[i]; if (i === last) draw(im);
+  });
+})();
+</script>
+</body>
+</html>

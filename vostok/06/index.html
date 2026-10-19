@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Восток AI · Перспективная сетка</title>
+<meta name="description" content="Восток AI — забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_engine/engine.css">
+<style>
+/* Theme 06 · Перспективная сетка: графитовый, электрический синий и малиновый; фон — бесконечный пол-сетка, уходящий к горизонту, со светящейся линией горизонта */
+:root{--ink:#06060b;--fg:#eef1ff;--muted:#8b90aa;--acc:#4da3ff;--acc-ink:#020814;--hot:#ff4d6d;--card:#0d0f1a;--card-2:#121526;--card-line:#ffffff14;--card-fg:#e9ecfb;--card-muted:#8a8fab;--scrim:6,6,11}
+
+</style></head>
+<body>
+<section class="stage" id="stage"></section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+const canvasIn = (el) => { const c = document.createElement('canvas'); el.append(c); const x = c.getContext('2d'), d = Math.min(devicePixelRatio, 2); const o = {c, x, W: 0, H: 0}; const fit = () => { o.W = el.clientWidth; o.H = el.clientHeight; c.width = o.W * d; c.height = o.H * d; x.setTransform(d, 0, 0, d, 0, 0); o.onfit && o.onfit(); }; fit(); addEventListener('resize', fit); return o; };
+window.THEME = {n: 6, name: 'Перспективная сетка', bg(el) { el.style.background='linear-gradient(#06060b 0%,#06060b 52%,#0a0c1c 100%)'; const o=canvasIn(el); let t=0;
+  return {tick(){t+=.006;const{x,W,H}=o;x.clearRect(0,0,W,H);const hz=H*.56,cx=W/2;const g=x.createLinearGradient(0,hz-60,0,hz+10);g.addColorStop(0,'rgba(77,163,255,0)');g.addColorStop(1,'rgba(77,163,255,.35)');x.fillStyle=g;x.fillRect(0,hz-60,W,70);x.strokeStyle='rgba(77,163,255,.7)';x.lineWidth=1.2;x.beginPath();x.moveTo(0,hz);x.lineTo(W,hz);x.stroke();
+  for(let i=-24;i<=24;i++){x.strokeStyle=`rgba(77,163,255,${.18-Math.abs(i)*.005})`;x.lineWidth=1;x.beginPath();x.moveTo(cx+i*8,hz);x.lineTo(cx+i*W*.16,H);x.stroke();}
+  for(let k=0;k<22;k++){const z=((k+t*6)%22)/22,y=hz+(H-hz)*z*z;x.strokeStyle=`rgba(77,163,255,${.06+z*.28})`;x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke();}}}; }};
+</script>
+<script src="../_engine/engine.js"></script>
+</body></html>

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Чертёж — Делегат</title>
+<meta name="description" content="Мы не продаём ботов. Мы перестраиваем процесс: чертёж вашей рутины превращается в работающий механизм.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;700&display=swap">
+<style>
+/* Layout: a real engineering blueprint (sheet, grid, title block) fills the pinned stage; scroll redraws it, then tilts it flat and raises a working gear train out of it. */
+:root{
+  --paper:#0a2a4f; --paper-2:#0c3260; --chalk:#e6f0ff; --chalk-dim:#8fb2d9; --grid:#1d4a7c;
+  --pencil:#ff8d74; --acc:#5ef2c0; --fg:#f1f6ff;
+  --display:"Onest",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace; --hand:"Caveat",cursive;
+}
+*{box-sizing:border-box}
+html{background:#061a33}
+body{margin:0;background:#061a33;color:var(--fg);font:16px/1.5 var(--display);-webkit-font-smoothing:antialiased}
+.top{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:20px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));pointer-events:none}
+.brand{font-weight:800;font-size:19px;pointer-events:auto}.brand b{color:var(--acc)}
+.back{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--chalk-dim);text-decoration:none;pointer-events:auto}
+.stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:radial-gradient(1400px 900px at 50% 45%,#0e3866 0%,#061a33 75%);perspective:1600px}
+.board{position:absolute;inset:4vh 3vw;transform-style:preserve-3d;will-change:transform}
+.board svg{width:100%;height:100%;display:block}
+.gears{position:absolute;left:50%;top:50%;width:min(92vw,1000px);aspect-ratio:10/7;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+.gears svg{width:100%;height:100%;overflow:visible}
+.cap{position:absolute;left:max(20px,env(safe-area-inset-left,0px));bottom:max(7vh,60px);z-index:6;max-width:min(640px,90vw)}
+.cap .k{font:500 12px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--chalk-dim)}
+.cap h2{margin:8px 0 0;font:800 clamp(26px,3.6vw,52px)/1.02 var(--display);letter-spacing:-.03em;text-wrap:balance}
+.cap h2 em{font-style:normal;color:var(--acc)}
+.cta{display:inline-flex;margin-top:24px;padding:16px 26px;border-radius:999px;background:var(--acc);color:#04120d;font-weight:700;text-decoration:none;box-shadow:0 10px 60px -10px #5ef2c088;pointer-events:auto}
+.cta:focus-visible{outline:2px solid var(--fg);outline-offset:4px}
+.hint{position:absolute;left:0;right:0;bottom:22px;z-index:6;text-align:center;font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--chalk-dim)}
+.after{min-height:60vh;display:grid;place-items:center;padding:80px 20px;color:var(--chalk-dim);text-align:center}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Делегат<b>.</b></div><a class="back" href="../">← все сюжеты</a></header>
+
+<section class="stage" id="stage">
+  <div class="board" id="board">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <pattern id="g1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#1d4a7c" stroke-width=".6"/></pattern>
+        <pattern id="g2" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="url(#g1)"/><path d="M100 0H0V100" fill="none" stroke="#2a5e96" stroke-width="1"/></pattern>
+        <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e6f0ff"/></marker>
+        <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5ef2c0"/></marker>
+      </defs>
+      <rect width="1600" height="900" fill="#0a2a4f"/>
+      <rect width="1600" height="900" fill="url(#g2)"/>
+      <rect x="24" y="24" width="1552" height="852" fill="none" stroke="#e6f0ff" stroke-width="2"/>
+      <rect x="34" y="34" width="1532" height="832" fill="none" stroke="#e6f0ff" stroke-width=".8" opacity=".6"/>
+      <!-- title block -->
+      <g font-family="JetBrains Mono" fill="#e6f0ff" font-size="12" letter-spacing="1">
+        <path d="M1150 760H1566M1150 790H1566M1150 820H1566M1150 760V866M1330 760V866M1470 760V866" stroke="#e6f0ff" stroke-width="1" fill="none"/>
+        <text x="1162" y="780">ПРОЦЕСС</text><text x="1342" y="780">ЛИСТ</text><text x="1482" y="780">МАСШТАБ</text>
+        <text x="1162" y="810" font-size="14">ОБРАБОТКА ЗАЯВКИ</text><text x="1342" y="810" font-size="14">1 / 1</text><text x="1482" y="810" font-size="14">1:1</text>
+        <text x="1162" y="840">РАЗРАБ.</text><text x="1342" y="840" id="tbStatus">ЧЕРНОВИК</text>
+        <text x="1162" y="858" font-size="14">ДЕЛЕГАТ · ВЛАДИВОСТОК</text>
+      </g>
+      <text x="60" y="78" font-family="JetBrains Mono" font-size="15" fill="#8fb2d9" letter-spacing="3">СХЕМА 01 · КАК ЗАЯВКА ПРОХОДИТ ЧЕРЕЗ КОМПАНИЮ</text>
+
+      <!-- boxes -->
+      <g id="boxes" font-family="Onest" font-size="20" font-weight="500" fill="#e6f0ff">
+        <g class="bx" id="b-client"><rect x="110" y="410" width="170" height="80" fill="#0a2a4f" stroke="#e6f0ff" stroke-width="2"/><text x="195" y="457" text-anchor="middle">Клиент</text></g>
+        <g class="bx" id="b-msg"><rect x="430" y="260" width="190" height="80" fill="#0a2a4f" stroke="#e6f0ff" stroke-width="2"/><text x="525" y="307" text-anchor="middle">Мессенджер</text></g>
+        <g class="bx" id="b-mgr"><rect x="760" y="180" width="180" height="80" fill="#0a2a4f" stroke="#e6f0ff" stroke-width="2"/><text x="850" y="227" text-anchor="middle">Менеджер</text></g>
+        <g class="bx" id="b-xls"><rect x="1070" y="180" width="160" height="80" fill="#0a2a4f" stroke="#e6f0ff" stroke-width="2"/><text x="1150" y="227" text-anchor="middle">Excel</text></g>
+        <g class="bx" id="b-mail"><rect x="430" y="600" width="190" height="80" fill="#0a2a4f" stroke="#e6f0ff" stroke-width="2"/><text x="525" y="647" text-anchor="middle">Почта</text></g>
+        <g class="bx" id="b-1c"><rect x="1070" y="600" width="160" height="80" fill="#0a2a4f" stroke="#e6f0ff" stroke-width="2"/><text x="1150" y="647" text-anchor="middle">1С</text></g>
+        <g class="bx" id="b-rep"><rect x="1340" y="410" width="170" height="80" fill="#0a2a4f" stroke="#e6f0ff" stroke-width="2"/><text x="1425" y="457" text-anchor="middle">Отчёт</text></g>
+      </g>
+
+      <!-- messy current process (pencil) -->
+      <g id="messy" fill="none" stroke="#e6f0ff" stroke-width="2" filter="url(#rough)" marker-end="url(#ar)" opacity=".92">
+        <path class="m" d="M280 440 C 340 390 380 330 430 305"/>
+        <path class="m" d="M280 465 C 330 560 380 620 430 640"/>
+        <path class="m" d="M620 295 C 680 260 710 230 760 222"/>
+        <path class="m" d="M620 640 C 720 560 760 340 810 262"/>
+        <path class="m" d="M940 210 C 990 190 1020 196 1070 210"/>
+        <path class="m" d="M1100 260 C 1060 400 980 520 1090 600"/>
+        <path class="m" d="M1150 600 C 1180 430 1030 360 900 262"/>
+        <path class="m" d="M1230 640 C 1300 600 1330 520 1360 490"/>
+        <path class="m" d="M1230 230 C 1320 260 1360 330 1400 410"/>
+        <path class="m" d="M1340 470 C 1000 520 760 560 620 655"/>
+        <path class="m" d="M760 240 C 600 160 380 220 250 410"/>
+      </g>
+      <g id="notes" font-family="Caveat" font-size="30" fill="#ff8d74">
+        <text x="955" y="160" transform="rotate(-4 955 160)">ручной перенос</text>
+        <text x="660" y="440" transform="rotate(-6 660 440)">ждёт 2 часа</text>
+        <text x="300" y="740" transform="rotate(3 300 740)">потеряно ~12% заявок</text>
+        <text x="1250" y="560" font-size="44" transform="rotate(8 1250 560)">?</text>
+        <text x="1160" y="400" transform="rotate(-3 1160 400)">дублируется</text>
+        <ellipse cx="1150" cy="220" rx="118" ry="62" fill="none" stroke="#ff8d74" stroke-width="2.4" transform="rotate(-6 1150 220)"/>
+      </g>
+      <!-- dimension line -->
+      <g id="dim" stroke="#8fb2d9" fill="#8fb2d9" font-family="JetBrains Mono" font-size="13">
+        <path d="M195 840V812M1425 840V812M195 826H1425" fill="none" stroke-width="1"/>
+        <text x="810" y="818" text-anchor="middle" stroke="none" id="dimText">≈ 2 ч 14 мин на одну заявку</text>
+      </g>
+
+      <!-- strike marks -->
+      <g id="strikes" stroke="#ff8d74" stroke-width="5" stroke-linecap="round">
+        <path class="x" d="M1060 170L1240 270"/><path class="x" d="M1240 170L1060 270"/>
+        <path class="x" d="M420 590L630 690"/><path class="x" d="M630 590L420 690"/>
+        <path class="x" d="M420 250L630 350"/><path class="x" d="M630 250L420 350"/>
+      </g>
+
+      <!-- new process -->
+      <g id="agent">
+        <circle cx="800" cy="450" r="70" fill="#062a2a" stroke="#5ef2c0" stroke-width="3" filter="url(#glow)"/>
+        <circle cx="800" cy="450" r="86" fill="none" stroke="#5ef2c0" stroke-width="1" stroke-dasharray="4 8"/>
+        <text x="800" y="458" text-anchor="middle" font-family="JetBrains Mono" font-size="20" fill="#5ef2c0" letter-spacing="3">АГЕНТ</text>
+      </g>
+      <g id="clean" fill="none" stroke="#5ef2c0" stroke-width="3" marker-end="url(#arA)">
+        <path class="c" d="M280 450 H 712"/>
+        <path class="c" d="M800 364 V 300 H 850 V 268"/>
+        <path class="c" d="M800 536 V 640 H 1062"/>
+        <path class="c" d="M888 450 H 1332"/>
+      </g>
+      <g id="cleanNotes" font-family="JetBrains Mono" font-size="13" fill="#5ef2c0" letter-spacing="1">
+        <text x="420" y="438">3 СЕК · 24/7</text>
+        <text x="860" y="322">ТОЛЬКО ГОРЯЧИЕ</text>
+        <text x="880" y="628">АВТОЗАПИСЬ</text>
+        <text x="1060" y="438">КАЖДЫЙ ПН 09:00</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="gears" id="gears">
+    <svg viewBox="0 0 1000 700" aria-hidden="true">
+      <defs>
+        <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe2ff"/><stop offset=".5" stop-color="#7fa4d4"/><stop offset="1" stop-color="#3d6297"/></linearGradient>
+        <radialGradient id="mint" cx=".4" cy=".35"><stop offset="0" stop-color="#d4fff0"/><stop offset=".5" stop-color="#5ef2c0"/><stop offset="1" stop-color="#127a5d"/></radialGradient>
+        <filter id="gsh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000" flood-opacity=".55"/></filter>
+      </defs>
+      <g id="gearLayer" filter="url(#gsh)"></g>
+    </svg>
+  </div>
+
+  <div class="cap" id="c1"><div class="k">Аудит · шаг 1</div><h2>Так заявка проходит через вашу компанию <em>сейчас.</em></h2></div>
+  <div class="cap" id="c2"><div class="k">Аудит · шаг 2</div><h2>Убираем лишние руки. В центр — <em>агент.</em></h2></div>
+  <div class="cap" id="c3"><div class="k">Результат</div><h2>Мы не продаём ботов. <em>Мы перестраиваем процесс.</em></h2><a class="cta" href="#after">Бесплатный аудит рутины →</a></div>
+  <div class="hint" id="hint">листайте</div>
+</section>
+<section class="after" id="after"><p>Здесь начинается обычный сайт: аудит, услуги, кейсы, команда, форма.</p></section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { const lenis = new Lenis({lerp: .075}); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+
+// --- gears: real involute-ish teeth generated in code
+const NS = 'http://www.w3.org/2000/svg';
+function gearPath(teeth, rOut, rIn, hole) {
+  const step = Math.PI * 2 / teeth, pts = [];
+  for (let i = 0; i < teeth; i++) {
+    const a = i * step;
+    [[rIn, 0], [rIn, .08], [rOut, .22], [rOut, .42], [rIn, .56], [rIn, 1]].forEach(([r, f]) => pts.push([r * Math.cos(a + f * step), r * Math.sin(a + f * step)]));
+  }
+  let d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L') + 'Z';
+  d += `M${hole} 0A${hole} ${hole} 0 1 0 ${-hole} 0A${hole} ${hole} 0 1 0 ${hole} 0Z`;
+  return d;
+}
+const specs = [
+  {id: 'g1', cx: 500, cy: 330, t: 18, ro: 152, ri: 130, hole: 46, fill: 'url(#mint)', label: 'АГЕНТ', main: true},
+  {id: 'g2', cx: 692, cy: 220, t: 10, ro: 89, ri: 68, hole: 22, fill: 'url(#steel)', label: 'CRM'},
+  {id: 'g3', cx: 296, cy: 448, t: 12, ro: 104, ri: 84, hole: 26, fill: 'url(#steel)', label: 'ЗАЯВКИ'},
+  {id: 'g4', cx: 604, cy: 528, t: 8, ro: 74, ri: 54, hole: 18, fill: 'url(#steel)', label: 'ОТЧЁТЫ'},
+];
+const layer = document.getElementById('gearLayer');
+specs.forEach(s => {
+  const g = document.createElementNS(NS, 'g'); g.setAttribute('id', s.id); g.setAttribute('transform', `translate(${s.cx} ${s.cy})`);
+  const rot = document.createElementNS(NS, 'g'); rot.setAttribute('class', 'rot');
+  const p = document.createElementNS(NS, 'path'); p.setAttribute('d', gearPath(s.t, s.ro, s.ri, s.hole)); p.setAttribute('fill', s.fill); p.setAttribute('fill-rule', 'evenodd');
+  p.setAttribute('stroke', s.main ? '#bfffe9' : '#e6f0ff'); p.setAttribute('stroke-width', '1.5'); p.setAttribute('stroke-opacity', '.6');
+  rot.append(p);
+  for (let k = 0; k < 5; k++) { const sp = document.createElementNS(NS, 'path'); const a = k * Math.PI * 2 / 5, r1 = s.hole + 6, r2 = s.ri - 14; sp.setAttribute('d', `M${(r1 * Math.cos(a)).toFixed(1)} ${(r1 * Math.sin(a)).toFixed(1)}L${(r2 * Math.cos(a)).toFixed(1)} ${(r2 * Math.sin(a)).toFixed(1)}`); sp.setAttribute('stroke', '#0a2a4f'); sp.setAttribute('stroke-opacity', '.35'); sp.setAttribute('stroke-width', s.main ? 10 : 6); sp.setAttribute('stroke-linecap', 'round'); rot.append(sp); }
+  g.append(rot);
+  const t = document.createElementNS(NS, 'text'); t.textContent = s.label; t.setAttribute('text-anchor', 'middle'); t.setAttribute('y', s.main ? 7 : 5);
+  t.setAttribute('font-family', 'JetBrains Mono'); t.setAttribute('font-size', s.main ? 18 : 12); t.setAttribute('letter-spacing', s.main ? 3 : 2); t.setAttribute('fill', s.main ? '#04221a' : '#0a2a4f'); t.setAttribute('font-weight', '500');
+  g.append(t);
+  layer.append(g); s.el = g; s.rot = rot;
+});
+// meshing: angular speed inversely proportional to tooth count, alternating direction
+let angle = 0, speed = .15;
+const dirs = {g1: 1, g2: -1, g3: -1, g4: -1};
+gsap.ticker.add(() => { angle += speed; specs.forEach(s => s.rot.setAttribute('transform', `rotate(${(dirs[s.id] * angle * specs[0].t / s.t).toFixed(2)})`)); });
+
+// --- prep strokes
+const prep = sel => gsap.utils.toArray(sel).map(el => { const L = el.getTotalLength(); gsap.set(el, {strokeDasharray: L, strokeDashoffset: L}); return el; });
+const messy = prep('#messy .m'), strikes = prep('#strikes .x'), clean = prep('#clean .c');
+gsap.set(['#boxes .bx'], {autoAlpha: 0});
+gsap.set(['#notes', '#dim', '#agent', '#cleanNotes'], {autoAlpha: 0});
+gsap.set(specs.map(s => s.el), {scale: 0, transformOrigin: '50% 50%'});
+gsap.set(['#c1', '#c2', '#c3'], {autoAlpha: 0, y: 30});
+
+const tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: '#stage', start: 'top top', end: '+=650%', pin: true, scrub: 1,
+  onUpdate: self => { speed = .15 + Math.min(4, Math.abs(self.getVelocity()) / 400); }}});
+// 1. the current mess gets drawn
+tl.to('#c1', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 0)
+  .to('#hint', {autoAlpha: 0, duration: .3}, .2)
+  .to('#boxes .bx', {autoAlpha: 1, stagger: .12, duration: .3}, .1);
+messy.forEach((m, i) => tl.to(m, {strokeDashoffset: 0, duration: .5, ease: 'power1.inOut'}, .6 + i * .14));
+tl.to('#notes', {autoAlpha: 1, duration: .5}, 1.9)
+  .to('#dim', {autoAlpha: 1, duration: .4}, 2.1)
+  .to('#c1', {autoAlpha: 0, y: -20, duration: .3}, 2.9)
+// 2. redesign: cross out, erase, put the agent in the middle
+  .to('#c2', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 3.0);
+strikes.forEach((x, i) => tl.to(x, {strokeDashoffset: 0, duration: .2, ease: 'power2.out'}, 3.1 + Math.floor(i / 2) * .2 + (i % 2) * .08));
+tl.to(['#b-xls', '#b-mail', '#b-msg'], {autoAlpha: .18, duration: .4}, 3.8)
+  .to('#strikes', {autoAlpha: .35, duration: .4}, 3.9)
+  .to(messy, {strokeDashoffset: (i, el) => -el.getTotalLength(), duration: .9, stagger: .03, ease: 'power2.in'}, 3.8)
+  .to('#notes', {autoAlpha: 0, duration: .5}, 4.1)
+  .to('#agent', {autoAlpha: 1, duration: .5}, 4.4);
+clean.forEach((c, i) => tl.to(c, {strokeDashoffset: 0, duration: .45, ease: 'power2.inOut'}, 4.7 + i * .2));
+tl.to('#cleanNotes', {autoAlpha: 1, duration: .4}, 5.4)
+  .call(() => { document.getElementById('dimText').textContent = '3 сек на одну заявку'; document.getElementById('tbStatus').textContent = 'УТВЕРЖДЕНО'; }, null, 5.2)
+  .to('#c2', {autoAlpha: 0, y: -20, duration: .3}, 6.0)
+// 3. the blueprint lies down, the mechanism rises out of it
+  .to('#board', {rotateX: 62, rotateZ: -12, scale: .82, y: () => innerHeight * .12, duration: 1.4, ease: 'power2.inOut'}, 6.1)
+  .to('#board', {opacity: .55, duration: 1}, 6.6);
+specs.forEach((s, i) => tl.to(s.el, {scale: 1, duration: .6, ease: 'back.out(1.5)'}, 6.9 + i * .18));
+tl.to('#c3', {autoAlpha: 1, y: 0, duration: .5, ease: 'power3.out'}, 7.9)
+  .to({}, {duration: .9});
+</script>
+</body>
+</html>

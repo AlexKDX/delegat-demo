@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Делегат — забираем рутину у ваших сотрудников</title>
+<meta name="description" content="Приезжаем, находим рутину у руководителя и сотрудников и отдаём её AI-агентам. Владивосток и Дальний Восток. Бесплатный аудит рутины.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: pinned full-screen canvas scrubbed by scroll; captions fade in per scene; ordinary sections follow. */
+:root{--bg:#0b0f14;--fg:#e8eef2;--muted:#9fb0bd;--accent:#5ef2c0;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 Manrope,system-ui,sans-serif}
+.film{position:relative;height:420vh}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#000}
+.stage canvas,.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0006 0%,#0000 35%,#0000 60%,#000a 100%);pointer-events:none}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");mix-blend-mode:overlay}
+.nav{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:22px max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-left,0px));max-width:1200px;margin:0 auto}
+.brand{font-weight:800;font-size:20px;letter-spacing:.02em}.brand i{font-style:normal;color:var(--accent)}
+.cap{position:absolute;z-index:2;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:12vh;max-width:min(680px,90vw);opacity:0;transform:translateY(14px);transition:opacity .45s,transform .45s}
+.cap.on{opacity:1;transform:none}
+.cap h2{font:800 clamp(28px,4.6vw,56px)/1.02 Manrope,sans-serif;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.cap h2 em{font-style:normal;background:linear-gradient(90deg,#5ef2c0,#7cc4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cap p{color:var(--muted);margin:12px 0 0;font-size:clamp(15px,1.5vw,19px);max-width:46ch}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:22px;background:var(--accent);color:#06110d;font-weight:700;text-decoration:none;padding:14px 22px;border-radius:999px;box-shadow:0 0 0 1px #5ef2c0,0 0 40px #5ef2c044}
+.hint{position:absolute;z-index:2;bottom:18px;left:0;right:0;text-align:center;color:var(--muted);font:500 12px JetBrains Mono,monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.after{max-width:1120px;margin:0 auto;padding:72px max(16px,env(safe-area-inset-left,0px)) 96px}
+.after h3{font:800 clamp(24px,3vw,36px)/1.1 Manrope,sans-serif;letter-spacing:-.02em;margin:0 0 10px}
+.after p{color:var(--muted);max-width:62ch}
+@media (prefers-reduced-motion:reduce){.cap{transition:none}}
+</style>
+</head>
+<body>
+<section class="film" id="film">
+  <div class="stage">
+    <canvas id="c"></canvas>
+    <video id="intro" src="seq/intro.mp4" muted autoplay loop playsinline preload="auto" style="opacity:0;transition:opacity .4s;pointer-events:none"></video>
+    <pre id="dbg" style="position:absolute;z-index:9;left:8px;top:56px;margin:0;max-width:60vw;white-space:pre-wrap;font:12px/1.4 monospace;color:#f88;background:#0008;padding:4px 6px;border-radius:6px" hidden></pre>
+    <div class="grain"></div>
+    <nav class="nav"><div class="brand">Делегат<i>.</i></div></nav>
+    <div class="cap on" data-from="0" data-to="0.08"><h2>Сколько часов в неделю ваши люди делают <em>одно и то же?</em></h2></div>
+    <div class="cap" data-from="0.10" data-to="0.30"><h2>Заявки. Ответы. Отчёты. <em>Каждый день заново.</em></h2></div>
+    <div class="cap" data-from="0.42" data-to="0.62"><h2><em>Это забирает агент.</em></h2><p>Разбирает заявки, отвечает клиентам, собирает отчёты — сам, круглосуточно.</p></div>
+    <div class="cap" data-from="0.82" data-to="1"><h2>Ваши люди — <em>занимаются делом.</em></h2><p>Владивосток и Дальний Восток. Приезжаем, находим рутину, отдаём её агентам.</p><a class="cta" href="#audit">Бесплатный аудит рутины →</a></div>
+    <div class="hint" id="hint">листайте ↓</div>
+  </div>
+</section>
+
+<section class="after" id="audit">
+  <h3>Дальше — обычные секции сайта</h3>
+  <p>Здесь пойдут: как проходит аудит (3 шага), 7 карточек рутины с ценами «от», кейсы, мы двое, форма. Этот файл — проверка механики фильма.</p>
+</section>
+
+<script>
+(async () => {
+  const dbg = document.getElementById('dbg'), say = m => { dbg.hidden = false; dbg.textContent += m + '\n'; };
+  addEventListener('error', e => say('JS: ' + (e.message || e.type)));
+  addEventListener('unhandledrejection', e => say('Promise: ' + (e.reason && e.reason.message || e.reason)));
+  const meta = await fetch('seq/meta.json').then(r => { if (!r.ok) throw new Error('meta ' + r.status); return r.json(); }).catch(e => { say('meta.json: ' + e.message); return {desktop:0,mobile:0}; });
+  const mobile = matchMedia('(max-width: 760px)').matches;
+  const dir = mobile ? 'mobile' : 'desktop', total = mobile ? meta.mobile : meta.desktop;
+  const film = document.getElementById('film'), c = document.getElementById('c'), ctx = c.getContext('2d');
+  const intro = document.getElementById('intro'), caps = [...document.querySelectorAll('.cap')], hint = document.getElementById('hint');
+  if (!total) { c.hidden = true; return; } // кадров ещё нет — остаётся intro-видео
+  const frames = new Array(total), pad = n => String(n).padStart(4, '0');
+  const load = i => frames[i] || (frames[i] = new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => { say('кадр не загрузился: ' + im.src.split('/').slice(-2).join('/')); rej(new Error('img')); }; im.src = `seq/${dir}/${pad(i + 1)}.jpg`; }));
+
+  const fit = () => { const r = devicePixelRatio > 1.5 ? 1.5 : devicePixelRatio; c.width = innerWidth * r; c.height = innerHeight * r; };
+  fit(); addEventListener('resize', fit);
+  const draw = im => { const s = Math.max(c.width / im.width, c.height / im.height), w = im.width * s, h = im.height * s; ctx.drawImage(im, (c.width - w) / 2, (c.height - h) / 2, w, h); };
+
+  // первый кадр — сразу, чтобы экран никогда не был чёрным; видео-луп поверх, только если реально играет
+  try { draw(await load(0)); } catch (e) { say('первый кадр: ' + e.message); }
+  intro.addEventListener('playing', () => { intro.style.opacity = 1; }, {once: true});
+  intro.addEventListener('error', () => say('видео-луп не загрузилось (код ' + (intro.error && intro.error.code) + ')'));
+  intro.play().catch(e => say('autoplay: ' + e.message));
+  // остальные кадры — в фоне порциями
+  for (let i = 1; i < Math.min(total, 24); i++) load(i).catch(() => {});
+  let bg = 24; const tick = () => { for (let k = 0; k < 12 && bg < total; k++) load(bg++).catch(() => {}); if (bg < total) (window.requestIdleCallback || (f => setTimeout(f, 50)))(tick); }; tick();
+
+  // K2 «наезд на экран» делается кропом первых кадров: zoom от 1.0 до 1.6 к точке экрана ноутбука
+  const zoomTo = p => { const z = 1 + 0.6 * Math.min(1, p / 0.3) * (p < 0.3 ? 1 : Math.max(0, 1 - (p - 0.3) / 0.1)); c.style.transformOrigin = '58% 32%'; c.style.transform = `scale(${z.toFixed(3)})`; };
+
+  let last = -1;
+  const onScroll = async () => {
+    const r = film.getBoundingClientRect(), p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+    const idx = Math.min(total - 1, Math.floor(p * total));
+    caps.forEach(el => el.classList.toggle('on', p >= +el.dataset.from && p <= +el.dataset.to));
+    hint.style.opacity = p > 0.02 ? 0 : .8;
+    if (p < 0.005) { if (!intro.paused) intro.style.opacity = 1; return; } // на самом верху — живой луп поверх первого кадра
+    intro.style.opacity = 0; zoomTo(p);
+    if (idx === last) return; last = idx;
+    try { draw(await load(idx)); } catch (e) {}
+  };
+  addEventListener('scroll', onScroll, {passive: true}); onScroll();
+})();
+</script>
+</body>
+</html>

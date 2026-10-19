@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик — Делегат</title>
+<meta name="description" content="Сколько часов в месяц ваш отдел тратит на рутину — и сколько из них забирает агент.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: pinned stage; a giant tabular counter is the hero; UI fragments of real routine pile up around it, then collapse into one agent. */
+:root{
+  --ink:#06080b; --card:#0e141a; --card-2:#121a22; --line:#1f2a33;
+  --fg:#f1f4f6; --muted:#7c8a95; --acc:#5ef2c0; --hot:#ff6b4a;
+  --display:"Onest",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--fg);font:16px/1.5 var(--display);-webkit-font-smoothing:antialiased}
+.top{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:20px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));pointer-events:none}
+.brand{font-weight:800;font-size:19px;pointer-events:auto}.brand b{color:var(--acc)}
+.back{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;pointer-events:auto}
+.stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--ink)}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,#000a 100%);z-index:3}
+.pile{position:absolute;inset:0;z-index:1}
+.card{position:absolute;width:240px;padding:14px 16px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:0 20px 60px -20px #000;font-size:13px;color:#c9d3da;will-change:transform,opacity}
+.card .h{display:flex;align-items:center;gap:8px;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.card .h i{width:8px;height:8px;border-radius:50%;background:var(--hot);box-shadow:0 0 12px var(--hot)}
+.card .ln{height:7px;border-radius:4px;background:#22303b;margin:7px 0}
+.card .bub{background:#1a2530;border-radius:12px 12px 12px 4px;padding:8px 10px;margin:6px 0;width:85%}
+.card .bub.me{background:#22333f;margin-left:auto;border-radius:12px 12px 4px 12px;width:70%}
+.card .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.card .grid span{height:14px;background:#18222b;border-radius:2px}
+.card .grid span.hl{background:#3a2a22}
+.card .badge{position:absolute;top:-8px;right:-8px;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:var(--hot);color:#fff;font:700 12px/24px var(--mono);text-align:center}
+.center{position:absolute;inset:0;z-index:5;display:grid;place-items:center;text-align:center;pointer-events:none}
+.week{font:500 13px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.clock{font:700 clamp(22px,2.6vw,34px) var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.02em;margin-top:6px}
+.num{font:800 clamp(130px,24vw,340px)/.86 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.06em;margin:18px 0 6px}
+.unit{font:500 clamp(14px,1.4vw,18px) var(--mono);letter-spacing:.06em;color:var(--muted)}
+.agent{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:28px;z-index:4;background:radial-gradient(circle at 35% 30%,#bfffe7,#5ef2c0 40%,#0f5a46 100%);box-shadow:0 0 0 1px #5ef2c0,0 0 80px 10px #5ef2c055,0 0 200px 40px #5ef2c022;opacity:0}
+.agent::after{content:"АГЕНТ";position:absolute;left:0;right:0;top:calc(100% + 18px);font:500 12px var(--mono);letter-spacing:.3em;color:var(--acc);text-align:center}
+.cap{position:absolute;left:max(20px,env(safe-area-inset-left,0px));bottom:max(8vh,64px);z-index:6;max-width:min(560px,90vw)}
+.cap h2{margin:0;font:800 clamp(26px,3.4vw,46px)/1.02 var(--display);letter-spacing:-.03em;text-wrap:balance}
+.cap h2 em{font-style:normal;color:var(--acc)} .cap h2 .hot{color:var(--hot)}
+.result{position:absolute;inset:0;z-index:7;display:grid;place-items:center;text-align:center;padding:0 20px}
+.result .row{font:800 clamp(34px,6.4vw,92px)/1.02 var(--display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.result .row.eq{color:var(--muted);font-weight:700}
+.result .row.money{color:var(--acc)}
+.result .note{margin:22px auto 0;font:400 13px var(--mono);color:var(--muted);max-width:52ch}
+.cta{display:inline-flex;margin-top:30px;padding:17px 28px;border-radius:999px;background:var(--acc);color:#04120d;font-weight:700;text-decoration:none;box-shadow:0 10px 60px -10px #5ef2c088;pointer-events:auto}
+.cta:focus-visible{outline:2px solid var(--fg);outline-offset:4px}
+.hint{position:absolute;left:0;right:0;bottom:22px;z-index:6;text-align:center;font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.after{min-height:60vh;display:grid;place-items:center;padding:80px 20px;color:var(--muted);text-align:center}
+@media (max-width:760px){.card{width:180px;font-size:12px;padding:12px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Делегат<b>.</b></div><a class="back" href="../">← все сюжеты</a></header>
+
+<section class="stage" id="stage">
+  <div class="pile" id="pile"></div>
+  <div class="agent" id="agent"></div>
+  <div class="vignette"></div>
+  <div class="center" id="center">
+    <div>
+      <div class="week" id="week">Понедельник · неделя 1</div>
+      <div class="clock" id="clock">09:00</div>
+      <div class="num" id="num">0</div>
+      <div class="unit" id="unit">часов рутины в месяц · отдел из 4 человек</div>
+    </div>
+  </div>
+  <div class="cap" id="c1"><h2>Понедельник. <em>09:00.</em></h2></div>
+  <div class="cap" id="c2"><h2>Ответы. Таблицы. Письма. Сверки. <span class="hot">240 часов в месяц.</span></h2></div>
+  <div class="cap" id="c3"><h2>Забираем <em>165 из них.</em></h2></div>
+  <div class="result" id="result">
+    <div>
+      <div class="row" id="r1">165 ч/мес</div>
+      <div class="row eq" id="r2">= 1 полная ставка</div>
+      <div class="row money" id="r3">≈ 165 000 ₽ в месяц</div>
+      <p class="note" id="r4">Пример для отдела из 4 человек при стоимости часа 1 000 ₽ с налогами. Точные цифры по вашей компании — после аудита.</p>
+      <a class="cta" id="r5" href="#after">Посчитаем для вас. Бесплатно →</a>
+    </div>
+  </div>
+  <div class="hint" id="hint">листайте</div>
+</section>
+<section class="after" id="after"><p>Здесь начинается обычный сайт: аудит, услуги, кейсы, команда, форма.</p></section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { const lenis = new Lenis({lerp: .075}); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+
+// --- build the pile of routine fragments
+const kinds = [
+  {t: 'Telegram · клиент', b: '<div class="bub"><div class="ln" style="width:90%"></div><div class="ln" style="width:60%"></div></div><div class="bub me"><div class="ln"></div></div>'},
+  {t: 'Excel · сверка.xlsx', b: '<div class="grid">' + Array.from({length: 16}, (_, i) => `<span class="${i % 5 === 2 ? 'hl' : ''}"></span>`).join('') + '</div>'},
+  {t: 'Почта · входящие', b: '<div class="ln" style="width:80%"></div><div class="ln" style="width:95%"></div><div class="ln" style="width:55%"></div>'},
+  {t: 'WhatsApp · «сколько стоит?»', b: '<div class="bub"><div class="ln" style="width:70%"></div></div><div class="bub"><div class="ln" style="width:50%"></div></div>'},
+  {t: 'Пропущенный звонок', b: '<div class="ln" style="width:40%"></div><div class="ln" style="width:65%"></div>'},
+  {t: '1С · перенос заявки', b: '<div class="ln" style="width:100%"></div><div class="ln" style="width:75%"></div><div class="ln" style="width:85%"></div>'},
+  {t: 'Отчёт за неделю', b: '<div class="grid">' + Array.from({length: 12}, () => '<span></span>').join('') + '</div>'},
+];
+const pile = document.getElementById('pile');
+const N = innerWidth < 760 ? 26 : 44;
+const rnd = gsap.utils.random;
+const cards = Array.from({length: N}, (_, i) => {
+  const k = kinds[i % kinds.length], el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `<div class="h"><i></i>${k.t}</div>${k.b}` + (i % 3 === 0 ? `<div class="badge">${Math.round(rnd(2, 48))}</div>` : '');
+  pile.append(el);
+  // keep a clear zone in the middle for the counter
+  let x, y; do { x = rnd(-.05, .92); y = rnd(-.05, .9); } while (Math.abs(x - .44) < .2 && Math.abs(y - .45) < .22);
+  el._x = x * innerWidth; el._y = y * innerHeight;
+  gsap.set(el, {x: el._x, y: el._y + 60, rotation: rnd(-9, 9), autoAlpha: 0, scale: .9});
+  return el;
+});
+
+// --- state
+const week = document.getElementById('week'), clock = document.getElementById('clock'), num = document.getElementById('num'), unit = document.getElementById('unit');
+const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'];
+const st = {h: 0, n: 0};
+const render = () => {
+  const total = st.h, wk = Math.min(4, Math.floor(total / 45) + 1), day = days[Math.floor(total / 9) % 5], hh = 9 + Math.floor(total % 9), mm = Math.floor((total * 60) % 60);
+  week.textContent = `${day} · неделя ${wk}`; clock.textContent = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+  num.textContent = Math.round(st.n);
+};
+render();
+
+const caps = ['#c1', '#c2', '#c3'];
+gsap.set([...caps, '#r1', '#r2', '#r3', '#r4', '#r5'], {autoAlpha: 0, y: 30});
+
+const tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: '#stage', start: 'top top', end: '+=650%', pin: true, scrub: 1}});
+tl.to('#c1', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 0)
+  .to('#hint', {autoAlpha: 0, duration: .3}, .3)
+  .to('#c1', {autoAlpha: 0, y: -20, duration: .3}, 1.1)
+// 2. a month of routine piles up
+  .to(st, {h: 180, n: 240, duration: 3.2, ease: 'power1.in', onUpdate: render}, 1.2)
+  .to(num, {color: '#ff6b4a', duration: .8}, 3.4)
+  .to('#c2', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 3.0)
+  .to('#c2', {autoAlpha: 0, y: -20, duration: .3}, 4.6);
+cards.forEach((c, i) => {
+  const at = 1.3 + (i / N) * 3.0;
+  tl.to(c, {autoAlpha: 1, y: c._y, scale: 1, duration: .45, ease: 'power3.out'}, at)
+    .to(c, {y: c._y - rnd(10, 40), rotation: `+=${rnd(-4, 4)}`, duration: 4.5 - (at - 1.3)}, at + .45);
+});
+tl.to('#stage', {backgroundColor: '#0b0907', duration: 2}, 2.5);
+// 3. collapse into one agent
+const cx = innerWidth / 2 - 120, cy = innerHeight / 2 - 60;
+tl.to('#center', {autoAlpha: 0, scale: .96, duration: .3}, 4.9);
+cards.forEach((c, i) => tl.to(c, {x: cx, y: cy, rotation: 0, scale: .05, autoAlpha: 0, duration: .7, ease: 'power3.in'}, 5.0 + (i % 12) * .03));
+tl.to('#stage', {backgroundColor: '#06080b', duration: .6}, 5.4)
+  .fromTo('#agent', {opacity: 0, scale: .2, rotation: -20}, {opacity: 1, scale: 1, rotation: 0, duration: .6, ease: 'back.out(1.8)'}, 5.6)
+  .to('#center', {autoAlpha: 1, scale: 1, duration: .3}, 6.1)
+  .call(() => { unit.textContent = 'часов рутины в месяц · с агентом'; }, null, 6.1)
+  .to('#agent', {scale: .42, y: () => -Math.min(innerHeight * .34, 270), duration: .5, ease: 'power2.inOut'}, 5.95)
+  .to(num, {color: '#5ef2c0', duration: .4}, 6.1)
+  .to(st, {n: 75, duration: 1.2, ease: 'power2.out', onUpdate: render}, 6.1)
+  .to('#c3', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 6.3)
+  .to('#c3', {autoAlpha: 0, y: -20, duration: .3}, 7.6)
+// 4. the money
+  .to(['#center', '#agent'], {autoAlpha: 0, y: '-=40', duration: .5}, 7.7)
+  .to('#r1', {autoAlpha: 1, y: 0, duration: .5, ease: 'power3.out'}, 8.0)
+  .to('#r2', {autoAlpha: 1, y: 0, duration: .5, ease: 'power3.out'}, 8.4)
+  .to('#r3', {autoAlpha: 1, y: 0, duration: .5, ease: 'power3.out'}, 8.8)
+  .to(['#r4', '#r5'], {autoAlpha: 1, y: 0, duration: .5, ease: 'power3.out', stagger: .15}, 9.2)
+  .to({}, {duration: .7});
+
+// ambient: badges pulse
+gsap.to('.card .badge', {scale: 1.15, duration: .6, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: {each: .12, from: 'random'}});
+gsap.to('#agent', {boxShadow: '0 0 0 1px #5ef2c0,0 0 120px 20px #5ef2c066,0 0 260px 60px #5ef2c033', duration: 1.6, yoyo: true, repeat: -1, ease: 'sine.inOut'});
+</script>
+</body>
+</html>

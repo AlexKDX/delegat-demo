@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Провод — Делегат</title>
+<meta name="description" content="Одна заявка: семь рук и два часа — или один агент и три секунды.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one pinned SVG stage; a single glowing wire is the whole story. Captions sit low-left, a live timer sits top-right. */
+:root{
+  --ink:#05070a; --ink-2:#0b1016; --line:#1b2530;
+  --fg:#eef3f6; --muted:#7f8e99; --wire:#5ef2c0; --wire-dim:#2a5c4f; --warn:#ff7a5c;
+  --display:"Onest",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--fg);font:16px/1.5 var(--display);-webkit-font-smoothing:antialiased}
+.top{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:20px max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));pointer-events:none}
+.brand{font-weight:800;font-size:19px;letter-spacing:.01em;pointer-events:auto}.brand b{color:var(--wire)}
+.back{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;pointer-events:auto}
+.stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:radial-gradient(1200px 700px at 55% 50%,#0c141b 0%,var(--ink) 70%)}
+svg.scene{position:absolute;inset:0;width:100%;height:100%}
+.timer{position:absolute;top:72px;right:max(20px,env(safe-area-inset-right,0px));text-align:right;font-family:var(--mono)}
+.timer small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.timer span{display:block;font-size:clamp(28px,4vw,52px);font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.caps{position:absolute;left:max(20px,env(safe-area-inset-left,0px));right:max(20px,env(safe-area-inset-right,0px));bottom:max(9vh,72px)}
+.cap{position:absolute;left:0;bottom:0;max-width:min(760px,92vw)}
+.cap h2{margin:0;font:800 clamp(30px,5.2vw,72px)/1 var(--display);letter-spacing:-.035em;text-wrap:balance}
+.cap h2 .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em}
+.cap h2 .w i{display:inline-block;font-style:normal}
+.cap h2 .acc{color:var(--wire)}
+.cap p{margin:14px 0 0;color:var(--muted);font-size:clamp(15px,1.4vw,18px);max-width:44ch}
+.cta{display:inline-flex;align-items:center;gap:12px;margin-top:26px;padding:16px 26px;border-radius:999px;background:var(--wire);color:#04120d;font-weight:700;text-decoration:none;box-shadow:0 0 0 1px var(--wire),0 10px 60px -10px #5ef2c088}
+.cta:focus-visible{outline:2px solid var(--fg);outline-offset:4px}
+.hint{position:absolute;left:0;right:0;bottom:22px;text-align:center;font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.after{min-height:60vh;display:grid;place-items:center;padding:80px 20px;color:var(--muted);text-align:center}
+@media (max-width:760px){.timer{top:64px}.cap h2{font-size:clamp(28px,8.5vw,44px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Делегат<b>.</b></div><a class="back" href="../">← все сюжеты</a></header>
+
+<section class="stage" id="stage">
+  <svg class="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+      <radialGradient id="core"><stop offset="0" stop-color="#d9fff1"/><stop offset=".45" stop-color="#5ef2c0"/><stop offset="1" stop-color="#5ef2c0" stop-opacity="0"/></radialGradient>
+      <pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#1b2530"/></pattern>
+    </defs>
+    <rect width="1600" height="900" fill="url(#dots)" opacity=".7"/>
+
+    <!-- phone -->
+    <g id="phone" transform="translate(150 382)">
+      <rect x="0" y="0" width="76" height="136" rx="14" fill="#0b1016" stroke="#33414d" stroke-width="2"/>
+      <rect x="7" y="12" width="62" height="104" rx="6" fill="#0f1a22"/>
+      <rect x="15" y="26" width="46" height="10" rx="5" fill="#5ef2c0" opacity=".9" id="notif"/>
+      <rect x="15" y="44" width="34" height="6" rx="3" fill="#2b3944"/>
+      <rect x="15" y="56" width="40" height="6" rx="3" fill="#2b3944"/>
+      <circle cx="38" cy="126" r="3" fill="#33414d"/>
+    </g>
+    <text x="188" y="560" text-anchor="middle" fill="#7f8e99" font-family="JetBrains Mono" font-size="14" letter-spacing="2">ЗАЯВКА</text>
+
+    <!-- entry wire -->
+    <path id="p0" d="M226 450 C 380 450 470 450 640 450" fill="none" stroke="#5ef2c0" stroke-width="3" stroke-linecap="round" filter="url(#glow)"/>
+
+    <!-- tangle -->
+    <g id="tangle" fill="none" stroke="#ff7a5c" stroke-width="2.4" stroke-linecap="round" opacity=".95">
+      <path class="t" d="M640 450 C 700 300 760 230 860 210"/>
+      <path class="t" d="M860 210 C 1000 140 1080 200 1150 268"/>
+      <path class="t" d="M1150 268 C 1240 360 1080 470 960 420 C 860 380 820 520 900 600"/>
+      <path class="t" d="M900 600 C 1000 690 1180 660 1250 600"/>
+      <path class="t" d="M1250 600 C 1330 520 1260 380 1150 268"/>
+      <path class="t" d="M1250 600 C 1160 760 940 780 870 720"/>
+      <path class="t" d="M870 720 C 700 680 560 640 460 560 C 380 500 320 470 226 470"/>
+      <path class="t" d="M860 210 C 780 330 1020 360 1060 470 C 1100 580 980 650 870 720"/>
+    </g>
+    <g id="nodes" font-family="Onest" font-size="17" font-weight="500">
+      <g class="n" transform="translate(860 210)"><rect x="-74" y="-22" width="148" height="44" rx="22" fill="#130d0b" stroke="#ff7a5c"/><text text-anchor="middle" y="6" fill="#ffd9cf">Менеджер</text></g>
+      <g class="n" transform="translate(1150 268)"><rect x="-70" y="-22" width="140" height="44" rx="22" fill="#130d0b" stroke="#ff7a5c"/><text text-anchor="middle" y="6" fill="#ffd9cf">Таблица</text></g>
+      <g class="n" transform="translate(1250 600)"><rect x="-56" y="-22" width="112" height="44" rx="22" fill="#130d0b" stroke="#ff7a5c"/><text text-anchor="middle" y="6" fill="#ffd9cf">Чат</text></g>
+      <g class="n" transform="translate(900 600)"><rect x="-62" y="-22" width="124" height="44" rx="22" fill="#130d0b" stroke="#ff7a5c"/><text text-anchor="middle" y="6" fill="#ffd9cf">Почта</text></g>
+      <g class="n" transform="translate(870 720)"><rect x="-58" y="-22" width="116" height="44" rx="22" fill="#130d0b" stroke="#ff7a5c"/><text text-anchor="middle" y="6" fill="#ffd9cf">1С</text></g>
+    </g>
+
+    <!-- agent -->
+    <g id="agent" transform="translate(900 450)">
+      <circle r="120" fill="url(#core)" opacity=".35" id="halo"/>
+      <circle r="46" fill="#07120f" stroke="#5ef2c0" stroke-width="2.5" filter="url(#glow)"/>
+      <path d="M-14 -16 L14 0 L-14 16 Z" fill="#5ef2c0"/>
+      <text y="84" text-anchor="middle" fill="#5ef2c0" font-family="JetBrains Mono" font-size="15" letter-spacing="3">АГЕНТ</text>
+    </g>
+
+    <!-- straight wire -->
+    <path id="s" d="M226 450 L 1400 450" fill="none" stroke="#5ef2c0" stroke-width="3.5" stroke-linecap="round" filter="url(#glow)"/>
+
+    <!-- client -->
+    <g id="client" transform="translate(1452 450)">
+      <circle r="58" fill="none" stroke="#5ef2c0" stroke-opacity=".5" id="ring1"/>
+      <circle r="58" fill="none" stroke="#5ef2c0" stroke-opacity=".5" id="ring2"/>
+      <circle r="40" fill="#0b1016" stroke="#5ef2c0" stroke-width="2.5"/>
+      <path d="M-13 -9 c0 -3 2 -5 5 -5 h4 l3 7 -4 3 c2 5 6 9 11 11 l3 -4 7 3 v4 c0 3 -2 5 -5 5 c-14 -1 -24 -11 -24 -24z" fill="#5ef2c0" transform="translate(-1 2)"/>
+      <text y="84" text-anchor="middle" fill="#eef3f6" font-family="JetBrains Mono" font-size="15" letter-spacing="3">КЛИЕНТ</text>
+    </g>
+
+    <circle id="spark" r="7" fill="#e9fff7" filter="url(#glow)"/>
+
+    <text id="word" x="800" y="480" text-anchor="middle" font-family="Onest" font-weight="800" font-size="190" letter-spacing="-8" fill="#5ef2c0" fill-opacity="0" stroke="#5ef2c0" stroke-width="2.5">Делегат</text>
+  </svg>
+
+  <div class="timer" aria-live="off"><small id="tlabel">время на одну заявку</small><span id="tval">00:00:00</span></div>
+
+  <div class="caps">
+    <div class="cap" data-i="0"><h2>Одна <span class="acc">заявка.</span></h2></div>
+    <div class="cap" data-i="1"><h2>Семь рук, четыре программы, <span class="acc" style="color:var(--warn)">два часа.</span></h2><p>Менеджер, таблица, чат, почта, 1С и обратно. Где-то по дороге клиент устаёт ждать.</p></div>
+    <div class="cap" data-i="2"><h2>Один агент. <span class="acc">Три секунды.</span></h2><p>Агент принимает заявку, отвечает, заносит в CRM и ставит задачу — сам.</p></div>
+    <div class="cap" data-i="3"><h2>Ваш менеджер <span class="acc">просто берёт трубку.</span></h2><a class="cta" href="#after">Бесплатный аудит рутины →</a></div>
+  </div>
+  <div class="hint" id="hint">листайте</div>
+</section>
+<section class="after" id="after"><p>Здесь начинается обычный сайт: аудит, услуги, кейсы, команда, форма.</p></section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduce) { const lenis = new Lenis({lerp: .075}); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+
+// split captions into masked words
+document.querySelectorAll('.cap h2').forEach(h => {
+  const walk = n => [...n.childNodes].forEach(c => {
+    if (c.nodeType === 3) { const f = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(t => { if (!t.trim()) { f.append(t); return; } const w = document.createElement('span'); w.className = 'w'; w.innerHTML = '<i>' + t + '</i>'; f.append(w); }); c.replaceWith(f); }
+    else if (c.nodeType === 1) walk(c);
+  });
+  walk(h);
+});
+const caps = [...document.querySelectorAll('.cap')];
+gsap.set(caps, {autoAlpha: 0});
+gsap.set(caps.map(c => c.querySelectorAll('.w i')), {yPercent: 110});
+
+const len = el => el.getTotalLength();
+const prep = el => { const L = len(el); gsap.set(el, {strokeDasharray: L, strokeDashoffset: L}); return el; };
+const p0 = prep(document.getElementById('p0')), s = prep(document.getElementById('s'));
+const tPaths = [...document.querySelectorAll('#tangle .t')].map(prep);
+const nodes = gsap.utils.toArray('#nodes .n');
+const word = document.getElementById('word'); const wl = 2600; gsap.set(word, {strokeDasharray: wl, strokeDashoffset: wl});
+
+nodes.forEach(n => { const m = n.getAttribute('transform').match(/translate\(([-\d.]+) ([-\d.]+)\)/); n._x = +m[1]; n._y = +m[2]; gsap.set(n, {attr: {transform: `translate(${n._x} ${n._y}) scale(0)`}}); });
+gsap.set('#agent', {scale: 0, svgOrigin: '900 450'});
+gsap.set('#client', {autoAlpha: 0});
+gsap.set('#spark', {autoAlpha: 0});
+
+const tval = document.getElementById('tval'), tlabel = document.getElementById('tlabel');
+const clock = {s: 0};
+const fmt = v => { v = Math.round(v); const h = String(Math.floor(v / 3600)).padStart(2, '0'), m = String(Math.floor(v % 3600 / 60)).padStart(2, '0'), x = String(v % 60).padStart(2, '0'); return `${h}:${m}:${x}`; };
+const renderClock = () => { tval.textContent = fmt(clock.s); };
+
+const showCap = (tl, i, at) => tl.to(caps[i], {autoAlpha: 1, duration: .01}, at).to(caps[i].querySelectorAll('.w i'), {yPercent: 0, stagger: .05, duration: .6, ease: 'power3.out'}, at);
+const hideCap = (tl, i, at) => tl.to(caps[i].querySelectorAll('.w i'), {yPercent: -110, stagger: .02, duration: .4, ease: 'power2.in'}, at).to(caps[i], {autoAlpha: 0, duration: .01}, at + .45);
+
+const tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: '#stage', start: 'top top', end: '+=600%', pin: true, scrub: 1}});
+// 1. one request
+showCap(tl, 0, 0);
+tl.to('#hint', {autoAlpha: 0, duration: .3}, .2)
+  .to(p0, {strokeDashoffset: 0, duration: 1}, .2)
+  .to('#spark', {autoAlpha: 1, duration: .05}, .2)
+  .to('#spark', {motionPath: {path: '#p0', align: '#p0', alignOrigin: [.5, .5]}, duration: 1}, .2);
+hideCap(tl, 0, 1.4);
+// 2. the tangle
+tl.to('#spark', {autoAlpha: 0, duration: .1}, 1.5);
+tPaths.forEach((p, i) => tl.to(p, {strokeDashoffset: 0, duration: .55, ease: 'power1.inOut'}, 1.6 + i * .22));
+nodes.forEach((n, i) => tl.to(n, {attr: {transform: `translate(${n._x} ${n._y}) scale(1)`}, duration: .35, ease: 'back.out(2)'}, 1.75 + i * .3));
+tl.to(clock, {s: 2 * 3600 + 14 * 60, duration: 2.2, ease: 'power1.in', onUpdate: renderClock}, 1.6)
+  .to(tval, {color: '#ff7a5c', duration: .4}, 2.6);
+showCap(tl, 1, 2.2);
+hideCap(tl, 1, 4.4);
+// 3. agent cuts through
+tl.to('#tangle', {opacity: .07, duration: .8}, 4.6)
+  .to('#nodes', {opacity: .12, duration: .8}, 4.6)
+  .to('#agent', {scale: 1, duration: .6, ease: 'back.out(1.6)'}, 4.9)
+  .to(s, {strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut'}, 5.3)
+  .to('#client', {autoAlpha: 1, duration: .4}, 6.0)
+  .to(clock, {s: 3, duration: .9, ease: 'expo.out', onUpdate: renderClock}, 5.3)
+  .to(tval, {color: '#5ef2c0', duration: .3}, 5.4)
+  .call(() => { tlabel.textContent = 'время на одну заявку · с агентом'; }, null, 5.4)
+  .set('#spark', {autoAlpha: 1}, 5.3)
+  .to('#spark', {motionPath: {path: '#s', align: '#s', alignOrigin: [.5, .5]}, duration: 1.1, ease: 'power2.inOut'}, 5.3);
+showCap(tl, 2, 5.6);
+hideCap(tl, 2, 7.2);
+// 4. the wire becomes the name
+tl.to(['#tangle', '#nodes', '#phone', '#agent', '#client', '#spark'], {autoAlpha: 0, duration: .6}, 7.5)
+  .to('#s', {opacity: 0, duration: .6}, 7.5)
+  .to('#p0', {opacity: 0, duration: .6}, 7.5)
+  .to('.timer', {autoAlpha: 0, duration: .5}, 7.5)
+  .to(word, {strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut'}, 7.8)
+  .to(word, {attr: {'fill-opacity': 1}, duration: .6}, 8.9)
+  .to(word, {attr: {y: 380}, duration: .8, ease: 'power2.out'}, 9.2);
+showCap(tl, 3, 9.3);
+tl.to({}, {duration: .6});
+
+// ambient: client ringing, halo breathing, phone notification blinking
+gsap.to('#ring1', {attr: {r: 96}, opacity: 0, duration: 1.6, repeat: -1, ease: 'power1.out'});
+gsap.to('#ring2', {attr: {r: 96}, opacity: 0, duration: 1.6, repeat: -1, delay: .8, ease: 'power1.out'});
+gsap.to('#halo', {opacity: .6, scale: 1.12, transformOrigin: '50% 50%', duration: 1.8, yoyo: true, repeat: -1, ease: 'sine.inOut'});
+gsap.to('#notif', {opacity: .25, duration: .7, yoyo: true, repeat: -1, ease: 'sine.inOut'});
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 10 · Банка — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A glass jar fills with falling task-balls (each = 2,5 hours, coloured by type); then a mint agent beam lifts most of them out of the jar. */
+.stage{background:radial-gradient(800px 700px at 50% 70%,#0f151a,#05070a 70%)}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.read{position:absolute;left:max(6vw,20px);top:42%;transform:translateY(-50%);z-index:5}
+.read .big{color:#ff8d5c}
+.legend{margin-top:14px;display:grid;gap:6px;font:400 12px var(--mono);color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:-1px}
+@media (max-width:760px){.read{left:0;right:0;top:80px;transform:none;text-align:center}.read .big{font-size:96px}.legend{display:none}}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <canvas id="c"></canvas>
+  <div class="read"><div class="unit" id="u">часов рутины в месяц</div><div class="big" id="num">0</div><div class="unit">1 шарик = 2,5 часа</div>
+    <div class="legend"><span><i style="background:#ff6b4a"></i>заявки</span><span><i style="background:#ffb35c"></i>переписка</span><span><i style="background:#c77dff"></i>сверки</span><span><i style="background:#7aa7ff"></i>отчёты</span></div></div>
+  <div class="cap" id="c1"><span class="k">Банка рутины</span><h2>Задачи падают <span class="hot">быстрее, чем вы их разбираете.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Агент вынимает лишнее</span><h2>Две трети банки — <em>теперь не ваша забота.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money} = Base.init({n: 10, end: 650});
+const c = document.getElementById('c'), x = c.getContext('2d'), dpr = Math.min(devicePixelRatio, 2);
+let W, H, J; // jar geometry
+const NB = 96, KEEP = 30; // 96 × 2,5 = 240; 30 × 2,5 = 75
+const cols = ['#ff6b4a', '#ffb35c', '#c77dff', '#7aa7ff'];
+const balls = Array.from({length: NB}, (_, i) => ({col: cols[(i * 7) % 4], fall: 0, lift: 0, sx: 0, wob: Math.random() * 6.28}));
+function size() {
+  W = innerWidth; H = innerHeight; c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const mob = W < 760, jw = mob ? Math.min(W * .78, 320) : Math.min(W * .3, 420), jh = mob ? H * .5 : H * .62;
+  J = {cx: mob ? W / 2 : W * .62, bot: mob ? H * .9 : H * .86, w: jw, h: jh};
+  // hex packing slots from the bottom, then shuffle top layers a little
+  const r = Math.sqrt(jw * jh * .78 / NB / Math.PI) * .98, colsN = Math.floor((jw - 16) / (2 * r));
+  balls.forEach((b, i) => { const row = Math.floor(i / colsN), k = i % colsN, off = row % 2 ? r : 0; b.r = r; b.tx = J.cx - jw / 2 + 8 + r + k * 2 * r + off * (k < colsN - 1 ? 1 : 0); b.ty = J.bot - 8 - r - row * r * 1.73; b.sx = J.cx + (Math.sin(i * 9.3) * jw * .25); });
+}
+size(); addEventListener('resize', size);
+const S = {beam: 0};
+function draw(time) {
+  x.clearRect(0, 0, W, H);
+  const {cx, bot, w, h} = J, topY = bot - h;
+  // beam
+  if (S.beam > 0) { const g = x.createLinearGradient(0, 0, 0, bot); g.addColorStop(0, `rgba(94,242,192,${.35 * S.beam})`); g.addColorStop(1, 'rgba(94,242,192,0)'); x.fillStyle = g; x.beginPath(); x.moveTo(cx - 30, 0); x.lineTo(cx + 30, 0); x.lineTo(cx + w * .45, bot); x.lineTo(cx - w * .45, bot); x.fill(); }
+  // balls
+  balls.forEach((b, i) => {
+    if (b.fall <= 0) return;
+    const e = b.fall, y0 = -40, fy = y0 + (b.ty - y0) * e, fx = b.sx + (b.tx - b.sx) * Math.min(1, e * 1.2);
+    let px = fx, py = fy;
+    if (b.lift > 0) { const wob = Math.sin(time * .004 + b.wob) * 14 * (1 - b.lift); px = fx + (cx - fx) * b.lift + wob; py = fy + (-60 - fy) * b.lift * b.lift; }
+    const agent = b.lift > 0;
+    x.globalAlpha = agent ? 1 - b.lift * .6 : 1;
+    const g = x.createRadialGradient(px - b.r * .35, py - b.r * .35, b.r * .1, px, py, b.r);
+    g.addColorStop(0, '#ffffffcc'); g.addColorStop(.25, agent ? '#5ef2c0' : b.col); g.addColorStop(1, agent ? '#127a5d' : shade(b.col));
+    x.fillStyle = g; x.beginPath(); x.arc(px, py, b.r - .5, 0, 7); x.fill();
+  });
+  x.globalAlpha = 1;
+  // jar glass on top
+  x.strokeStyle = 'rgba(220,235,240,.5)'; x.lineWidth = 2.5; x.beginPath();
+  x.moveTo(cx - w / 2, topY); x.lineTo(cx - w / 2, bot - 18); x.quadraticCurveTo(cx - w / 2, bot, cx - w / 2 + 18, bot); x.lineTo(cx + w / 2 - 18, bot); x.quadraticCurveTo(cx + w / 2, bot, cx + w / 2, bot - 18); x.lineTo(cx + w / 2, topY); x.stroke();
+  x.fillStyle = 'rgba(255,255,255,.05)'; x.fillRect(cx - w / 2 + 8, topY + 10, 10, h - 40);
+  x.strokeStyle = 'rgba(220,235,240,.35)'; x.beginPath(); x.ellipse(cx, topY, w / 2, 10, 0, 0, 7); x.stroke();
+}
+const shade = hex => { const n = parseInt(hex.slice(1), 16); return `rgb(${(n >> 16) * .45 | 0},${(n >> 8 & 255) * .45 | 0},${(n & 255) * .45 | 0})`; };
+const num = document.getElementById('num');
+gsap.ticker.add((time) => { draw(time * 1000); const v = balls.reduce((a, b) => a + b.fall * (1 - b.lift), 0) * 2.5; num.textContent = Math.round(v); });
+cap('#c1', 0, 3.2);
+balls.forEach((b, i) => tl.to(b, {fall: 1, duration: .35, ease: 'bounce.out'}, .2 + i * (2.7 / NB)));
+tl.to(num, {color: '#ff6b4a', duration: .3}, 2.3);
+cap('#c2', 3.6, 6.4);
+tl.to(S, {beam: 1, duration: .4}, 3.6).to(num, {color: '#5ef2c0', duration: .3}, 3.8)
+  .call(() => { document.getElementById('u').textContent = 'часов рутины в месяц · с агентом'; }, null, 3.8);
+for (let i = NB - 1; i >= KEEP; i--) tl.to(balls[i], {lift: 1, duration: .6, ease: 'power2.in'}, 3.8 + (NB - 1 - i) * (2.1 / (NB - KEEP)));
+tl.to(S, {beam: 0, duration: .4}, 6.4);
+money(7.0, ['#c', '.read']);
+</script>
+</body></html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 06 · Чек — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A thermal receipt prints out of a slot: the monthly bill for routine, line by line; then an «АГЕНТ» stamp strikes most lines and the total reprints. */
+.stage{background:radial-gradient(900px 600px at 50% 0%,#141a1f,#05070a 70%)}
+.slot{position:absolute;left:50%;top:84px;transform:translateX(-50%);width:min(440px,86vw);height:14px;background:#0d1114;border:1px solid #232c33;border-radius:8px;z-index:3;box-shadow:0 6px 20px #000}
+.paperwrap{position:absolute;left:50%;top:92px;transform:translateX(-50%);width:min(400px,80vw);height:calc(100% - 92px);overflow:hidden;z-index:2}
+.paper{position:absolute;left:0;right:0;bottom:100%;background:#f3f1ea;color:#1a1a1a;font:500 13px/1.55 var(--mono);padding:22px 22px 30px;box-shadow:0 30px 60px -20px #000;-webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,radial-gradient(circle at 7px 0,transparent 6px,#000 6.5px) bottom/14px 10px repeat-x;mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,radial-gradient(circle at 7px 0,transparent 6px,#000 6.5px) bottom/14px 10px repeat-x}
+.paper h4{margin:0;text-align:center;font:700 15px var(--mono);letter-spacing:.12em}
+.paper .sub{text-align:center;color:#666;font-size:11px;margin:4px 0 12px}
+.it{display:flex;justify-content:space-between;gap:10px;position:relative}
+.it span:last-child{white-space:nowrap;font-variant-numeric:tabular-nums}
+.it.x::after{content:"";position:absolute;left:0;right:0;top:52%;height:2px;background:#1fae86;transform:scaleX(var(--s,0));transform-origin:left}
+.hr{border-top:1px dashed #999;margin:10px 0}
+.tot{display:flex;justify-content:space-between;font:700 18px var(--mono)}
+.tot.new{color:#118a68}
+.stamp{position:absolute;right:16px;top:38%;transform:rotate(-14deg) scale(2);opacity:0;border:3px solid #1fae86;color:#1fae86;font:800 26px var(--display);letter-spacing:.1em;padding:6px 14px;border-radius:8px;mix-blend-mode:multiply}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <div class="slot"></div>
+  <div class="paperwrap"><div class="paper" id="paper">
+    <h4>ООО «ВАША КОМПАНИЯ»</h4><div class="sub">чек за рутину · октябрь · отдел из 4 человек</div>
+    <div id="items"></div>
+    <div class="hr"></div>
+    <div class="tot"><span>ИТОГО</span><span><span id="th">240</span> ч · <span id="tr">240 000</span> ₽</span></div>
+    <div class="tot new" id="tnew" style="opacity:0;margin-top:6px"><span>С АГЕНТОМ</span><span>75 ч · 75 000 ₽</span></div>
+    <div class="stamp" id="stamp">АГЕНТ</div>
+  </div></div>
+  <div class="cap" id="c1"><span class="k">Чек, который никто не видит</span><h2>Рутина стоит денег — <span class="hot">каждый месяц.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Оплачено агентом</span><h2>Большую часть строк <em>закрывает агент.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money} = Base.init({n: 6, end: 650});
+const items = [
+  ['Перенос заявок в CRM/1С', 46, true], ['Ответы на типовые вопросы', 52, true], ['Перезвоны по пропущенным', 18, true],
+  ['Сверка счетов и оплат', 32, true], ['Отчёты руководителю', 22, true], ['КП и счета по шаблону', 20, false],
+  ['Переговоры с клиентами', 30, false], ['Решения по сложным заказам', 20, false],
+];
+const box = document.getElementById('items');
+items.forEach(([n, h, ag]) => { const d = document.createElement('div'); d.className = 'it' + (ag ? ' x' : ''); d.innerHTML = `<span>${n}</span><span>${h} ч × 1 000</span>`; box.append(d); });
+// строки дают 240 ч; агент закрывает 46+47+18+32+22 = 165 ч
+box.children[1].querySelector('span:last-child').textContent = '47 ч × 1 000';
+const extra = document.createElement('div'); extra.className = 'it'; extra.innerHTML = '<span>Ответы на сложные вопросы</span><span>5 ч × 1 000</span>'; box.insertBefore(extra, box.children[2]);
+const paper = document.getElementById('paper');
+const H = () => paper.offsetHeight;
+cap('#c1', 0, 3.1);
+tl.fromTo(paper, {y: 0}, {y: () => Math.min(H(), innerHeight - 140), duration: 3, ease: 'steps(24)'}, .2);
+cap('#c2', 3.5, 6.3);
+tl.to('#stamp', {opacity: .9, scale: 1, duration: .25, ease: 'power4.in'}, 3.6)
+  .to('#paper', {x: 4, duration: .05, yoyo: true, repeat: 3}, 3.85);
+[...box.querySelectorAll('.it.x')].forEach((el, i) => tl.to(el, {'--s': 1, duration: .25}, 4.0 + i * .22).to(el, {opacity: .45, duration: .2}, 4.1 + i * .22));
+tl.to('#tnew', {opacity: 1, duration: .4}, 5.4);
+money(6.9, ['.paperwrap', '.slot']);
+</script>
+</body></html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 02 · Табло — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A split-flap departures board: each routine is a "flight" with its monthly hours; flaps clatter as hours pile up, then statuses flip from ВРУЧНУЮ to АГЕНТ. */
+.stage{background:radial-gradient(1000px 600px at 50% 40%,#11161b,#05070a 70%)}
+.board{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);padding:22px 24px 26px;background:#0b0e11;border:1px solid #1c232a;border-radius:14px;box-shadow:0 40px 120px -30px #000,inset 0 1px 0 #ffffff0a;width:min(1040px,94vw)}
+.hdr{display:grid;grid-template-columns:2.2fr 1fr 1.3fr;gap:14px;font:500 11px var(--mono);letter-spacing:.2em;color:#ffcf5a;text-transform:uppercase;padding:0 4px 12px;border-bottom:1px solid #1c232a;margin-bottom:12px}
+.row{display:grid;grid-template-columns:2.2fr 1fr 1.3fr;gap:14px;margin:8px 0}
+.cells{display:flex;gap:3px;flex-wrap:nowrap;overflow:hidden}
+.c{position:relative;width:clamp(15px,1.9vw,27px);height:clamp(24px,2.9vw,40px);background:linear-gradient(#1a1f24 0 49%,#0e1215 51% 100%);border-radius:3px;color:#f2f2ea;font:700 clamp(13px,1.6vw,22px)/clamp(24px,2.9vw,40px) var(--mono);text-align:center;box-shadow:inset 0 -1px 0 #000,0 1px 0 #ffffff08}
+.c::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:#000a}
+.c.f{animation:flip .16s ease-in}
+@keyframes flip{0%{transform:rotateX(0)}50%{transform:rotateX(-90deg);filter:brightness(.4)}100%{transform:rotateX(0)}}
+.row.hot .st .c{color:#ff6b4a}
+.row.ok .st .c{color:#5ef2c0}
+.total{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #1c232a;margin-top:14px;padding-top:16px;font:500 12px var(--mono);letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.total .cells .c{width:clamp(30px,3.8vw,54px);height:clamp(46px,5.6vw,78px);font-size:clamp(28px,3.6vw,50px);line-height:clamp(46px,5.6vw,78px)}
+.total.hot .c{color:#ff6b4a}.total.ok .c{color:#5ef2c0}
+.clock{position:absolute;right:max(20px,env(safe-area-inset-right,0px));top:70px;font:700 clamp(22px,2.6vw,34px) var(--mono);color:#ffcf5a;font-variant-numeric:tabular-nums}
+.clock small{display:block;font:500 11px var(--mono);letter-spacing:.2em;color:var(--muted);text-align:right}
+@media (max-width:760px){.hdr,.row{grid-template-columns:1.6fr .8fr 1.2fr;gap:8px}.board{padding:14px}}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <div class="clock"><small id="day">понедельник</small><span id="time">09:00</span></div>
+  <div class="board" id="board">
+    <div class="hdr"><span>процесс</span><span>ч / мес</span><span>статус</span></div>
+    <div id="rows"></div>
+    <div class="total" id="total"><span>итого рутины в месяц</span><div class="cells" id="tcells"></div></div>
+  </div>
+  <div class="cap" id="c1"><span class="k">Табло вашего офиса</span><h2>Рейсы, которые <span class="hot">каждый день вылетают вручную.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Пересадка</span><h2>Переводим рейсы <em>на агента.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 2, end: 650});
+const data = [
+  ['ЗАЯВКИ С САЙТА', 72, 12], ['ОТВЕТЫ В ЧАТАХ', 48, 8], ['ЗВОНКИ', 40, 10],
+  ['СВЕРКИ 1С', 32, 12], ['ОТЧЁТЫ', 28, 13], ['КП И СЧЕТА', 20, 20],
+];
+const W = innerWidth < 760 ? 10 : 15;
+const mk = (n, el) => { el.innerHTML = '<span class="c"></span>'.repeat(n); return [...el.children]; };
+const set = (cells, str) => { str = str.padEnd(cells.length).slice(0, cells.length); cells.forEach((c, i) => { if (c.textContent !== str[i]) { c.textContent = str[i]; c.classList.remove('f'); void c.offsetWidth; c.classList.add('f'); } }); };
+const rowsEl = document.getElementById('rows');
+const rows = data.map(([name, h, after]) => {
+  const r = document.createElement('div'); r.className = 'row hot';
+  r.innerHTML = '<div class="cells nm"></div><div class="cells hr"></div><div class="cells st"></div>';
+  rowsEl.append(r);
+  const nm = mk(W, r.querySelector('.nm')), hr = mk(3, r.querySelector('.hr')), st = mk(8, r.querySelector('.st'));
+  set(nm, name.slice(0, W)); set(hr, '  0'); set(st, 'ВРУЧНУЮ');
+  return {r, hr, st, h, after, cur: 0};
+});
+const tcells = mk(3, document.getElementById('tcells')); set(tcells, '  0');
+const total = document.getElementById('total'); total.classList.add('hot');
+
+const S = {p: 0, a: 0};
+const days = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница'];
+let lastKey = '';
+function render() {
+  let sum = 0;
+  rows.forEach((o, i) => {
+    const switched = S.a * rows.length > i + .5;
+    const v = Math.round(switched ? o.after : o.h * Math.min(1, S.p));
+    sum += v;
+    set(o.hr, String(v).padStart(3));
+    if (switched && !o.r.classList.contains('ok')) { o.r.classList.replace('hot', 'ok'); set(o.st, 'АГЕНТ'); }
+    if (!switched && o.r.classList.contains('ok')) { o.r.classList.replace('ok', 'hot'); set(o.st, 'ВРУЧНУЮ'); }
+  });
+  set(tcells, String(sum).padStart(3));
+  total.classList.toggle('ok', S.a > .99); total.classList.toggle('hot', S.a <= .99);
+  const hours = S.p * 180, d = Math.floor(hours / 9) % 5, hh = 9 + Math.floor(hours % 9), mm = Math.floor(hours * 60 % 60 / 5) * 5;
+  const key = d + ':' + hh + ':' + mm; if (key !== lastKey) { lastKey = key; document.getElementById('day').textContent = days[d] + ' · неделя ' + Math.min(4, Math.floor(hours / 45) + 1); document.getElementById('time').textContent = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`; }
+}
+render();
+cap('#c1', 0, 3.2);
+tl.to(S, {p: 1, duration: 3.2, ease: 'power1.in', onUpdate: render}, .2);
+cap('#c2', 3.6, 6.4);
+tl.to(S, {a: 1, duration: 3, ease: 'none', onUpdate: render}, 3.6)
+  .to('#board', {scale: .96, duration: .4}, 6.6);
+money(7.2, ['#board', '.clock']);
+</script>
+</body></html>

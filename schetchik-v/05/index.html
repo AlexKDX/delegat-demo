@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 05 · Терминал — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A live terminal log of the office: each manual action is a log line with its cost in hours; then `agent start` and the log turns into fast automatic lines. */
+.stage{background:#040506}
+.term{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:min(1060px,94vw);height:min(66vh,620px);border:1px solid #1c242b;border-radius:12px;background:#07090b;box-shadow:0 40px 140px -30px #000;display:flex;flex-direction:column;overflow:hidden}
+.bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #161d23;font:500 12px var(--mono);color:var(--muted)}
+.bar i{width:11px;height:11px;border-radius:50%;background:#2a3238}.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
+.bar span{margin-left:10px}
+.body{position:relative;flex:1;padding:14px 18px;font:400 clamp(11px,1.05vw,14px)/1.7 var(--mono);color:#b7c2ca;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ln .t{color:#56636d}.ln .m{color:#ff8d6a}.ln .a{color:#5ef2c0}.ln .c{color:#ffcf5a}
+.sum{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-top:1px solid #161d23;font:500 12px var(--mono);letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.sum b{font:700 clamp(26px,3vw,40px) var(--mono);letter-spacing:0;color:#ff6b4a;font-variant-numeric:tabular-nums}
+.cursor{display:inline-block;width:.6em;height:1.1em;background:#5ef2c0;vertical-align:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <div class="term">
+    <div class="bar"><i></i><i></i><i></i><span>office@company: ~ tail -f routine.log</span></div>
+    <div class="body" id="body"></div>
+    <div class="sum"><span id="sl">рутина за месяц</span><b><span id="h">0.0</span> ч</b></div>
+  </div>
+  <div class="cap" id="c1"><span class="k">Журнал офиса</span><h2>Каждое действие руками — <span class="hot">строчка в счёте за время.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">$ agent start</span><h2>Те же задачи. <em>Без людей и за секунды.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 5, end: 650});
+const manual = [
+  ['менеджер', 'переносит заявку с сайта в 1С', .25], ['менеджер', 'отвечает «сколько стоит доставка?» в WhatsApp', .15],
+  ['бухгалтер', 'сверяет счёт с оплатой в банке', .4], ['менеджер', 'ищет переписку с клиентом в почте', .2],
+  ['руководитель', 'собирает отчёт по заявкам за неделю', 1.5], ['менеджер', 'копирует контакты из чата в таблицу', .2],
+  ['менеджер', 'перезванивает по пропущенному', .3], ['офис', 'готовит КП по шаблону вручную', .75],
+  ['менеджер', 'напоминает клиенту об оплате', .1], ['бухгалтер', 'выгружает остатки со склада', .5],
+];
+const auto = ['заявка #2214 → CRM, ответ клиенту', 'чат: «сколько стоит?» → цена + ссылка', 'счёт 1187 ↔ оплата: сведено', 'отчёт за неделю → руководителю 09:00', 'пропущенный → запись на перезвон 14:30', 'КП → сформировано и отправлено', 'напоминание об оплате → отправлено'];
+const body = document.getElementById('body'), H = document.getElementById('h');
+const MAXL = 22; const lines = [];
+const push = html => { const d = document.createElement('div'); d.className = 'ln'; d.innerHTML = html; body.append(d); lines.push(d); if (lines.length > MAXL) lines.shift().remove(); };
+const S = {m: 0, a: 0};
+let mi = 0, ai = 0, hours = 0;
+const pad = n => String(n).padStart(2, '0');
+function step() {
+  const wantM = Math.floor(S.m * 220), wantA = Math.floor(S.a * 160);
+  while (mi < wantM) { const [who, what, h] = manual[mi % manual.length]; const t = 9 + (mi * 7 % 9); hours = Math.min(TOTAL, hours + h * 1.09); push(`<span class="t">[${pad(t)}:${pad(mi * 13 % 60)}]</span> <span class="m">вручную</span> ${who}: ${what} <span class="c">+${h.toFixed(2)} ч</span>`); mi++; }
+  while (ai < wantA) { push(`<span class="t">[${pad(9 + ai % 9)}:${pad(ai * 7 % 60)}:${pad(ai * 31 % 60)}]</span> <span class="a">агент</span> ${auto[ai % auto.length]} <span class="t">${(.8 + (ai % 20) / 10).toFixed(1)} с</span>`); ai++; }
+  const shown = S.a > 0 ? TOTAL - (TOTAL - LEFT) * Math.min(1, S.a) : Math.min(TOTAL, S.m * TOTAL);
+  H.textContent = shown.toFixed(1);
+}
+gsap.ticker.add(step);
+cap('#c1', 0, 3.2);
+tl.to(S, {m: 1, duration: 3.2, ease: 'power1.in'}, .2);
+cap('#c2', 3.7, 6.4);
+tl.call(() => { push('<span class="a">$ agent start --processes=заявки,чаты,сверки,отчёты,кп</span>'); push('<span class="a">✓ агент подключён к сайту, WhatsApp, Telegram, почте, 1С</span>'); }, null, 3.6)
+  .to(S, {a: 1, duration: 2.8, ease: 'power1.inOut'}, 3.7)
+  .to('.sum b', {color: '#5ef2c0', duration: .3}, 3.8)
+  .call(() => { document.getElementById('sl').textContent = 'рутина за месяц · с агентом'; }, null, 3.8);
+money(7.0, ['.term']);
+// a scrubbed timeline can run backwards: rebuild the log when scrolled back to the start
+ScrollTrigger.create({trigger: '#stage', start: 'top top', onLeaveBack: () => { body.innerHTML = ''; lines.length = 0; mi = ai = 0; hours = 0; }});
+</script>
+</body></html>

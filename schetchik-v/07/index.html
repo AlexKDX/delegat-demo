@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 07 · Стопка — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* An isometric tower of paper: every sheet is 5 hours of routine. It grows to 48 sheets; then 33 of them lift off one by one into a small glowing agent chip. */
+.stage{background:radial-gradient(900px 700px at 40% 60%,#10151a,#05070a 70%)}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+.read{position:absolute;right:max(6vw,20px);top:50%;transform:translateY(-50%);text-align:right;z-index:5}
+.read .big{color:#ff8d5c}
+@media (max-width:760px){.read{right:auto;left:0;right:0;top:86px;transform:none;text-align:center}.read .big{font-size:96px}}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <canvas id="c"></canvas>
+  <div class="read"><div class="unit" id="u">часов рутины в месяц</div><div class="big" id="num">0</div><div class="unit">1 лист = 5 часов</div></div>
+  <div class="cap" id="c1"><span class="k">Бумажная работа</span><h2>Башня, которую ваш отдел <span class="hot">строит каждый месяц.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Разбираем по листу</span><h2>165 часов уходят агенту. <em>Остаётся живое.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 7, end: 650});
+const c = document.getElementById('c'), x = c.getContext('2d'), dpr = Math.min(devicePixelRatio, 2);
+let W, H; const size = () => { W = innerWidth; H = innerHeight; c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0); }; size(); addEventListener('resize', size);
+const NS = 48, KEEP = 15; // 48*5 = 240, 15*5 = 75
+const sheets = Array.from({length: NS}, (_, i) => ({in: 0, out: 0, jx: (Math.sin(i * 12.9) * 4), jr: Math.sin(i * 7.1) * .05, kind: i % 5}));
+const tints = ['#f2efe6', '#ece8dc', '#f5f2ea', '#e6e2d6', '#efebe1'];
+const S = {grow: 0, take: 0, chip: 0};
+function iso(cx, cy, w, d, h, top, l, r) {
+  // diamond top at (cx,cy), width w (along x), depth d (along y), height h going down
+  const a = [cx, cy - d / 2], b = [cx + w / 2, cy], cc = [cx, cy + d / 2], e = [cx - w / 2, cy];
+  x.fillStyle = l; x.beginPath(); x.moveTo(...e); x.lineTo(...cc); x.lineTo(cc[0], cc[1] + h); x.lineTo(e[0], e[1] + h); x.fill();
+  x.fillStyle = r; x.beginPath(); x.moveTo(...cc); x.lineTo(...b); x.lineTo(b[0], b[1] + h); x.lineTo(cc[0], cc[1] + h); x.fill();
+  x.fillStyle = top; x.beginPath(); x.moveTo(...a); x.lineTo(...b); x.lineTo(...cc); x.lineTo(...e); x.closePath(); x.fill();
+}
+function draw() {
+  x.clearRect(0, 0, W, H);
+  const mob = W < 760, baseX = mob ? W / 2 : W * .38, baseY = mob ? H * .86 : H * .82, sw = mob ? 190 : 300, sd = sw * .56, th = mob ? 7 : 9.5;
+  // floor shadow
+  x.fillStyle = 'rgba(0,0,0,.45)'; x.beginPath(); x.ellipse(baseX, baseY + 14, sw * .62, sd * .5, 0, 0, 7); x.fill();
+  const chipX = mob ? W * .82 : W * .62, chipY = mob ? H * .3 : H * .26;
+  let level = 0;
+  sheets.forEach((s, i) => {
+    if (s.in <= 0) return;
+    const removable = i >= KEEP, o = removable ? s.out : 0;
+    const ty = baseY - level * th - (1 - s.in) * 180;
+    level += s.in * (1 - o);
+    const px = baseX + s.jx + (chipX - baseX) * o, py = ty + (chipY - ty) * o, sc = 1 - o * .9;
+    x.globalAlpha = s.in * (1 - o * o);
+    const done = o > 0 || (S.take > .99 && !removable);
+    iso(px, py, sw * sc, sd * sc, th * sc, done ? '#bff7e2' : tints[s.kind], done ? '#6fcfae' : '#b9b4a6', done ? '#8fe0c4' : '#d4cfc2');
+    if (!done && sc > .9 && i % 4 === 0) { x.strokeStyle = 'rgba(40,40,40,.18)'; x.lineWidth = 1; for (let k = 0; k < 3; k++) { x.beginPath(); x.moveTo(px - sw * .18 + k * 10, py - sd * .1 + k * 6); x.lineTo(px + sw * .08 + k * 10, py + sd * .06 + k * 6); x.stroke(); } }
+  });
+  x.globalAlpha = 1;
+  // agent chip
+  if (S.chip > 0) {
+    x.save(); x.globalAlpha = S.chip; x.shadowColor = '#5ef2c0'; x.shadowBlur = 40;
+    iso(chipX, chipY, 70, 40, 14, '#5ef2c0', '#1c8a6a', '#27b58d'); x.restore();
+    x.fillStyle = 'rgba(94,242,192,' + S.chip + ')'; x.font = '500 12px JetBrains Mono, monospace'; x.textAlign = 'center'; x.fillText('АГЕНТ', chipX, chipY + 44);
+  }
+}
+const num = document.getElementById('num');
+gsap.ticker.add(() => { draw(); const v = sheets.reduce((a, s, i) => a + s.in * (1 - (i >= KEEP ? s.out : 0)), 0) * 5; num.textContent = Math.round(v); });
+cap('#c1', 0, 3.2);
+sheets.forEach((s, i) => tl.to(s, {in: 1, duration: .25, ease: 'power2.out'}, .2 + i * (2.8 / NS)));
+tl.to(num, {color: '#ff6b4a', duration: .3}, 2.4);
+cap('#c2', 3.6, 6.4);
+tl.to(S, {chip: 1, duration: .4}, 3.6).to(num, {color: '#5ef2c0', duration: .3}, 3.8)
+  .call(() => { document.getElementById('u').textContent = 'часов рутины в месяц · с агентом'; }, null, 3.8)
+  .to(S, {take: 1, duration: 2.6}, 3.8);
+for (let i = NS - 1; i >= KEEP; i--) tl.to(sheets[i], {out: 1, duration: .45, ease: 'power2.in'}, 3.8 + (NS - 1 - i) * (2.2 / (NS - KEEP)));
+money(7.0, ['#c', '.read']);
+</script>
+</body></html>

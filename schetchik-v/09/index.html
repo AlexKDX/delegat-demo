@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 09 · Пульс — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A patient monitor for the department: the trace gets faster and spikier as routine piles up, alarms go red; with the agent the rhythm settles into calm mint. */
+.stage{background:#040607}
+.mon{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:min(1120px,95vw);height:min(62vh,560px);border:1px solid #1a2328;border-radius:16px;background:#050909;box-shadow:inset 0 0 120px #000,0 40px 120px -30px #000;overflow:hidden}
+.mon canvas{position:absolute;inset:0;width:100%;height:100%}
+.vit{position:absolute;right:22px;top:18px;display:grid;gap:14px;text-align:right;z-index:2}
+.vit div{font:500 11px var(--mono);letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.vit b{display:block;font:700 clamp(30px,4vw,58px)/1 var(--mono);letter-spacing:0;font-variant-numeric:tabular-nums;color:#ff6b4a}
+.vit .h b{color:#ffcf5a}
+.lbl{position:absolute;left:22px;top:18px;font:500 12px var(--mono);letter-spacing:.16em;color:#ff6b4a;text-transform:uppercase;z-index:2}
+.lbl i{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor;margin-right:8px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <div class="mon"><canvas id="c"></canvas>
+    <div class="lbl" id="lbl"><i></i><span id="lt">отдел · нагрузка растёт</span></div>
+    <div class="vit"><div>пульс отдела<b id="bpm">72</b></div><div class="h">рутина, ч/мес<b id="hrs">0</b></div></div>
+  </div>
+  <div class="cap" id="c1"><span class="k">Монитор отдела</span><h2>Чем больше рутины, <span class="hot">тем чаще пульс.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Агент на смене</span><h2>Ритм выравнивается. <em>Люди дышат.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 9, end: 650});
+const c = document.getElementById('c'), x = c.getContext('2d'), dpr = Math.min(devicePixelRatio, 2);
+let W, H; const size = () => { const r = c.getBoundingClientRect(); W = r.width; H = r.height; c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0); buf = new Array(Math.ceil(W)).fill(0); }; let buf = [];
+size(); addEventListener('resize', size);
+const S = {load: 0, calm: 0};
+let t = 0, head = 0;
+// one ECG beat shape, phase 0..1
+const beat = (p, k) => { if (p < .1) return Math.sin(p / .1 * Math.PI) * .12; if (p < .16) return -.12 * k; if (p < .2) return 1 * k; if (p < .24) return -.35 * k; if (p < .4) return 0; if (p < .55) return Math.sin((p - .4) / .15 * Math.PI) * .25; return 0; };
+function step() {
+  const bpm = 72 + S.load * 78 - S.calm * 70, speed = 3.2, beatLen = 60 / bpm * 60 * speed; // px per beat
+  for (let k = 0; k < speed; k++) {
+    t++; const p = (t % beatLen) / beatLen, amp = 1 + S.load * .5 * (1 - S.calm), noise = (Math.random() - .5) * .18 * S.load * (1 - S.calm);
+    buf[head] = beat(p, amp) + noise; head = (head + 1) % buf.length;
+  }
+  return bpm;
+}
+const hot = [255, 107, 74], mint = [94, 242, 192];
+function draw() {
+  const bpm = step(), col = hot.map((v, i) => Math.round(v + (mint[i] - v) * S.calm));
+  x.clearRect(0, 0, W, H);
+  x.strokeStyle = 'rgba(40,80,70,.22)'; x.lineWidth = 1;
+  for (let gx = 0; gx < W; gx += 32) { x.beginPath(); x.moveTo(gx, 0); x.lineTo(gx, H); x.stroke(); }
+  for (let gy = 0; gy < H; gy += 32) { x.beginPath(); x.moveTo(0, gy); x.lineTo(W, gy); x.stroke(); }
+  const mid = H * .58, sc = H * .3;
+  x.save(); x.shadowColor = `rgb(${col})`; x.shadowBlur = 12; x.strokeStyle = `rgb(${col})`; x.lineWidth = 2.4; x.beginPath();
+  for (let i = 0; i < buf.length; i++) { const idx = (head + i) % buf.length, y = mid - buf[idx] * sc; i ? x.lineTo(i, y) : x.moveTo(i, y); }
+  x.stroke(); x.restore();
+  // erase bar right before the head (classic monitor sweep)
+  const g = x.createLinearGradient(W - 60, 0, W, 0); g.addColorStop(0, 'rgba(5,9,9,0)'); g.addColorStop(1, 'rgba(5,9,9,1)'); x.fillStyle = g; x.fillRect(W - 60, 0, 60, H);
+  document.getElementById('bpm').textContent = Math.round(bpm);
+  document.getElementById('bpm').style.color = `rgb(${col})`;
+}
+gsap.ticker.add(draw);
+const hrs = document.getElementById('hrs'), Hh = {v: 0};
+const rh = () => { hrs.textContent = Math.round(Hh.v); };
+cap('#c1', 0, 3.2);
+tl.to(S, {load: 1, duration: 3, ease: 'power1.in'}, .2).to(Hh, {v: TOTAL, duration: 3, ease: 'power1.in', onUpdate: rh}, .2);
+cap('#c2', 3.6, 6.4);
+tl.to(S, {calm: 1, duration: 2.4, ease: 'power2.inOut'}, 3.6).to(Hh, {v: LEFT, duration: 2.4, ease: 'power2.inOut', onUpdate: rh}, 3.6)
+  .to('#lbl', {color: '#5ef2c0', duration: .3}, 4.2)
+  .call(() => { document.getElementById('lt').textContent = 'отдел · ритм в норме · агент на смене'; }, null, 4.2)
+  .to('.vit .h b', {color: '#5ef2c0', duration: .3}, 4.2);
+money(7.0, ['.mon']);
+</script>
+</body></html>

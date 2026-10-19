@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 03 · Колба — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A laboratory measuring cylinder: routine pours in as hot liquid up to 240 ml-hours, then the agent opens the valve and the rest turns calm mint. */
+.stage{background:radial-gradient(900px 700px at 60% 50%,#0f1418,#05070a 70%)}
+.lab{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 6vw;gap:4vw}
+.read{justify-self:end;text-align:right}
+.read .big{color:#ff8d5c}
+svg.cyl{height:min(78vh,720px);width:auto;justify-self:start;overflow:visible}
+@media (max-width:760px){.lab{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding-top:90px}.read{justify-self:center;text-align:center}svg.cyl{height:52vh;justify-self:center}}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <div class="lab">
+    <div class="read"><div class="unit" id="u">часов рутины в месяц</div><div class="big" id="num">0</div><div class="unit">отдел из 4 человек</div></div>
+    <svg class="cyl" viewBox="0 0 260 720" aria-hidden="true">
+      <defs>
+        <linearGradient id="glass" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".18" stop-color="#fff" stop-opacity=".03"/><stop offset=".8" stop-color="#fff" stop-opacity=".02"/><stop offset="1" stop-color="#fff" stop-opacity=".12"/></linearGradient>
+        <linearGradient id="hot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb36b"/><stop offset="1" stop-color="#ff5a3a"/></linearGradient>
+        <linearGradient id="calm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9ffe2"/><stop offset="1" stop-color="#1fae86"/></linearGradient>
+        <clipPath id="inner"><rect x="62" y="40" width="136" height="640" rx="10"/></clipPath>
+        <filter id="glow"><feGaussianBlur stdDeviation="8"/></filter>
+      </defs>
+      <!-- liquid -->
+      <g clip-path="url(#inner)">
+        <rect id="glowRect" x="62" y="680" width="136" height="0" fill="#ff6b4a" filter="url(#glow)" opacity=".5"/>
+        <path id="liq" fill="url(#hot)" opacity=".92"/>
+        <path id="liq2" fill="#ffffff" opacity=".08"/>
+        <g id="bubbles"></g>
+      </g>
+      <!-- glass -->
+      <rect x="62" y="40" width="136" height="640" rx="10" fill="url(#glass)" stroke="#d9e4ea" stroke-opacity=".45" stroke-width="2"/>
+      <path d="M44 40 H216" stroke="#d9e4ea" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/>
+      <rect x="40" y="680" width="180" height="14" rx="4" fill="#1a2126" stroke="#d9e4ea" stroke-opacity=".3"/>
+      <!-- scale -->
+      <g id="scale" font-family="JetBrains Mono" font-size="12" fill="#9fb0bd"></g>
+      <!-- valve -->
+      <g id="valve" transform="translate(198 650)"><rect x="0" y="-8" width="34" height="16" rx="3" fill="#20282e" stroke="#5ef2c0" stroke-opacity=".6"/><circle cx="34" cy="0" r="10" fill="#0b1a16" stroke="#5ef2c0" stroke-width="2"/><text x="52" y="4" font-family="JetBrains Mono" font-size="11" fill="#5ef2c0" letter-spacing="2">АГЕНТ</text></g>
+    </svg>
+  </div>
+  <div class="cap" id="c1"><span class="k">Мерная колба</span><h2>Рутина наливается <span class="hot">по капле каждый день.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Открываем клапан</span><h2>Агент сливает <em>165 часов</em> в месяц.</h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 3, end: 600});
+const NS = 'http://www.w3.org/2000/svg', top = 40, bot = 680, maxH = 260; // scale 0..260 h
+const yOf = h => bot - (bot - top) * h / maxH;
+const scale = document.getElementById('scale');
+for (let h = 0; h <= 260; h += 10) {
+  const y = yOf(h), major = h % 40 === 0;
+  const l = document.createElementNS(NS, 'line'); l.setAttribute('x1', 62); l.setAttribute('x2', 62 + (major ? 30 : 16)); l.setAttribute('y1', y); l.setAttribute('y2', y); l.setAttribute('stroke', '#d9e4ea'); l.setAttribute('stroke-opacity', major ? .6 : .3); scale.append(l);
+  if (major) { const t = document.createElementNS(NS, 'text'); t.setAttribute('x', 30); t.setAttribute('y', y + 4); t.setAttribute('text-anchor', 'end'); t.textContent = h; scale.append(t); }
+}
+const t240 = document.createElementNS(NS, 'text'); t240.setAttribute('x', 30); t240.setAttribute('y', yOf(240) + 4); t240.setAttribute('text-anchor', 'end'); t240.setAttribute('fill', '#ff6b4a'); t240.textContent = '240'; scale.append(t240);
+
+const liq = document.getElementById('liq'), liq2 = document.getElementById('liq2'), glowR = document.getElementById('glowRect'), num = document.getElementById('num');
+const L = {h: 0, turb: 1, calm: 0};
+let ph = 0;
+const wave = (y, amp, k, off) => { let d = `M62 ${bot} L62 ${y}`; for (let x = 62; x <= 198; x += 4) d += ` L${x} ${(y + Math.sin(x * k + ph + off) * amp).toFixed(2)}`; return d + ` L198 ${bot}Z`; };
+// bubbles
+const bub = document.getElementById('bubbles'), B = Array.from({length: 26}, () => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('fill', '#fff'); c.setAttribute('opacity', '.35'); bub.append(c); return {c, x: 70 + Math.random() * 120, y: bot, r: 1 + Math.random() * 3, v: .6 + Math.random() * 1.4}; });
+gsap.ticker.add(() => {
+  ph += .06 + L.turb * .1;
+  const y = yOf(L.h), amp = 2 + L.turb * 5;
+  liq.setAttribute('d', wave(y, amp, .07, 0)); liq2.setAttribute('d', wave(y + 3, amp * .7, .05, 2));
+  liq.setAttribute('fill', L.calm > .5 ? 'url(#calm)' : 'url(#hot)');
+  glowR.setAttribute('y', y); glowR.setAttribute('height', bot - y); glowR.setAttribute('fill', L.calm > .5 ? '#5ef2c0' : '#ff6b4a');
+  B.forEach(b => { b.y -= b.v * (.4 + L.turb); if (b.y < y + 6) { b.y = bot - 4; b.x = 70 + Math.random() * 120; } b.c.setAttribute('cx', b.x); b.c.setAttribute('cy', b.y); b.c.setAttribute('r', L.h > 2 ? b.r : 0); });
+  num.textContent = Math.round(L.h);
+});
+cap('#c1', 0, 3.2);
+tl.to(L, {h: TOTAL, duration: 3.2, ease: 'power1.in'}, .2)
+  .to(L, {turb: 2, duration: 3.2}, .2)
+  .to(num, {color: '#ff6b4a', duration: .4}, 2.6);
+cap('#c2', 3.6, 6.2);
+tl.to('#valve circle', {rotation: 180, transformOrigin: '50% 50%', duration: .6}, 3.6)
+  .set(L, {calm: 1}, 3.9)
+  .to(num, {color: '#5ef2c0', duration: .4}, 3.9)
+  .call(() => { document.getElementById('u').textContent = 'часов рутины в месяц · с агентом'; }, null, 3.9)
+  .to(L, {h: LEFT, duration: 2.2, ease: 'power2.inOut'}, 3.9)
+  .to(L, {turb: .15, duration: 2.2}, 3.9);
+money(6.8, ['.lab']);
+</script>
+</body></html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 08 · Тепловая карта — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A heatmap of the month: 20 working days × 9 hours. Routine heats the cells up (Monday mornings burn hottest), then the agent cools the map down cell by cell. */
+.stage{background:#05070a}
+.wrap{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:min(1120px,95vw)}
+.top2{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;gap:20px}
+.top2 h3{margin:0;font:800 clamp(20px,2.4vw,32px) var(--display);letter-spacing:-.02em}
+.top2 .tot{font:700 clamp(30px,3.6vw,52px) var(--mono);font-variant-numeric:tabular-nums;color:#ff6b4a;line-height:1}
+.top2 .tot small{display:block;font:500 11px var(--mono);letter-spacing:.18em;color:var(--muted);text-transform:uppercase;text-align:right}
+.hm{display:grid;grid-template-columns:44px repeat(20,1fr);gap:4px}
+.hm .rl{font:400 11px var(--mono);color:#56636d;align-self:center}
+.hm .cl{font:400 10px var(--mono);color:#56636d;text-align:center;padding-top:4px}
+.cell{aspect-ratio:1;border-radius:4px;background:#111820}
+.note{position:absolute;z-index:6;font:400 12px var(--mono);color:#ffd2c4;background:#1a0f0c;border:1px solid #ff6b4a66;border-radius:8px;padding:8px 10px;white-space:nowrap;opacity:0;pointer-events:none}
+.scale{display:flex;align-items:center;gap:8px;margin-top:14px;font:400 11px var(--mono);color:var(--muted)}
+.scale i{display:block;width:18px;height:10px;border-radius:2px}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <div class="wrap">
+    <div class="top2"><h3>Где горят часы вашего отдела</h3><div class="tot"><small id="tl">рутина, ч/мес</small><span id="tot">0</span></div></div>
+    <div class="hm" id="hm"></div>
+    <div class="scale">меньше <i style="background:#111820"></i><i style="background:#5a2a22"></i><i style="background:#a8402c"></i><i style="background:#ff6b4a"></i><i style="background:#ffb38a"></i> больше</div>
+  </div>
+  <div class="note" id="note">пн 10:00 · 2,4 ч · заявки за выходные</div>
+  <div class="cap" id="c1"><span class="k">Тепловая карта месяца</span><h2>Понедельник утром <span class="hot">горит сильнее всего.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Агент остужает карту</span><h2>Горячие часы <em>забирает агент.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 8, end: 650});
+const hm = document.getElementById('hm'), D = 20, R = 9, wd = ['пн', 'вт', 'ср', 'чт', 'пт'];
+// routine weight per cell: Monday & mornings hotter; normalised to 240 h total
+const w = []; let sumW = 0;
+for (let r = 0; r < R; r++) for (let d = 0; d < D; d++) { const v = (1 + (d % 5 === 0 ? 1.4 : d % 5 === 4 ? .6 : 0)) * (1.6 - r * .1) * (.7 + .6 * Math.abs(Math.sin(r * 3.1 + d * 1.7))); w.push(v); sumW += v; }
+const hrs = w.map(v => v / sumW * TOTAL), maxH = Math.max(...hrs);
+// after the agent: keep ~31% (75/240), concentrated in the afternoon (live meetings, decisions)
+const keep = hrs.map((h, i) => { const r = Math.floor(i / D); return h * (r >= 5 ? .55 : .2); }); const ks = keep.reduce((a, b) => a + b, 0); keep.forEach((v, i) => keep[i] = v / ks * LEFT);
+hm.append(Object.assign(document.createElement('span')));
+for (let d = 0; d < D; d++) { const s = document.createElement('span'); s.className = 'cl'; s.textContent = d % 5 === 0 ? 'нед ' + (d / 5 + 1) : ''; hm.append(s); }
+const cells = [];
+for (let r = 0; r < R; r++) { const l = document.createElement('span'); l.className = 'rl'; l.textContent = `${9 + r}:00`; hm.append(l); for (let d = 0; d < D; d++) { const c = document.createElement('div'); c.className = 'cell'; hm.append(c); cells.push(c); } }
+const ramp = [[17, 24, 32], [90, 42, 34], [168, 64, 44], [255, 107, 74], [255, 179, 138]], mint = [[17, 24, 32], [20, 70, 58], [40, 140, 112], [94, 242, 192]];
+const lerpC = (stops, t) => { t = Math.max(0, Math.min(1, t)) * (stops.length - 1); const i = Math.min(stops.length - 2, Math.floor(t)), f = t - i; return `rgb(${stops[i].map((v, k) => Math.round(v + (stops[i + 1][k] - v) * f)).join(',')})`; };
+const S = {heat: 0, cool: 0};
+const order = cells.map((_, i) => i).sort((a, b) => (a % D) - (b % D) || a - b); // column by column
+const rank = new Array(cells.length); order.forEach((ci, k) => rank[ci] = k / cells.length);
+const tot = document.getElementById('tot');
+function render() {
+  let sum = 0;
+  cells.forEach((c, i) => {
+    const on = Math.max(0, Math.min(1, (S.heat - rank[i]) * 6)), cool = Math.max(0, Math.min(1, (S.cool - rank[i]) * 6));
+    const v = hrs[i] * on * (1 - cool) + keep[i] * cool; sum += v;
+    c.style.background = cool > .5 ? lerpC(mint, keep[i] / (maxH * .45)) : lerpC(ramp, (hrs[i] / maxH) * on);
+  });
+  tot.textContent = Math.round(sum);
+}
+render();
+const note = document.getElementById('note');
+const placeNote = () => { const c = cells[0].getBoundingClientRect(); note.style.left = (c.left + c.width + 8) + 'px'; note.style.top = (c.top - 4) + 'px'; };
+placeNote(); addEventListener('resize', placeNote);
+cap('#c1', 0, 3.1);
+tl.to(S, {heat: 1.2, duration: 2.9, onUpdate: render}, .2).to('#note', {opacity: 1, duration: .3}, 2.4).to('#note', {opacity: 0, duration: .3}, 3.3);
+cap('#c2', 3.5, 6.3);
+tl.to(S, {cool: 1.2, duration: 2.8, onUpdate: render}, 3.5).to(tot, {color: '#5ef2c0', duration: .3}, 3.7)
+  .call(() => { document.getElementById('tl').textContent = 'рутина с агентом, ч/мес'; }, null, 3.7);
+money(6.9, ['.wrap']);
+</script>
+</body></html>

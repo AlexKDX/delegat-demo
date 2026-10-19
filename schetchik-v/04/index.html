@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 04 · Календарь — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* A working month: 20 day-columns fill up with coloured routine blocks; a mint scan line sweeps the calendar and clears most of each day. */
+.stage{background:#06080b}
+.cal{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(1100px,94vw)}
+.cal .head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.cal .head h3{margin:0;font:800 clamp(22px,2.6vw,34px) var(--display);letter-spacing:-.02em}
+.cal .head .tot{font:700 clamp(22px,2.6vw,34px) var(--mono);font-variant-numeric:tabular-nums;color:#ff6b4a}
+.wd{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font:500 11px var(--mono);letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.grid{position:relative;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,clamp(70px,13vh,120px));gap:8px}
+.day{position:relative;border:1px solid #1a232b;border-radius:10px;background:#0b1015;overflow:hidden;padding:8px}
+.day .d{position:relative;z-index:2;font:500 11px var(--mono);color:#6f7d88}
+.day .h{position:absolute;right:8px;top:7px;z-index:2;font:700 12px var(--mono);font-variant-numeric:tabular-nums;color:#e9eef1}
+.stack{position:absolute;left:6px;right:6px;bottom:6px;display:flex;flex-direction:column-reverse;gap:2px}
+.blk{height:7px;border-radius:2px;transform-origin:bottom;transform:scaleY(0)}
+.scan{position:absolute;top:-10px;bottom:-10px;width:3px;left:0;background:#5ef2c0;box-shadow:0 0 30px 6px #5ef2c088;opacity:0;z-index:3;border-radius:2px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font:400 12px var(--mono);color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <div class="cal">
+    <div class="head"><h3>Октябрь · отдел продаж</h3><div class="tot"><span id="tot">0</span> ч</div></div>
+    <div class="wd"><span>пн</span><span>вт</span><span>ср</span><span>чт</span><span>пт</span></div>
+    <div class="grid" id="grid"><div class="scan" id="scan"></div></div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="cap" id="c1"><span class="k">Рабочий месяц</span><h2>Каждый день — <span class="hot">12 часов рутины на отдел.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Агент проходит по месяцу</span><h2>От каждого дня остаётся <em>только живая работа.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 4, end: 650});
+const kinds = [['заявки', '#ff6b4a'], ['чаты', '#ff9a5a'], ['почта', '#ffc35a'], ['сверки', '#c77dff'], ['отчёты', '#7aa7ff']];
+document.getElementById('legend').innerHTML = kinds.map(([n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join('');
+const grid = document.getElementById('grid'), days = [];
+for (let i = 0; i < 20; i++) {
+  const d = document.createElement('div'); d.className = 'day';
+  d.innerHTML = `<span class="d">${i + 1 + Math.floor(i / 5) * 2}</span><span class="h">0</span><div class="stack"></div>`;
+  grid.append(d);
+  const st = d.querySelector('.stack'), blocks = [];
+  const n = innerWidth < 760 ? 5 : 8;
+  for (let k = 0; k < n; k++) { const b = document.createElement('div'); b.className = 'blk'; b.style.background = kinds[(k + i) % kinds.length][1]; st.append(b); blocks.push(b); }
+  days.push({d, h: d.querySelector('.h'), blocks, keep: k => k < 2});
+}
+const tot = document.getElementById('tot'), S = {f: 0, c: 0};
+const render = () => {
+  let sum = 0;
+  days.forEach((o, i) => {
+    const filled = Math.max(0, Math.min(1, S.f * 20 - i)) * 12, cleared = Math.max(0, Math.min(1, S.c * 21 - i));
+    const v = filled - cleared * (12 - 3.75); sum += v; o.h.textContent = Math.round(v) + 'ч';
+    o.d.style.borderColor = cleared > .5 ? '#1f5a4a' : '#1a232b';
+  });
+  tot.textContent = Math.round(sum);
+};
+cap('#c1', 0, 3.1);
+days.forEach((o, i) => o.blocks.forEach((b, k) => tl.to(b, {scaleY: 1, duration: .12, ease: 'back.out(3)'}, .2 + (i / 20) * 2.8 + k * .02)));
+tl.to(S, {f: 1, duration: 2.95, onUpdate: render}, .2).to(tot, {color: '#ff6b4a', duration: .2}, .2);
+cap('#c2', 3.4, 6.2);
+tl.to('#scan', {opacity: 1, duration: .2}, 3.4)
+  .fromTo('#scan', {left: '0%'}, {left: '100%', duration: .7, repeat: 3, ease: 'none'}, 3.4)
+  .to(S, {c: 1, duration: 2.8, onUpdate: render}, 3.4)
+  .to(tot, {color: '#5ef2c0', duration: .3}, 4.2)
+  .to('#scan', {opacity: 0, duration: .2}, 6.1);
+days.forEach((o, i) => o.blocks.forEach((b, k) => { if (k >= 2) tl.to(b, {scaleY: 0, opacity: 0, duration: .15}, 3.4 + (i / 21) * 2.8); else tl.to(b, {backgroundColor: '#5ef2c0', duration: .15}, 3.4 + (i / 21) * 2.8); }));
+money(6.8, ['.cal']);
+</script>
+</body></html>

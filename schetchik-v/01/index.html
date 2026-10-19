@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Счётчик 01 · Паутина — Делегат</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* Matrix rain behind; a web of real requests grows over it; then the agent's own route through the web lights up node by node and the web snaps into an ordered matrix. */
+canvas{position:absolute;inset:0;width:100%;height:100%}
+#rain{opacity:.55}
+.center{position:absolute;inset:0;z-index:10;display:grid;place-items:center;text-align:center;pointer-events:none}
+.center .big{text-shadow:0 0 40px #000,0 0 80px #000}
+.log{position:absolute;right:max(20px,env(safe-area-inset-right,0px));top:76px;z-index:12;width:min(360px,44vw);font:400 12px/1.65 var(--mono);color:#7fd9b9;text-align:right;opacity:0}
+.log b{color:var(--acc);font-weight:500}
+.log .ttl{color:var(--muted);letter-spacing:.18em;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+@media (max-width:760px){.log{display:none}}
+</style></head>
+<body>
+<section class="stage" id="stage">
+  <canvas id="rain"></canvas><canvas id="web"></canvas>
+  <div class="center" id="center"><div><div class="unit" id="u1">часов рутины в месяц · отдел из 4 человек</div><div class="big" id="num">0</div><div class="unit" id="u2">запросов в паутине: <span id="cnt">0</span></div></div></div>
+  <div class="log" id="log"><div class="ttl">маршрут агента</div><div id="lines"></div></div>
+  <div class="cap" id="c1"><span class="k">Всемирная паутина вашей компании</span><h2>Каждая заявка, письмо и звонок — <span class="hot">нить, которую тянут руками.</span></h2></div>
+  <div class="cap" id="c2"><span class="k">Маршрут агента</span><h2>Агент проходит по паутине <em>за вас.</em></h2></div>
+  <div class="cap" id="c3"><span class="k">Матрица</span><h2>Хаос становится <em>системой.</em></h2></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="../_shared/base.js"></script>
+<script>
+const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 1, end: 700});
+const dpr = Math.min(devicePixelRatio, 2);
+const rain = document.getElementById('rain'), rc = rain.getContext('2d'), web = document.getElementById('web'), wc = web.getContext('2d');
+let W, H;
+const size = () => { W = innerWidth; H = innerHeight; [rain, web].forEach(c => { c.width = W * dpr; c.height = H * dpr; }); rc.setTransform(dpr, 0, 0, dpr, 0, 0); wc.setTransform(dpr, 0, 0, dpr, 0, 0); layout(); };
+
+// --- matrix rain: words of real routine instead of random glyphs
+const glyphs = 'ЗАЯВКАПИСЬМОСЧЁТЗВОНОКОТЧЁТСВЕРКА0123456789#@→';
+const colW = 18; let drops = [];
+const resetRain = () => { drops = Array.from({length: Math.ceil(W / colW)}, () => Math.random() * -H / colW); };
+let rainSpeed = .55, rainHue = 0; // 0 = hot amber, 1 = mint
+function drawRain() {
+  rc.fillStyle = 'rgba(5,7,10,0.14)'; rc.fillRect(0, 0, W, H);
+  rc.font = '500 14px JetBrains Mono, monospace';
+  const r = Math.round(255 + (94 - 255) * rainHue), g = Math.round(150 + (242 - 150) * rainHue), b = Math.round(90 + (192 - 90) * rainHue);
+  drops.forEach((d, i) => {
+    const ch = glyphs[(Math.random() * glyphs.length) | 0], x = i * colW, y = d * colW;
+    rc.fillStyle = `rgba(${r},${g},${b},.9)`; rc.fillText(ch, x, y);
+    rc.fillStyle = `rgba(${r},${g},${b},.25)`; rc.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y - colW);
+    drops[i] = y > H && Math.random() > .975 ? 0 : d + rainSpeed;
+  });
+}
+
+// --- the web: real requests as nodes
+const kinds = ['заявка', 'письмо', 'звонок', 'счёт', 'чат', 'сверка', 'отчёт', 'КП'];
+const N = innerWidth < 760 ? 46 : 84;
+let nodes = [], edges = [], tour = [], grid = [];
+function layout() {
+  const rnd = gsap.utils.random;
+  if (!nodes.length) nodes = Array.from({length: N}, (_, i) => ({id: 1000 + ((i * 37) % 900), kind: kinds[i % kinds.length], fx: 0, fy: 0, t: i / N}));
+  nodes.forEach(nd => { let x, y; do { x = rnd(.05, .95); y = rnd(.1, .92); } while (Math.abs(x - .5) < .17 && Math.abs(y - .5) < .2); nd.fx = x * W; nd.fy = y * H; });
+  edges = [];
+  nodes.forEach((a, i) => nodes.map((b, j) => [j, Math.hypot(a.fx - b.fx, a.fy - b.fy)]).filter(([j]) => j !== i).sort((p, q) => p[1] - q[1]).slice(0, 3).forEach(([j]) => { if (i < j || !edges.some(e => e[0] === j && e[1] === i)) edges.push([i, j]); }));
+  // agent route: nearest-neighbour tour starting at the left-most node
+  const left = new Set(nodes.map((_, i) => i)); let cur = nodes.reduce((m, nd, i) => nd.fx < nodes[m].fx ? i : m, 0); tour = [cur]; left.delete(cur);
+  while (left.size) { let best = null, bd = 1e9; left.forEach(j => { const d = Math.hypot(nodes[cur].fx - nodes[j].fx, nodes[cur].fy - nodes[j].fy); if (d < bd) { bd = d; best = j; } }); tour.push(best); left.delete(best); cur = best; }
+  // ordered matrix target
+  const cols = Math.ceil(Math.sqrt(N * W / H)), rows = Math.ceil(N / cols), gx = W * .78 / cols, gy = H * .66 / rows;
+  grid = tour.map((_, k) => ({x: W * .11 + (k % cols + .5) * gx, y: H * .14 + (Math.floor(k / cols) + .5) * gy}));
+  tour.forEach((ni, k) => { nodes[ni].gx = grid[k].x; nodes[ni].gy = grid[k].y; nodes[ni].order = k; });
+  resetRain();
+}
+
+const S = {appear: 0, route: 0, grid: 0, fade: 1};
+function drawWeb() {
+  wc.clearRect(0, 0, W, H);
+  if (S.fade <= 0) return;
+  wc.globalAlpha = S.fade;
+  const shown = Math.floor(S.appear * N), visited = S.route * (N - 1);
+  const pos = nd => ({x: nd.fx + (nd.gx - nd.fx) * S.grid, y: nd.fy + (nd.gy - nd.fy) * S.grid});
+  // tangled manual threads
+  wc.lineWidth = 1;
+  edges.forEach(([i, j]) => {
+    if (i >= shown || j >= shown) return;
+    const a = pos(nodes[i]), b = pos(nodes[j]), done = nodes[i].order <= visited && nodes[j].order <= visited;
+    wc.strokeStyle = done ? `rgba(94,242,192,${.08 * (1 - S.grid)})` : `rgba(255,107,74,${.28 * (1 - S.grid)})`;
+    const mx = (a.x + b.x) / 2 + (a.y - b.y) * .15 * (1 - S.grid), my = (a.y + b.y) / 2 + (b.x - a.x) * .15 * (1 - S.grid);
+    wc.beginPath(); wc.moveTo(a.x, a.y); wc.quadraticCurveTo(mx, my, b.x, b.y); wc.stroke();
+  });
+  // ordered matrix lines
+  if (S.grid > 0) { wc.strokeStyle = `rgba(94,242,192,${.18 * S.grid})`; wc.beginPath(); tour.forEach((ni, k) => { const p = pos(nodes[ni]); k ? wc.lineTo(p.x, p.y) : wc.moveTo(p.x, p.y); }); wc.stroke(); }
+  // agent route trail
+  if (S.route > 0) {
+    wc.save(); wc.shadowColor = '#5ef2c0'; wc.shadowBlur = 14; wc.strokeStyle = '#5ef2c0'; wc.lineWidth = 2.2; wc.beginPath();
+    const last = Math.floor(visited);
+    for (let k = 0; k <= last && k < N; k++) { const p = pos(nodes[tour[k]]); k ? wc.lineTo(p.x, p.y) : wc.moveTo(p.x, p.y); }
+    let head = null;
+    if (last < N - 1) { const a = pos(nodes[tour[last]]), b = pos(nodes[tour[last + 1]]), f = visited - last; head = {x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f}; wc.lineTo(head.x, head.y); }
+    wc.globalAlpha = S.fade * (1 - S.grid * .7); wc.stroke(); wc.restore(); wc.globalAlpha = S.fade;
+    if (head) { wc.fillStyle = '#e9fff6'; wc.shadowColor = '#5ef2c0'; wc.shadowBlur = 24; wc.beginPath(); wc.arc(head.x, head.y, 5, 0, 7); wc.fill(); wc.shadowBlur = 0; }
+  }
+  // nodes
+  wc.font = '400 10px JetBrains Mono, monospace';
+  for (let i = 0; i < shown; i++) {
+    const nd = nodes[i], p = pos(nd), done = nd.order <= visited;
+    wc.fillStyle = done ? '#5ef2c0' : '#ff6b4a';
+    wc.beginPath(); wc.arc(p.x, p.y, done ? 3.4 : 2.6, 0, 7); wc.fill();
+    if (W > 760) { wc.fillStyle = done ? 'rgba(94,242,192,.75)' : 'rgba(255,170,150,.55)'; wc.fillText(`${nd.kind} #${nd.id}`, p.x + 7, p.y + 3); }
+  }
+  wc.globalAlpha = 1;
+}
+
+// HUD log of the agent's route
+const lines = document.getElementById('lines'); let lastLogged = -1;
+const verbs = {заявка: 'ответ клиенту', письмо: 'разобрано', звонок: 'перезвон назначен', счёт: 'выставлен', чат: 'ответ', сверка: 'сведено', отчёт: 'собран', КП: 'отправлено'};
+function logStep() {
+  const k = Math.floor(S.route * (N - 1));
+  if (k === lastLogged || S.route <= 0) return; lastLogged = k;
+  const rows = []; for (let q = Math.max(0, k - 6); q <= k; q++) { const nd = nodes[tour[q]]; rows.push(`${nd.kind} #${nd.id} → <b>${verbs[nd.kind]}</b> · ${(1.2 + (nd.id % 30) / 10).toFixed(1)} с`); }
+  lines.innerHTML = rows.join('<br>');
+}
+
+size(); addEventListener('resize', size);
+gsap.ticker.add(() => { rainSpeed = .5 + S.appear * .9 - S.route * .6; drawRain(); drawWeb(); logStep(); });
+
+const num = document.getElementById('num'), cnt = document.getElementById('cnt'), C = {h: 0, n: 0};
+const render = () => { num.textContent = Math.round(C.h); cnt.textContent = Math.round(C.n); };
+cap('#c1', 0, 2.6);
+tl.to(S, {appear: 1, duration: 2.8, ease: 'power1.in'}, .2)
+  .to(C, {h: TOTAL, n: 1840, duration: 2.8, ease: 'power1.in', onUpdate: render}, .2)
+  .to(num, {color: '#ff6b4a', duration: .6}, 2.0)
+// the agent walks the web
+  .to('#log', {opacity: 1, duration: .3}, 3.0);
+cap('#c2', 3.0, 5.6);
+tl.to(S, {route: 1, duration: 2.8, ease: 'power1.inOut'}, 3.0)
+  .to(C, {h: LEFT, duration: 2.8, ease: 'power1.inOut', onUpdate: render}, 3.0)
+  .to(num, {color: '#5ef2c0', duration: .6}, 3.6)
+  .to({v: 0}, {v: 1, duration: 2.6, onUpdate() { rainHue = this.targets()[0].v; }}, 3.0)
+  .call(() => { document.getElementById('u1').textContent = 'часов рутины в месяц · с агентом'; }, null, 3.6)
+// the web snaps into a matrix
+  .to(S, {grid: 1, duration: 1.2, ease: 'power3.inOut'}, 5.9)
+  .to('#log', {opacity: 0, duration: .3}, 5.9);
+cap('#c3', 6.0, 7.4);
+tl.to(S, {fade: 0, duration: .6}, 7.4).to('#center', {autoAlpha: 0, duration: .5}, 7.4).to('#rain', {opacity: .18, duration: .6}, 7.4);
+money(7.9);
+</script>
+</body></html>

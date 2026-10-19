@@ -54,9 +54,9 @@ const L = [
 {t: 'Матрица-восход', d: 'Полукруг солнца, собранный из точек сетки. Родственник сюжета «Паутина · Матрица»: из пикселей — порядок.',
  icon: (f, a) => { let s=''; for(let y=0;y<6;y++)for(let x=0;x<11;x++){const cx=10+x*8,cy=28+y*8,dd=Math.hypot(cx-50,cy-76);if(dd<44&&cy<72)s+=`<circle cx="${cx}" cy="${cy}" r="${dd<26?3.4:2.4}" fill="${dd<26?a:f}" opacity="${dd<26?1:.6}"/>`;} return s+`<rect x="10" y="78" width="80" height="4" rx="2" fill="${f}"/>`; },
  word: (f, a) => `<text x="130" y="76" font-family="JetBrains Mono" font-weight="700" font-size="44" letter-spacing="2" fill="${f}">ВОСТОК</text><rect x="338" y="40" width="64" height="44" rx="8" fill="${a}"/><text x="370" y="74" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="32" fill="#05070a">AI</text>`},
-{t: 'Стрелка на восток', d: 'Перекладина буквы «К» продолжается стрелкой вправо, на восток. Динамика и движение вперёд.',
+{t: 'Стрелка на восток', d: 'Перекладина буквы «К» продолжается стрелкой вправо, на восток. Вордмарк — как в «Горизонте»: плотное «восток» и лёгкое мятное «ai».',
  icon: (f, a) => `<path d="M30 22V78" stroke="${f}" stroke-width="10" stroke-linecap="round"/><path d="M30 50L62 22" stroke="${f}" stroke-width="10" stroke-linecap="round"/><path d="M30 50H84M72 38L86 50L72 62" fill="none" stroke="${a}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`,
- word: (f, a) => `<text class="m6" x="130" y="78" font-family="Unbounded" font-weight="700" font-size="44" letter-spacing="-1" fill="${f}">ВОСТОК</text><g class="a6"><path d="M0 -13H46M37 -22L48 -13L37 -4" stroke="${a}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="56" y="0" font-family="Unbounded" font-weight="700" font-size="24" fill="${a}">AI</text></g>`},
+ word: (f, a) => `<text class="m6" x="130" y="78" font-family="${F}" font-weight="900" font-size="56" letter-spacing="-2.5" fill="${f}">восток</text><g class="a6"><text x="0" y="0" font-family="${F}" font-weight="500" font-size="24" fill="${a}">ai</text></g>`},
 {t: 'Печать', d: 'Квадратная печать-штамп в духе восточных печатей: «ВОСТОК» в две строки и «AI» в углу. Солидно, узнаваемо на документах и КП.',
  icon: (f, a) => `<rect x="12" y="12" width="76" height="76" rx="10" fill="${a}"/><rect x="18" y="18" width="64" height="64" rx="6" fill="none" stroke="#05070a" stroke-width="2.5"/><text x="50" y="46" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="18" fill="#05070a">ВОС</text><text x="50" y="68" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="18" fill="#05070a">ТОК</text><text x="76" y="80" text-anchor="end" font-family="JetBrains Mono" font-weight="700" font-size="9" fill="#05070a">AI</text>`,
  word: (f, a) => `<text x="130" y="72" font-family="${F}" font-weight="900" font-size="46" letter-spacing="4" fill="${f}">ВОСТОК AI</text><text x="132" y="100" font-family="${F}" font-weight="500" font-size="16" fill="${f}" opacity=".6">агенты для бизнеса Дальнего Востока</text>`},
@@ -77,6 +77,6 @@ document.getElementById('list').innerHTML = L.map((o, i) => `
 <div class="row"><div class="pane dark">${lock(o, '#eef3f6', M)}</div><div class="pane light">${lock(o, '#0b1014', '#0f8f6c')}</div>
 <div class="icon">${ico(o, '#eef3f6', M, '#0b1014')}${ico(o, '#eef3f6', M, '#0b1014', 's')}<small>64 · 32 px</small></div></div></article>`).join('');
 // place the arrow of variant 06 right after the measured word
-document.fonts.ready.then(() => document.querySelectorAll('.m6').forEach(t => { const g = t.nextElementSibling, b = t.getBBox(); g.setAttribute('transform', `translate(${b.x + b.width + 10} 78)`); }));
+document.fonts.ready.then(() => document.querySelectorAll('.m6').forEach(t => { const g = t.nextElementSibling, b = t.getBBox(); g.setAttribute('transform', `translate(${b.x + b.width + 8} 78)`); }));
 </script>
 </body></html>

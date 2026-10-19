@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Восток AI — 10 логотипов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800;900&family=Unbounded:wght@500;700;900&family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@500;700&family=Tektur:wght@600;800&display=swap">
+<style>
+/* Contact sheet: each logo shown on dark, on light and as a 32px app icon, so it can be judged where it will actually live. */
+:root{--ink:#07090c;--card:#0d1217;--line:#1c252e;--fg:#eef3f6;--muted:#7f8e99;--acc:#5ef2c0;--paper:#f4f3ee}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--fg);font:16px/1.5 Onest,system-ui,sans-serif}
+.w{max-width:1240px;margin:0 auto;padding:48px max(20px,env(safe-area-inset-left,0px)) 80px}
+a.b{font:500 12px "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+h1{font-weight:800;font-size:clamp(30px,4.6vw,56px);letter-spacing:-.035em;line-height:1;margin:16px 0 10px}
+p.l{color:var(--muted);max-width:66ch;margin:0 0 34px}
+.item{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px;margin-bottom:18px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;margin-bottom:14px}
+.meta .n{font:700 13px "JetBrains Mono",monospace;color:var(--acc)}
+.meta .t{font-weight:800;font-size:20px;letter-spacing:-.01em}
+.meta .d{color:var(--muted);font-size:14px;flex-basis:100%}
+.row{display:grid;grid-template-columns:1fr 1fr 120px;gap:12px}
+.pane{border-radius:12px;display:grid;place-items:center;padding:28px 18px;min-height:170px}
+.pane.dark{background:#05070a;border:1px solid #141b21}
+.pane.light{background:var(--paper)}
+.pane svg{width:100%;max-width:420px;height:auto}
+.icon{display:grid;gap:10px;align-content:center;justify-items:center;border:1px solid #141b21;border-radius:12px;background:#05070a}
+.icon svg{width:64px;height:64px;border-radius:14px}
+.icon .s{width:32px;height:32px;border-radius:7px}
+.icon small{font:500 10px "JetBrains Mono",monospace;color:var(--muted)}
+@media (max-width:820px){.row{grid-template-columns:1fr}.icon{grid-auto-flow:column;padding:14px}}
+</style></head>
+<body><div class="w">
+<a class="b" href="../">← все сюжеты</a>
+<h1>Восток AI · 10 логотипов</h1>
+<p class="l">Каждый вариант показан на тёмном и светлом фоне и как иконка приложения 64 и 32 пикселя — так видно, как он будет жить на сайте, в Telegram и на визитке. Цвета пока базовые: финальную палитру подберём вместе с сайтом.</p>
+<div id="list"></div>
+</div>
+<script>
+const M = '#5ef2c0', F = 'Onest, system-ui, sans-serif';
+// each logo: icon(fg,bg,acc) returns inner SVG of a 100x100 icon; full(fg,acc) returns inner SVG of a 420x120 lockup
+const L = [
+{t: 'Восход', d: 'Солнце встаёт над линией горизонта — Восток в самом прямом смысле. Лучи собраны из узлов сети: восход как новая система работы.',
+ icon: (f, a) => `<path d="M14 66H86" stroke="${f}" stroke-width="5" stroke-linecap="round"/><path d="M26 66a24 24 0 0 1 48 0" fill="${a}"/>${[-60,-30,0,30,60].map(g=>{const r=(g-90)*Math.PI/180;return `<line x1="${50+34*Math.cos(r)}" y1="${66+34*Math.sin(r)}" x2="${50+44*Math.cos(r)}" y2="${66+44*Math.sin(r)}" stroke="${a}" stroke-width="5" stroke-linecap="round"/><circle cx="${50+47*Math.cos(r)}" cy="${66+47*Math.sin(r)}" r="3.5" fill="${f}"/>`}).join('')}`,
+ word: (f, a) => `<text x="130" y="76" font-family="${F}" font-weight="800" font-size="52" letter-spacing="-1.5" fill="${f}">Восток</text><text x="318" y="76" font-family="${F}" font-weight="800" font-size="52" fill="${a}">AI</text>`},
+{t: 'Компас «В»', d: 'Роза ветров, у которой стрелка указывает на восток. Буква В встроена в центр — читается как «держим курс».',
+ icon: (f, a) => `<circle cx="50" cy="50" r="40" fill="none" stroke="${f}" stroke-width="4"/><path d="M50 14L56 50L50 86L44 50Z" fill="${f}" opacity=".35"/><path d="M14 50L50 44L92 50L50 56Z" fill="${f}" opacity=".35"/><path d="M50 44L92 50L50 56Z" fill="${a}"/><text x="50" y="59" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="26" fill="${f}">В</text>`,
+ word: (f, a) => `<text x="130" y="70" font-family="Unbounded" font-weight="700" font-size="40" letter-spacing="1" fill="${f}">ВОСТОК</text><text x="132" y="98" font-family="JetBrains Mono" font-weight="500" font-size="15" letter-spacing="6" fill="${a}">AI · АВТОМАТИЗАЦИЯ</text>`},
+{t: 'Точка .ai', d: 'Латинский вордмарк vostok.ai, где точка — светящийся узел агента. Работает как адрес сайта и легко читается за рубежом.',
+ icon: (f, a) => `<text x="50" y="70" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="54" fill="${f}">v</text><circle cx="78" cy="68" r="8" fill="${a}"/>`,
+ word: (f, a) => `<text x="128" y="78" font-family="Manrope" font-weight="800" font-size="58" letter-spacing="-2" fill="${f}">vostok</text><circle cx="319" cy="72" r="8" fill="${a}"/><text x="331" y="78" font-family="Manrope" font-weight="800" font-size="58" letter-spacing="-2" fill="${a}">ai</text>`},
+{t: 'Волна и солнце', d: 'Солнечный диск над тремя волнами — море Владивостока. Самый тёплый и местный вариант.',
+ icon: (f, a) => `<circle cx="50" cy="42" r="20" fill="${a}"/>${[60,72,84].map((y,i)=>`<path d="M12 ${y}c10-7 18-7 26 0s16 7 24 0 18-7 26 0" fill="none" stroke="${f}" stroke-width="4.5" stroke-linecap="round" opacity="${1-i*.25}"/>`).join('')}`,
+ word: (f, a) => `<text x="130" y="72" font-family="${F}" font-weight="700" font-size="48" letter-spacing="-1" fill="${f}">Восток</text><text x="290" y="72" font-family="${F}" font-weight="400" font-size="48" fill="${a}">AI</text><text x="132" y="100" font-family="JetBrains Mono" font-size="13" letter-spacing="4" fill="${f}" opacity=".55">ВЛАДИВОСТОК</text>`},
+{t: 'Матрица-восход', d: 'Полукруг солнца, собранный из точек сетки. Родственник сюжета «Паутина · Матрица»: из пикселей — порядок.',
+ icon: (f, a) => { let s=''; for(let y=0;y<6;y++)for(let x=0;x<11;x++){const cx=10+x*8,cy=28+y*8,dd=Math.hypot(cx-50,cy-76);if(dd<44&&cy<72)s+=`<circle cx="${cx}" cy="${cy}" r="${dd<26?3.4:2.4}" fill="${dd<26?a:f}" opacity="${dd<26?1:.6}"/>`;} return s+`<rect x="10" y="78" width="80" height="4" rx="2" fill="${f}"/>`; },
+ word: (f, a) => `<text x="130" y="76" font-family="JetBrains Mono" font-weight="700" font-size="44" letter-spacing="2" fill="${f}">ВОСТОК</text><rect x="338" y="40" width="64" height="44" rx="8" fill="${a}"/><text x="370" y="74" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="32" fill="#05070a">AI</text>`},
+{t: 'Стрелка на восток', d: 'Перекладина буквы «К» продолжается стрелкой вправо, на восток. Динамика и движение вперёд.',
+ icon: (f, a) => `<path d="M30 22V78" stroke="${f}" stroke-width="10" stroke-linecap="round"/><path d="M30 50L62 22" stroke="${f}" stroke-width="10" stroke-linecap="round"/><path d="M30 50H84M72 38L86 50L72 62" fill="none" stroke="${a}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`,
+ word: (f, a) => `<text x="130" y="78" font-family="Unbounded" font-weight="700" font-size="44" letter-spacing="-1" fill="${f}">ВОСТО</text><path d="M326 46V84M326 65L350 46" stroke="${f}" stroke-width="7.5" stroke-linecap="round" fill="none"/><path d="M326 65H388M379 56L390 65L379 74" stroke="${a}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="398" y="78" font-family="Unbounded" font-weight="700" font-size="22" fill="${a}">AI</text>`},
+{t: 'Печать', d: 'Квадратная печать-штамп в духе восточных печатей: «ВОСТОК» в две строки и «AI» в углу. Солидно, узнаваемо на документах и КП.',
+ icon: (f, a) => `<rect x="12" y="12" width="76" height="76" rx="10" fill="${a}"/><rect x="18" y="18" width="64" height="64" rx="6" fill="none" stroke="#05070a" stroke-width="2.5"/><text x="50" y="46" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="18" fill="#05070a">ВОС</text><text x="50" y="68" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="18" fill="#05070a">ТОК</text><text x="76" y="80" text-anchor="end" font-family="JetBrains Mono" font-weight="700" font-size="9" fill="#05070a">AI</text>`,
+ word: (f, a) => `<text x="130" y="72" font-family="${F}" font-weight="900" font-size="46" letter-spacing="4" fill="${f}">ВОСТОК AI</text><text x="132" y="100" font-family="${F}" font-weight="500" font-size="16" fill="${f}" opacity=".6">агенты для бизнеса Дальнего Востока</text>`},
+{t: 'Счётчик', d: 'Кольцо-циферблат, где закрашенная дуга — 165 из 240 часов, которые забирает агент. Логотип продолжает главный экран сайта.',
+ icon: (f, a) => `<circle cx="50" cy="50" r="34" fill="none" stroke="${f}" stroke-width="10" opacity=".25"/><circle cx="50" cy="50" r="34" fill="none" stroke="${a}" stroke-width="10" stroke-dasharray="${(165/240*213.6).toFixed(1)} 213.6" transform="rotate(-90 50 50)" stroke-linecap="round"/><text x="50" y="58" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="22" fill="${f}">В</text>`,
+ word: (f, a) => `<text x="130" y="76" font-family="Unbounded" font-weight="500" font-size="44" letter-spacing="-1" fill="${f}">восток</text><text x="330" y="76" font-family="Unbounded" font-weight="900" font-size="44" fill="${a}">ai</text>`},
+{t: 'Узел', d: 'Абстрактная «В» из трёх узлов и двух связей — схема, по которой агент соединяет процессы. Минимализм уровня tech-стартапа.',
+ icon: (f, a) => `<path d="M24 26L50 74L76 26" fill="none" stroke="${f}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="26" r="9" fill="${f}"/><circle cx="76" cy="26" r="9" fill="${f}"/><circle cx="50" cy="74" r="12" fill="${a}"/>`,
+ word: (f, a) => `<text x="130" y="76" font-family="Tektur" font-weight="800" font-size="50" letter-spacing="1" fill="${f}">ВОСТОК</text><circle cx="354" cy="62" r="6" fill="${a}"/><text x="366" y="76" font-family="Tektur" font-weight="800" font-size="50" fill="${a}">AI</text>`},
+{t: 'Горизонт', d: 'Чистый вордмарк без значка: тонкая линия горизонта проходит сквозь буквы, над ней восходит мятная точка. Самый «дорогой» и сдержанный.',
+ icon: (f, a) => `<text x="50" y="66" text-anchor="middle" font-family="${F}" font-weight="900" font-size="52" fill="${f}">В</text><path d="M8 60H92" stroke="${a}" stroke-width="3"/><circle cx="74" cy="30" r="7" fill="${a}"/>`,
+ word: (f, a) => `<text x="130" y="78" font-family="${F}" font-weight="900" font-size="56" letter-spacing="-2.5" fill="${f}">восток</text><path d="M126 70H410" stroke="${a}" stroke-width="2.5"/><circle cx="380" cy="40" r="9" fill="${a}"/><text x="352" y="78" font-family="${F}" font-weight="500" font-size="24" fill="${a}">ai</text>`},
+];
+const lock = (o, f, a, bg) => `<svg viewBox="0 0 460 120" role="img" aria-label="Восток AI — ${o.t}"><g transform="translate(10 10) scale(1)">${o.icon(f, a)}</g>${o.word(f, a)}</svg>`;
+const ico = (o, f, a, bg, cls = '') => `<svg class="${cls}" viewBox="0 0 100 100" role="img" aria-label="иконка ${o.t}"><rect width="100" height="100" fill="${bg}"/>${o.icon(f, a)}</svg>`;
+document.getElementById('list').innerHTML = L.map((o, i) => `
+<article class="item"><div class="meta"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="t">${o.t}</span><span class="d">${o.d}</span></div>
+<div class="row"><div class="pane dark">${lock(o, '#eef3f6', M)}</div><div class="pane light">${lock(o, '#0b1014', '#0f8f6c')}</div>
+<div class="icon">${ico(o, '#eef3f6', M, '#0b1014')}${ico(o, '#eef3f6', M, '#0b1014', 's')}<small>64 · 32 px</small></div></div></article>`).join('');
+</script>
+</body></html>

@@ -82,7 +82,12 @@
     if (T.top.mode === 'clock') { const total = st.h, wk = Math.min(4, Math.floor(total / 45) + 1), day = days[Math.floor(total / 9) % 5], hh = 9 + Math.floor(total % 9), mm = Math.floor((total * 60) % 60); week.textContent = `${day} · неделя ${wk}`; clock.textContent = `${pad2(hh)}:${pad2(mm)}`; }
     num.innerHTML = fmt(st.n);
   };
+  if (T.num.peak >= 10000) num.classList.add('wide');
   render();
+  // the agent and the collapsing cards aim at the number, wherever the layout put it
+  const numC = () => { const r = num.getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; };
+  const placeAgent = () => { document.getElementById('agent').style.top = numC().y + 'px'; };
+  placeAgent(); addEventListener('resize', placeAgent);
   const caps = ['#c1', '#c2', '#c3'], rows = stage.querySelectorAll('[data-r]');
   if (!T.top.week && !T.top.clock && T.top.mode !== 'clock') { week.hidden = true; clock.hidden = true; }
   gsap.set([...caps, ...rows], {autoAlpha: 0, y: 30});
@@ -101,13 +106,13 @@
     tl.to(c, {autoAlpha: 1, y: c._y, duration: .45, ease: 'power3.out'}, at)
       .to(c, {y: c._y - rnd(10, 40) * (.5 + c._z), rotation: `+=${rnd(-3, 3)}`, duration: 4.5 - (at - 1.3)}, at + .45);
   });
-  const cx = innerWidth / 2 - 140, cy = innerHeight / 2 - 60;
+  const cx = () => numC().x - 140, cy = () => numC().y - 60;
   tl.to('#center', {autoAlpha: 0, scale: .96, duration: .3}, 4.9);
   cards.forEach((c, i) => tl.call(() => c.classList.add('done'), null, 4.95).to(c, {x: cx, y: cy, rotation: 0, scale: .05, autoAlpha: 0, filter: 'blur(0px) brightness(1.4)', duration: .7, ease: 'power3.in'}, 5.0 + (i % 12) * .03));
   tl.fromTo('#agent', {opacity: 0, scale: .2, rotation: -20}, {opacity: 1, scale: 1, rotation: 0, duration: .6, ease: 'back.out(1.8)'}, 5.6)
     .to('#center', {autoAlpha: 1, scale: 1, duration: .3}, 6.1)
     .call(() => { const fwd = tl.time() >= 6.1; unit.textContent = T.unit[fwd ? 1 : 0]; render(); }, null, 6.1)
-    .to('#agent', {scale: .42, y: () => -Math.min(innerHeight * .34, 270), duration: .5, ease: 'power2.inOut'}, 5.95)
+    .to('#agent', {scale: .42, x: () => Math.min(innerWidth * .3, 420), duration: .5, ease: 'power2.inOut'}, 5.95)
     .to(num, {color: acc, duration: .4}, 6.1)
     .to(st, {n: T.num.after, duration: 1.2, ease: 'power2.out', onUpdate: render}, 6.1)
     .to('#c3', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 6.3)

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VER = 1
+VER = 2
 
 SRC = {
  'nafi': 'НАФИ и «Яндекс 360», опрос 1 400 сотрудников, апрель 2025',

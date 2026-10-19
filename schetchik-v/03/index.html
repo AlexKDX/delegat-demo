@@ -52,8 +52,8 @@ svg.cyl{height:min(78vh,720px);width:auto;justify-self:start;overflow:visible}
 <script src="../_shared/base.js"></script>
 <script>
 const {tl, cap, money, TOTAL, LEFT} = Base.init({n: 3, end: 600});
-const NS = 'http://www.w3.org/2000/svg', top = 40, bot = 680, maxH = 260; // scale 0..260 h
-const yOf = h => bot - (bot - top) * h / maxH;
+const NS = 'http://www.w3.org/2000/svg', yTop = 40, bot = 680, maxH = 260; // scale 0..260 h
+const yOf = h => bot - (bot - yTop) * h / maxH;
 const scale = document.getElementById('scale');
 for (let h = 0; h <= 260; h += 10) {
   const y = yOf(h), major = h % 40 === 0;

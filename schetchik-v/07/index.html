@@ -9,7 +9,7 @@
 /* An isometric tower of paper: every sheet is 5 hours of routine. It grows to 48 sheets; then 33 of them lift off one by one into a small glowing agent chip. */
 .stage{background:radial-gradient(900px 700px at 40% 60%,#10151a,#05070a 70%)}
 canvas{position:absolute;inset:0;width:100%;height:100%}
-.read{position:absolute;right:max(6vw,20px);top:50%;transform:translateY(-50%);text-align:right;z-index:5}
+.read{position:absolute;right:max(4vw,20px);top:50%;transform:translateY(-50%);text-align:right;z-index:5}
 .read .big{color:#ff8d5c}
 @media (max-width:760px){.read{right:auto;left:0;right:0;top:86px;transform:none;text-align:center}.read .big{font-size:96px}}
 </style></head>
@@ -41,10 +41,10 @@ function iso(cx, cy, w, d, h, top, l, r) {
 }
 function draw() {
   x.clearRect(0, 0, W, H);
-  const mob = W < 760, baseX = mob ? W / 2 : W * .38, baseY = mob ? H * .86 : H * .82, sw = mob ? 190 : 300, sd = sw * .56, th = mob ? 7 : 9.5;
+  const mob = W < 760, baseX = mob ? W / 2 : W * .5, baseY = mob ? H * .86 : H * .82, sw = mob ? 190 : 300, sd = sw * .56, th = mob ? 7 : 9.5;
   // floor shadow
   x.fillStyle = 'rgba(0,0,0,.45)'; x.beginPath(); x.ellipse(baseX, baseY + 14, sw * .62, sd * .5, 0, 0, 7); x.fill();
-  const chipX = mob ? W * .82 : W * .62, chipY = mob ? H * .3 : H * .26;
+  const chipX = mob ? W * .82 : W * .66, chipY = mob ? H * .3 : H * .26;
   let level = 0;
   sheets.forEach((s, i) => {
     if (s.in <= 0) return;

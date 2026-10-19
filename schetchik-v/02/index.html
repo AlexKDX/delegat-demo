@@ -10,20 +10,20 @@
 .stage{background:radial-gradient(1000px 600px at 50% 40%,#11161b,#05070a 70%)}
 .board{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);padding:22px 24px 26px;background:#0b0e11;border:1px solid #1c232a;border-radius:14px;box-shadow:0 40px 120px -30px #000,inset 0 1px 0 #ffffff0a;width:min(1040px,94vw)}
 .hdr{display:grid;grid-template-columns:2.2fr 1fr 1.3fr;gap:14px;font:500 11px var(--mono);letter-spacing:.2em;color:#ffcf5a;text-transform:uppercase;padding:0 4px 12px;border-bottom:1px solid #1c232a;margin-bottom:12px}
-.row{display:grid;grid-template-columns:2.2fr 1fr 1.3fr;gap:14px;margin:8px 0}
+.frow{display:grid;grid-template-columns:2.2fr 1fr 1.3fr;gap:14px;margin:8px 0}
 .cells{display:flex;gap:3px;flex-wrap:nowrap;overflow:hidden}
 .c{position:relative;width:clamp(15px,1.9vw,27px);height:clamp(24px,2.9vw,40px);background:linear-gradient(#1a1f24 0 49%,#0e1215 51% 100%);border-radius:3px;color:#f2f2ea;font:700 clamp(13px,1.6vw,22px)/clamp(24px,2.9vw,40px) var(--mono);text-align:center;box-shadow:inset 0 -1px 0 #000,0 1px 0 #ffffff08}
 .c::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:#000a}
 .c.f{animation:flip .16s ease-in}
 @keyframes flip{0%{transform:rotateX(0)}50%{transform:rotateX(-90deg);filter:brightness(.4)}100%{transform:rotateX(0)}}
-.row.hot .st .c{color:#ff6b4a}
-.row.ok .st .c{color:#5ef2c0}
+.frow.hot .st .c{color:#ff6b4a}
+.frow.ok .st .c{color:#5ef2c0}
 .total{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #1c232a;margin-top:14px;padding-top:16px;font:500 12px var(--mono);letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
 .total .cells .c{width:clamp(30px,3.8vw,54px);height:clamp(46px,5.6vw,78px);font-size:clamp(28px,3.6vw,50px);line-height:clamp(46px,5.6vw,78px)}
 .total.hot .c{color:#ff6b4a}.total.ok .c{color:#5ef2c0}
 .clock{position:absolute;right:max(20px,env(safe-area-inset-right,0px));top:70px;font:700 clamp(22px,2.6vw,34px) var(--mono);color:#ffcf5a;font-variant-numeric:tabular-nums}
 .clock small{display:block;font:500 11px var(--mono);letter-spacing:.2em;color:var(--muted);text-align:right}
-@media (max-width:760px){.hdr,.row{grid-template-columns:1.6fr .8fr 1.2fr;gap:8px}.board{padding:14px}}
+@media (max-width:760px){.hdr,.frow{grid-template-columns:1.6fr .8fr 1.2fr;gap:8px}.board{padding:14px}}
 </style></head>
 <body>
 <section class="stage" id="stage">
@@ -51,7 +51,7 @@ const mk = (n, el) => { el.innerHTML = '<span class="c"></span>'.repeat(n); retu
 const set = (cells, str) => { str = str.padEnd(cells.length).slice(0, cells.length); cells.forEach((c, i) => { if (c.textContent !== str[i]) { c.textContent = str[i]; c.classList.remove('f'); void c.offsetWidth; c.classList.add('f'); } }); };
 const rowsEl = document.getElementById('rows');
 const rows = data.map(([name, h, after]) => {
-  const r = document.createElement('div'); r.className = 'row hot';
+  const r = document.createElement('div'); r.className = 'frow hot';
   r.innerHTML = '<div class="cells nm"></div><div class="cells hr"></div><div class="cells st"></div>';
   rowsEl.append(r);
   const nm = mk(W, r.querySelector('.nm')), hr = mk(3, r.querySelector('.hr')), st = mk(8, r.querySelector('.st'));

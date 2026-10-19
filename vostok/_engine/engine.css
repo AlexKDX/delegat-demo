@@ -20,7 +20,7 @@ body{margin:0;background:var(--ink);color:var(--fg);font:16px/1.5 var(--display)
 .pile{position:absolute;inset:0;z-index:2}
 /* readable core: a soft scrim keeps the counter legible over any background and any card */
 .scrim{position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(ellipse 42% 46% at 50% 50%,rgba(var(--scrim),.92) 0%,rgba(var(--scrim),.75) 45%,rgba(var(--scrim),0) 100%)}
-.capscrim{position:absolute;left:0;bottom:0;width:min(760px,100%);height:44vh;z-index:5;pointer-events:none;background:radial-gradient(ellipse 80% 90% at 0% 100%,rgba(var(--scrim),.9),rgba(var(--scrim),0) 75%)}
+.capscrim{position:absolute;left:0;bottom:0;width:min(820px,100%);height:48vh;z-index:5;pointer-events:none;background:radial-gradient(ellipse 85% 95% at 0% 100%,rgba(var(--scrim),.97) 0%,rgba(var(--scrim),.85) 40%,rgba(var(--scrim),0) 78%)}
 
 /* message cards: real notifications, with depth */
 .card{position:absolute;left:0;top:0;width:280px;padding:12px 14px 13px;border-radius:16px;background:linear-gradient(180deg,var(--card-2),var(--card));border:1px solid var(--card-line);box-shadow:0 24px 60px -24px #000c,0 2px 0 #ffffff08 inset;color:var(--card-fg);will-change:transform,opacity,filter}

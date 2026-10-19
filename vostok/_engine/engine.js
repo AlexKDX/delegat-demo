@@ -63,7 +63,7 @@
     pile.append(el);
     // depth: far cards are smaller, softer and dimmer; keep the centre clear for the counter
     const z = rnd(0, 1);
-    let x, y; do { x = rnd(-.06, .9); y = rnd(-.04, .86); } while (Math.abs(x - .4) < .24 && Math.abs(y - .42) < .26);
+    let x, y; do { x = rnd(-.06, .9); y = rnd(-.04, .86); } while ((Math.abs(x - .4) < .24 && Math.abs(y - .42) < .26) || (x < .46 && y > .58));
     Object.assign(el, {_x: x * innerWidth, _y: y * innerHeight, _z: z});
     el.style.zIndex = Math.round(z * 10);
     gsap.set(el, {x: el._x, y: el._y + 60, rotation: rnd(-6, 6), autoAlpha: 0, scale: .62 + z * .42, filter: `blur(${((1 - z) * 2.2).toFixed(1)}px) brightness(${(.62 + z * .38).toFixed(2)})`});

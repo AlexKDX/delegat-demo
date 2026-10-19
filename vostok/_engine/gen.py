@@ -11,7 +11,7 @@ HEAD = '''<!doctype html>
 <meta name="description" content="Восток AI — забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../_engine/engine.css?v=2">
+<link rel="stylesheet" href="../_engine/engine.css?v=3">
 <style>
 /* Theme {n:02d} · {name}: {about} */
 :root{{{vars}}}
@@ -26,7 +26,7 @@ HEAD = '''<!doctype html>
 const canvasIn = (el) => {{ const c = document.createElement('canvas'); el.append(c); const x = c.getContext('2d'), d = Math.min(devicePixelRatio, 2); const o = {{c, x, W: 0, H: 0}}; const fit = () => {{ o.W = el.clientWidth; o.H = el.clientHeight; c.width = o.W * d; c.height = o.H * d; x.setTransform(d, 0, 0, d, 0, 0); o.onfit && o.onfit(); }}; fit(); addEventListener('resize', fit); return o; }};
 window.THEME = {{n: {n}, name: '{name}', bg(el) {{ {bg} }}}};
 </script>
-<script src="../_engine/engine.js?v=2"></script>
+<script src="../_engine/engine.js?v=3"></script>
 </body></html>
 '''
 

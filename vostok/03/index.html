@@ -5,7 +5,7 @@
 <meta name="description" content="Восток AI — забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../_engine/engine.css?v=2">
+<link rel="stylesheet" href="../_engine/engine.css?v=3">
 <style>
 /* Theme 03 · Японское море: глубокий ночной синий и мята; фон — живые линии волн в нижней половине экрана */
 :root{--ink:#06131f;--fg:#eaf4f8;--muted:#86a3b5;--acc:#5ef2c0;--acc-ink:#04120d;--hot:#ff7a59;--card:#0b1d2c;--card-2:#0f2537;--card-line:#ffffff14;--card-fg:#e6f1f6;--card-muted:#7f9cae;--scrim:6,19,31}
@@ -21,5 +21,5 @@ const canvasIn = (el) => { const c = document.createElement('canvas'); el.append
 window.THEME = {n: 3, name: 'Японское море', bg(el) { el.style.background='linear-gradient(#06131f 0%,#08243a 60%,#0a2c45 100%)'; const o=canvasIn(el); let t=0;
   return {tick(){t+=.012;const{x,W,H}=o;x.clearRect(0,0,W,H);for(let k=0;k<26;k++){const y0=H*.48+k*k*.62,a=.05+k*.012;x.strokeStyle=`rgba(120,210,230,${a})`;x.lineWidth=1;x.beginPath();for(let px=0;px<=W;px+=8){const y=y0+Math.sin(px*.006+t*(1+k*.04)+k)*(6+k*.9)+Math.sin(px*.017-t*1.3+k*2)*3;px?x.lineTo(px,y):x.moveTo(px,y);}x.stroke();}}}; }};
 </script>
-<script src="../_engine/engine.js?v=2"></script>
+<script src="../_engine/engine.js?v=3"></script>
 </body></html>

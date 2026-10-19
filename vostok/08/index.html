@@ -5,7 +5,7 @@
 <meta name="description" content="Восток AI — забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../_engine/engine.css?v=2">
+<link rel="stylesheet" href="../_engine/engine.css?v=3">
 <style>
 /* Theme 08 · Рассвет: тёплый градиент рассвета — коралл, персик, фиолет — медленно перетекает; тёмная вуаль держит текст читаемым */
 :root{--ink:#170d1c;--fg:#fff7ef;--muted:#d8bfc4;--acc:#ffe08a;--acc-ink:#2a1a04;--hot:#ff5a6a;--card:#21142a;--card-2:#291934;--card-line:#ffffff1c;--card-fg:#fff4ec;--card-muted:#cdb3bb;--scrim:23,13,28}
@@ -21,5 +21,5 @@ const canvasIn = (el) => { const c = document.createElement('canvas'); el.append
 window.THEME = {n: 8, name: 'Рассвет', bg(el) { el.style.background='#170d1c'; [['#ff7a59','8%','10%','m1',18],['#7b5cff','55%','40%','m2',22],['#ffb38a','30%','70%','m2',26],['#ff3d77','75%','5%','m1',30]].forEach(([c,l,t,a,d])=>{const b=document.createElement('div');b.style.cssText=`position:absolute;left:${l};top:${t};width:55vmax;height:55vmax;margin:-20vmax;border-radius:50%;background:radial-gradient(circle,${c},transparent 65%);opacity:.75;filter:blur(30px);animation:${a} ${d}s ease-in-out infinite`;el.append(b);});
   const veil=document.createElement('div');veil.style.cssText='position:absolute;inset:0;background:rgba(23,13,28,.42)';el.append(veil); return {}; }};
 </script>
-<script src="../_engine/engine.js?v=2"></script>
+<script src="../_engine/engine.js?v=3"></script>
 </body></html>

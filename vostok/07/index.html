@@ -5,7 +5,7 @@
 <meta name="description" content="Восток AI — забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../_engine/engine.css">
+<link rel="stylesheet" href="../_engine/engine.css?v=2">
 <style>
 /* Theme 07 · Созвездия: глубокий фиолетовый, тёплое золото; фон — звёздное небо с параллаксом и линиями созвездий между ближними звёздами */
 :root{--ink:#0b0816;--fg:#f4efff;--muted:#a49bc0;--acc:#ffd36b;--acc-ink:#1a1206;--hot:#ff6b9a;--card:#140f24;--card-2:#19132d;--card-line:#ffffff14;--card-fg:#efe9fb;--card-muted:#9d94b8;--scrim:11,8,22}
@@ -22,5 +22,5 @@ window.THEME = {n: 7, name: 'Созвездия', bg(el) { el.style.background='
   return {tick(_,p){t+=.01;const{x,W,H}=o;x.clearRect(0,0,W,H);const pts=S.map(s=>({X:((s.x+p*.2*s.z)%1)*W,Y:s.y*H,s}));pts.forEach(({X,Y,s})=>{x.fillStyle=`rgba(255,240,210,${.25+s.z*.6*(.6+.4*Math.sin(t*2+s.tw))})`;x.beginPath();x.arc(X,Y,.5+s.z*1.6,0,7);x.fill();});
   x.strokeStyle='rgba(255,211,107,.12)';x.lineWidth=.8;for(let i=0;i<pts.length;i++){if(pts[i].s.z<.75)continue;for(let j=i+1;j<pts.length;j++){if(pts[j].s.z<.75)continue;const d=Math.hypot(pts[i].X-pts[j].X,pts[i].Y-pts[j].Y);if(d<130){x.beginPath();x.moveTo(pts[i].X,pts[i].Y);x.lineTo(pts[j].X,pts[j].Y);x.stroke();}}}}}; }};
 </script>
-<script src="../_engine/engine.js"></script>
+<script src="../_engine/engine.js?v=2"></script>
 </body></html>

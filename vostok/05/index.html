@@ -5,7 +5,7 @@
 <meta name="description" content="Восток AI — забираем рутину у ваших сотрудников. Владивосток и Дальний Восток.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="../_engine/engine.css">
+<link rel="stylesheet" href="../_engine/engine.css?v=2">
 <style>
 /* Theme 05 · Топография Приморья: оливково-чёрный, песочный текст и лаймовый акцент; фон — горизонтали рельефа, медленно плывущие, как на топокарте */
 :root{--ink:#0e110b;--fg:#ece7d8;--muted:#9a9886;--acc:#d4ff5a;--acc-ink:#151a05;--hot:#ff8a3d;--card:#151a12;--card-2:#1a2016;--card-line:#ece7d814;--card-fg:#ece7d8;--card-muted:#9a9886;--scrim:14,17,11}
@@ -21,5 +21,5 @@ const canvasIn = (el) => { const c = document.createElement('canvas'); el.append
 window.THEME = {n: 5, name: 'Топография Приморья', bg(el) { el.style.background='#0e110b'; const o=canvasIn(el); const peaks=Array.from({length:6},(_,i)=>({x:Math.random(),y:Math.random(),r:.18+Math.random()*.22,s:Math.random()*6})); let t=0;
   return {tick(){t+=.0025;const{x,W,H}=o;x.clearRect(0,0,W,H);peaks.forEach((p,pi)=>{for(let k=1;k<12;k++){const R=k/12*p.r*Math.max(W,H);x.strokeStyle=k%4==0?'rgba(236,231,216,.16)':'rgba(236,231,216,.07)';x.lineWidth=k%4==0?1.2:.8;x.beginPath();for(let a=0;a<=6.3;a+=.08){const n=Math.sin(a*3+p.s+t*2)*.12+Math.sin(a*5-p.s+k*.4)*.06;const rr=R*(1+n);const px=p.x*W+Math.cos(a)*rr+Math.sin(t+pi)*20,py=p.y*H+Math.sin(a)*rr*.8;a?x.lineTo(px,py):x.moveTo(px,py);}x.closePath();x.stroke();}});}}; }};
 </script>
-<script src="../_engine/engine.js"></script>
+<script src="../_engine/engine.js?v=2"></script>
 </body></html>

@@ -115,7 +115,7 @@
   const renderProc = () => { const n = Math.round(proc.n); procEl.textContent = n; if (log) log.innerHTML = Array.from({length: Math.min(4, n)}, (_, k) => { const j = n - 1 - k; return `<li><s>✓</s>${TASKS[j % TASKS.length]}<time>${pad2(9 + j % 9)}:${pad2(j * 7 % 60)}</time></li>`; }).join(''); };
   renderProc();
   const NAMES = ['', 'Иконка', 'Пульс', 'Окно агента', 'Чип', 'Орбита каналов'];
-  document.body.insertAdjacentHTML('beforeend', `<nav class="av"><span>Агент:</span>${[1, 2, 3, 4, 5].map(i => `<a href="?a=${i}"${i === AV ? ' class="on"' : ''} title="${NAMES[i]}">${i}</a>`).join('')}<em>${NAMES[AV]}</em></nav>`);
+  if (location.search.includes('a=')) document.body.insertAdjacentHTML('beforeend', `<nav class="av"><span>Агент:</span>${[1, 2, 3, 4, 5].map(i => `<a href="?a=${i}"${i === AV ? ' class="on"' : ''} title="${NAMES[i]}">${i}</a>`).join('')}<em>${NAMES[AV]}</em></nav>`);
   gsap.set(agent, {xPercent: -50, yPercent: -50, autoAlpha: 0, scale: .15});
   const caps = ['#c1', '#c2', '#c3'], rows = stage.querySelectorAll('[data-r]');
   gsap.set([...caps, ...rows], {autoAlpha: 0, y: 30});

@@ -89,18 +89,34 @@
   // ---------- counter state (unchanged logic from the original «Счётчик»)
   const week = document.getElementById('week'), clock = document.getElementById('clock'), num = document.getElementById('num'), unit = document.getElementById('unit');
   const days = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'];
-  const st = {h: 0, n: 0, p: 0};
-  const fmt = v => { const d = T.num.dec || 0; let s = Math.abs(v).toFixed(d).replace('.', ','); const [a, b] = s.split(','); s = a.replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f') + (b ? ',' + b : ''); const after = typeof tl !== 'undefined' && tl.time() >= 6.1 && 'suffixAfter' in T.num; const sfx = after ? T.num.suffixAfter : T.num.suffix; return s + (sfx ? `<small>${sfx}</small>` : ''); };
+  const st = {h: 0, n: 0, p: 0}, AFTER = 7.0;
+  const fmt = v => { const d = T.num.dec || 0; let s = Math.abs(v).toFixed(d).replace('.', ','); const [a, b] = s.split(','); s = a.replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f') + (b ? ',' + b : ''); const after = typeof tl !== 'undefined' && tl.time() >= AFTER && 'suffixAfter' in T.num; const sfx = after ? T.num.suffixAfter : T.num.suffix; return s + (sfx ? `<small>${sfx}</small>` : ''); };
   const render = () => {
     if (T.top.mode === 'clock') { const total = st.h, wk = Math.min(4, Math.floor(total / 45) + 1), day = days[Math.floor(total / 9) % 5], hh = 9 + Math.floor(total % 9), mm = Math.floor((total * 60) % 60); week.textContent = `${day} · неделя ${wk}`; clock.textContent = `${pad2(hh)}:${pad2(mm)}`; }
     num.innerHTML = fmt(st.n);
   };
   if (T.num.peak >= 10000) num.classList.add('wide');
   render();
-  // the agent and the collapsing cards aim at the number, wherever the layout put it
+  // the agent: grows in the centre while it swallows the cards, then parks next to the counter
   const numC = () => { const r = num.getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; };
-  const placeAgent = () => { document.getElementById('agent').style.top = numC().y + 'px'; };
-  placeAgent(); addEventListener('resize', placeAgent);
+  const AV = Math.min(5, Math.max(1, +new URLSearchParams(location.search).get('a') || T.agentV || 1));
+  const agent = document.getElementById('agent'), logoW = sun.replaceAll('hsea', 'hsea2');
+  const TASKS = ['Заявка с сайта → CRM', 'Ответ клиенту в WhatsApp', 'Счёт сверен с оплатой', 'КП отправлено клиенту', 'Запись в календарь', 'Отчёт за неделю собран', 'Трек-номер отправлен', 'Прайс отправлен в Telegram'];
+  const BODY = {
+    1: `<div class="body">${logoW}</div>`,
+    2: `<div class="body"><i class="ring"></i><i class="ring"></i><i class="ring"></i>${sun}</div>`,
+    3: `<div class="body"><div class="bar"><span class="dots"><i></i><i></i><i></i></span>${sun}<b>агент · vostok.ai</b><span class="on">работает</span></div><ul class="log" id="log"></ul></div>`,
+    4: `<div class="body"><div class="die">${sun}<span>AI AGENT</span></div></div>`,
+    5: `<div class="body">${logoW}<div class="orbit">${['tg', 'wa', 'mail', 'erp', 'xls', 'web'].map((k, i) => `<span style="--i:${i}"><em style="background:${IC[k][0]}"><svg viewBox="0 0 24 24">${IC[k][1]}</svg></em></span>`).join('')}</div></div>`,
+  };
+  agent.className = `agent v${AV}`;
+  agent.innerHTML = BODY[AV] + `<div class="lbl"><b>ИИ-агент</b><span>обработано <i id="proc">0</i> задач</span></div>`;
+  const proc = {n: 0}, procEl = document.getElementById('proc'), log = document.getElementById('log');
+  const renderProc = () => { const n = Math.round(proc.n); procEl.textContent = n; if (log) log.innerHTML = Array.from({length: Math.min(4, n)}, (_, k) => { const j = n - 1 - k; return `<li><s>✓</s>${TASKS[j % TASKS.length]}<time>${pad2(9 + j % 9)}:${pad2(j * 7 % 60)}</time></li>`; }).join(''); };
+  renderProc();
+  const NAMES = ['', 'Иконка', 'Пульс', 'Окно агента', 'Чип', 'Орбита каналов'];
+  document.body.insertAdjacentHTML('beforeend', `<nav class="av"><span>Агент:</span>${[1, 2, 3, 4, 5].map(i => `<a href="?a=${i}"${i === AV ? ' class="on"' : ''} title="${NAMES[i]}">${i}</a>`).join('')}<em>${NAMES[AV]}</em></nav>`);
+  gsap.set(agent, {xPercent: -50, yPercent: -50, autoAlpha: 0, scale: .15});
   const caps = ['#c1', '#c2', '#c3'], rows = stage.querySelectorAll('[data-r]');
   gsap.set([...caps, ...rows], {autoAlpha: 0, y: 30});
   // first frame is the headline; the counter scene starts on the first scroll
@@ -108,7 +124,7 @@
   gsap.set('#center', {autoAlpha: 0, y: 30});
   const hot = getComputedStyle(document.documentElement).getPropertyValue('--hot').trim(), acc = getComputedStyle(document.documentElement).getPropertyValue('--acc').trim(), fg = getComputedStyle(document.documentElement).getPropertyValue('--fg').trim();
 
-  var tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: stage, start: 'top top', end: '+=650%', pin: true, scrub: 1, onUpdate: s => { st.p = s.progress; }}});
+  var tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: stage, start: 'top top', end: '+=750%', pin: true, scrub: 1, onUpdate: s => { st.p = s.progress; }}});
   tl.to('#hint', {autoAlpha: 0, duration: .3}, .3)
     .to('#c1', {autoAlpha: 0, y: -20, duration: .4}, .7)
     .to('#center', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 1.0)
@@ -121,20 +137,27 @@
     tl.to(c, {autoAlpha: 1, y: c._y, duration: .45, ease: 'power3.out'}, at)
       .to(c, {y: c._y - rnd(10, 40) * (.5 + c._z), rotation: `+=${rnd(-3, 3)}`, duration: 4.5 - (at - 1.3)}, at + .45);
   });
-  const cx = () => numC().x - 140, cy = () => numC().y - 60;
-  tl.to('#center', {autoAlpha: 0, scale: .96, duration: .3}, 4.9);
-  cards.forEach((c, i) => tl.call(() => c.classList.add('done'), null, 4.95).to(c, {x: cx, y: cy, rotation: 0, scale: .05, autoAlpha: 0, filter: 'blur(0px) brightness(1.4)', duration: .7, ease: 'power3.in'}, 5.0 + (i % 12) * .03));
-  tl.fromTo('#agent', {opacity: 0, scale: .2, rotation: -20}, {opacity: 1, scale: 1, rotation: 0, duration: .6, ease: 'back.out(1.8)'}, 5.6)
-    .to('#center', {autoAlpha: 1, scale: 1, duration: .3}, 6.1)
-    .call(() => { const fwd = tl.time() >= 6.1; unit.textContent = T.unit[fwd ? 1 : 0]; render(); }, null, 6.1)
-    .to('#agent', {scale: .42, x: () => mob ? innerWidth * .4 : Math.min(innerWidth * .3, 420), duration: .5, ease: 'power2.inOut'}, 5.95)
-    .to(num, {color: acc, duration: .4}, 6.1)
-    .to(st, {n: T.num.after, duration: 1.2, ease: 'power2.out', onUpdate: render}, 6.1)
-    .to('#c3', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 6.3)
-    .to('#c3', {autoAlpha: 0, y: -20, duration: .3}, 7.6)
-    .to(['#center', '#agent'], {autoAlpha: 0, y: '-=40', duration: .5}, 7.7)
-    .to(rows, {autoAlpha: 1, y: 0, duration: .5, stagger: .25, ease: 'power3.out'}, 8.0)
-    .from('.steps li', {autoAlpha: 0, y: 24, duration: .4, stagger: .18, ease: 'power3.out'}, 8.5)
+  // cards fly into the agent (screen centre)
+  const bodyC = () => { const r = agent.querySelector('.body').getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; };
+  const cx = c => bodyC().x - c.offsetWidth / 2, cy = c => bodyC().y - c.offsetHeight / 2;
+  tl.to('#center', {autoAlpha: 0, scale: .96, duration: .3}, 4.8)
+    .to(agent, {autoAlpha: 1, scale: .35, duration: .3, ease: 'power2.out'}, 4.8);
+  cards.forEach((c, i) => tl.call(() => c.classList.add('done'), null, 4.95).to(c, {x: () => cx(c), y: () => cy(c), rotation: 0, scale: .05, autoAlpha: 0, filter: 'blur(0px) brightness(1.4)', duration: .6, ease: 'power3.in'}, 5.0 + (i / cards.length) * .7));
+  tl.to(agent, {scale: 1, duration: 1.1, ease: 'power2.out'}, 5.1)
+    .to(proc, {n: cards.length, duration: .9, onUpdate: renderProc}, 5.2)
+    .fromTo('#agent .lbl', {autoAlpha: 0, y: 12}, {autoAlpha: 1, y: 0, duration: .3}, 5.7)
+    // hold the big agent, then park it next to the counter
+    .to('#agent .lbl', {autoAlpha: 0, duration: .2}, 6.6)
+    .to(agent, {scale: AV === 3 ? .2 : mob ? .3 : .3, x: () => mob ? innerWidth * .36 : Math.min(innerWidth * .3, 420), y: () => numC().y - innerHeight / 2, duration: .6, ease: 'power2.inOut'}, 6.6)
+    .to('#center', {autoAlpha: 1, scale: 1, duration: .3}, AFTER)
+    .call(() => { const fwd = tl.time() >= AFTER; unit.textContent = T.unit[fwd ? 1 : 0]; render(); }, null, AFTER)
+    .to(num, {color: acc, duration: .4}, AFTER)
+    .to(st, {n: T.num.after, duration: 1.2, ease: 'power2.out', onUpdate: render}, AFTER)
+    .to('#c3', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, AFTER + .2)
+    .to('#c3', {autoAlpha: 0, y: -20, duration: .3}, AFTER + 1.5)
+    .to(['#center', agent], {autoAlpha: 0, y: '-=40', duration: .5}, AFTER + 1.6)
+    .to(rows, {autoAlpha: 1, y: 0, duration: .5, stagger: .25, ease: 'power3.out'}, AFTER + 1.9)
+    .from('.steps li', {autoAlpha: 0, y: 24, duration: .4, stagger: .18, ease: 'power3.out'}, AFTER + 2.4)
     .to({}, {duration: .7});
 
   gsap.to('.card .badge', {scale: 1.15, duration: .6, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: {each: .12, from: 'random'}});

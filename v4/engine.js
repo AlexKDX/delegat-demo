@@ -57,7 +57,13 @@
   const pile = document.getElementById('pile');
   const prefList = T.prefer ? MSG.filter(m => T.prefer.includes(m[0])) : [];
   const pick = i => (prefList.length && i % 3 !== 2) ? prefList[i % prefList.length] : MSG[i % MSG.length];
-  const mob = innerWidth < 760, N = mob ? 18 : 32, rnd = gsap.utils.random;
+  const mob = innerWidth < 760, N = mob ? 30 : 60, rnd = gsap.utils.random;
+  // keep-out zones: the captions (left) and the counter; cards only land where there is no text
+  const box = (sel, pad) => { const r = document.querySelector(sel).getBoundingClientRect(); return {l: r.left - pad, t: r.top - pad, r: r.right + pad, b: r.bottom + pad}; };
+  document.getElementById('num').textContent = T.num.peak; // measure the counter at its widest
+  const caps0 = ['#c2', '#c3'].map(s => box(s, 28)), numBox = box('#num', mob ? 4 : 30), unitBox = box('#unit', 10);
+  const keepOut = [...caps0, numBox, unitBox, {l: -1e4, t: -1e4, r: 1e4, b: 72}];
+  const hits = (a, b) => a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t;
   const cards = Array.from({length: N}, (_, i) => {
     const [ic, app, nm, msg, tag] = pick(i), el = document.createElement('div');
     el.className = 'card';
@@ -65,13 +71,20 @@
     el.innerHTML = `<div class="hd"><div class="ic" style="background:${IC[ic][0]}"><svg viewBox="0 0 24 24">${IC[ic][1]}</svg></div><div class="who"><div class="app">${app}</div><div class="nm">${nm}</div></div><div class="tm">${pad2(hh)}:${pad2(mm)}</div></div><div class="msg">${msg}</div><div class="ft"><span class="tag">${tag}</span><span>${i % 3 === 0 ? 'не прочитано' : 'в работе'}</span></div>` + (i % 3 === 0 ? `<div class="badge">${Math.round(rnd(2, 38))}</div>` : '');
     pile.append(el);
     // depth: far cards are smaller, softer and dimmer; keep the centre clear for the counter
-    const z = rnd(0, 1);
-    let x, y; do { x = rnd(-.06, .9); y = rnd(.08, .86); } while ((Math.abs(x - .4) < .24 && Math.abs(y - .42) < .26) || (x < .46 && y > .58));
-    Object.assign(el, {_x: x * innerWidth, _y: y * innerHeight, _z: z});
+    const z = rnd(0, 1), s = .62 + z * .42, w = el.offsetWidth, h = el.offsetHeight;
+    // scale is around the centre, so test the visual (scaled) rect; the drift up of ≤40px is covered by the padding
+    let x, y, ok = false;
+    for (let k = 0; k < 300 && !ok; k++) {
+      x = rnd(-.25 * w, innerWidth - .75 * w); y = rnd(60, innerHeight - .7 * h);
+      const cx0 = x + w / 2, cy0 = y + h / 2, vis = {l: cx0 - w * s / 2, r: cx0 + w * s / 2, t: cy0 - h * s / 2 - 40, b: cy0 + h * s / 2};
+      ok = !keepOut.some(z => hits(vis, z));
+    }
+    if (!ok) { el.remove(); return null; }
+    Object.assign(el, {_x: x, _y: y, _z: z});
     el.style.zIndex = Math.round(z * 10);
-    gsap.set(el, {x: el._x, y: el._y + 60, rotation: rnd(-6, 6), autoAlpha: 0, scale: .62 + z * .42, filter: `blur(${((1 - z) * 2.2).toFixed(1)}px) brightness(${(.62 + z * .38).toFixed(2)})`});
+    gsap.set(el, {x: el._x, y: el._y + 60, rotation: rnd(-6, 6), autoAlpha: 0, scale: s, filter: `blur(${((1 - z) * 2.2).toFixed(1)}px) brightness(${(.62 + z * .38).toFixed(2)})`});
     return el;
-  });
+  }).filter(Boolean);
 
   // ---------- counter state (unchanged logic from the original «Счётчик»)
   const week = document.getElementById('week'), clock = document.getElementById('clock'), num = document.getElementById('num'), unit = document.getElementById('unit');
@@ -104,7 +117,7 @@
     .to('#c2', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 3.0)
     .to('#c2', {autoAlpha: 0, y: -20, duration: .3}, 4.6);
   cards.forEach((c, i) => {
-    const at = 1.3 + (i / N) * 3.0;
+    const at = 1.3 + (i / cards.length) * 3.0;
     tl.to(c, {autoAlpha: 1, y: c._y, duration: .45, ease: 'power3.out'}, at)
       .to(c, {y: c._y - rnd(10, 40) * (.5 + c._z), rotation: `+=${rnd(-3, 3)}`, duration: 4.5 - (at - 1.3)}, at + .45);
   });

@@ -1,23 +1,168 @@
 <!doctype html>
 <html lang="ru"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Восток AI · Та же команда. Меньше ручной работы.</title>
-<meta name="description" content="Восток AI находит рутинные процессы в вашем бизнесе и передаёт их ИИ-агентам. Бесплатный разбор процессов. Владивосток и Дальний Восток.">
+<title>Восток AI · Автоматизация рутинных процессов ИИ-агентами · Владивосток</title>
+<meta name="description" content="Восток AI находит рутинные процессы в вашем бизнесе и передаёт их ИИ-агентам: заявки, ответы клиентам, отчёты, сверки, запись. Бесплатный разбор процессов. Владивосток и Дальний Восток.">
+<meta property="og:title" content="Восток AI — та же команда, меньше ручной работы">
+<meta property="og:description" content="Автоматизируем рутинные процессы ИИ-агентами. Бесплатный разбор процессов. Владивосток.">
+<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU">
+<meta name="theme-color" content="#141413">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Manrope:wght@800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="engine.css?v=6">
+<link rel="stylesheet" href="engine.css?v=9">
+<link rel="stylesheet" href="site.css?v=9">
 <style>
-/* Главный экран «Восток AI». Тема «Claude · ночь». */
+/* Главная «Восток AI». Тема «Claude · ночь». */
 :root{--ink:#141413;--fg:#F0EFEA;--muted:#a3a29c;--acc:#D97757;--acc-ink:#141413;--hot:#6A9BCC;--card:#1c1c1a;--card-2:#232320;--card-line:#ffffff12;--card-fg:#F0EFEA;--card-muted:#91918D;--scrim:20,20,19}
-</style></head>
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ProfessionalService","name":"Восток AI","alternateName":"vostok.ai",
+ "description":"Автоматизация рутинных бизнес-процессов с помощью ИИ-агентов: обработка заявок, ответы клиентам, отчёты и сверки, запись и напоминания, защита сайтов от спама.",
+ "areaServed":["Владивосток","Приморский край","Дальний Восток"],"address":{"@type":"PostalAddress","addressLocality":"Владивосток","addressCountry":"RU"},
+ "makesOffer":{"@type":"Offer","name":"Бесплатный разбор процессов","price":"0","priceCurrency":"RUB"}}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Что такое ИИ-агент простыми словами?", "acceptedAnswer": {"@type": "Answer", "text": "Это программа, которая выполняет рутинную работу сотрудника: отвечает клиентам, переносит заявки в CRM, собирает отчёты, напоминает о встречах. Она работает по вашим правилам и передаёт человеку то, что требует решения."}}, {"@type": "Question", "name": "Сколько стоит разбор и к чему он обязывает?", "acceptedAnswer": {"@type": "Answer", "text": "Разбор бесплатный и ни к чему не обязывает. Вы получаете карту рутины: какие процессы можно автоматизировать, сколько времени они занимают сейчас и сколько стоит внедрение. Дальше решаете сами."}}, {"@type": "Question", "name": "Нужно ли менять программы, которыми мы пользуемся?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Мы подключаемся к тому, что у вас уже есть: Telegram, Instagram, почта, сайт, Битрикс24, Google Таблицы и Диск. Другие системы смотрим на разборе."}}, {"@type": "Question", "name": "Что будет, если агент ошибётся?", "acceptedAnswer": {"@type": "Answer", "text": "Агент работает в рамках заданных правил, а сложные вопросы передаёт человеку. Вы видите все диалоги и действия агента, а мы регулярно разбираем ошибки и дорабатываем его."}}, {"@type": "Question", "name": "Как быстро всё заработает?", "acceptedAnswer": {"@type": "Answer", "text": "Первые агенты начинают работать примерно через 2 недели после разбора. Если проект большой, срок называем заранее, до начала работ."}}, {"@type": "Question", "name": "Насколько это безопасно для наших данных?", "acceptedAnswer": {"@type": "Answer", "text": "Доступы хранятся в одном защищённом месте, а не в переписке. Перед любыми изменениями делаем резервную копию. Код и доступы остаются у вас."}}]}
+</script>
+</head>
 <body>
 <section class="stage" id="stage"></section>
+
+<main>
+<section class="sec" id="how">
+  <div class="wrap">
+    <span class="kick" data-rv>Как мы работаем</span>
+    <h2 class="h2" data-rv>Три шага от разговора до <em>работающих агентов</em></h2>
+    <p class="lead" data-rv>Мы не продаём коробку. Сначала разбираемся, как устроена работа именно у вас, и только потом решаем, что передать агентам.</p>
+    <ol class="how">
+      <li class="panel" data-rv><span class="n">01</span><h3>Разбор</h3><span class="t">бесплатно · 1–2 часа</span>
+        <p>Приезжаем, говорим с вами и 2–3 сотрудниками, смотрим, как проходят заявки, переписка и отчёты.</p>
+        <ul><li>Через день — карта рутины</li><li>Что можно забрать у команды</li><li>Сколько часов это занимает сейчас</li><li>Сколько стоит внедрение</li></ul></li>
+      <li class="panel" data-rv><span class="n">02</span><h3>Внедрение</h3><span class="t">от 2 недель</span>
+        <p>Настраиваем агентов под ваши процессы и подключаем к тому, чем вы уже пользуетесь.</p>
+        <ul><li>Telegram, Instagram, почта, сайт</li><li>Битрикс24, Google Таблицы и Диск</li><li>Проверяем на реальных заявках</li><li>Учим команду работать с агентом</li></ul></li>
+      <li class="panel" data-rv><span class="n">03</span><h3>Сопровождение</h3><span class="t">каждый месяц</span>
+        <p>Агент работает дальше, а мы следим за ним и дорабатываем по мере роста задач.</p>
+        <ul><li>Разбираем ошибки агента и исправляем</li><li>Добавляем новые процессы</li><li>Отчёт: сколько задач сделал агент</li><li>и сколько часов ручной работы ушло</li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec" id="services">
+  <div class="wrap">
+    <span class="kick" data-rv>Что забираем у команды</span>
+    <h2 class="h2" data-rv>Рутина, которую <em>агенты делают сами</em></h2>
+    <p class="lead" data-rv>Семь самых частых процессов, которые мы автоматизируем. Узнаёте свой — начнём с него. Не нашли — расскажите на разборе.</p>
+    <div class="svc">
+      <article class="panel" data-rv><span class="pain">Менеджеры отвечают на одни и те же вопросы</span><h3>ИИ-менеджер в Telegram и Instagram</h3><p>Отвечает клиентам по базе знаний компании в любое время, сам спрашивает имя и телефон, передаёт готового клиента менеджеру.</p><div class="price">от 60 000 ₽ <small>+ сопровождение</small></div></article>
+      <article class="panel" data-rv><span class="pain">Заявки теряются между чатами и таблицами</span><h3>Бот приёма заявок + CRM</h3><p>Анкета с нужными вопросами. Каждая заявка сразу попадает в CRM и лично ответственному менеджеру.</p><div class="price">от 40 000 ₽</div></article>
+      <article class="panel" data-rv><span class="pain">Сайт заваливает спам-заявками</span><h3>Защита форм от ботов</h3><p>Несколько слоёв защиты: ловушки для ботов, ограничение частоты, проверка источника, капча. Живые заявки проходят, спам — нет.</p><div class="price">от 15 000 ₽</div></article>
+      <article class="panel" data-rv><span class="pain">Отчёты и сверки собирают вручную</span><h3>Автоотчёты и выгрузки</h3><p>Данные из CRM, таблиц и сервисов собираются сами и по расписанию приходят в рабочий чат или на почту.</p><div class="price">от 25 000 ₽</div></article>
+      <article class="panel" data-rv><span class="pain">Запись, оплата и напоминания — руками</span><h3>Приложение в Telegram</h3><p>Календарь записи без двойных броней, оплата внутри Telegram, автоматические напоминания клиенту.</p><div class="price">от 90 000 ₽</div></article>
+      <article class="panel" data-rv><span class="pain">Поиск клиентов в чатах съедает день</span><h3>Поиск заявок + ИИ-ассистент</h3><p>Система сама находит в тематических чатах сообщения «куплю», «ищу», а ассистент ведёт первый диалог и передаёт тёплого клиента.</p><div class="price">от 70 000 ₽</div></article>
+      <article class="panel" data-rv><span class="pain">Контент делать некогда</span><h3>Контент-система</h3><p>Разбор конкурентов, сценарии, монтаж роликов и публикация — по одной отлаженной системе, а не вручную каждый раз.</p><div class="price">от 50 000 ₽ <small>в месяц</small></div></article>
+      <article class="panel more" data-rv><span class="pain">И всё, что вокруг</span><h3>Сайты, серверы, безопасность</h3><p>Перенос сайта на новый сервер, аудит безопасности, восстановление доступа, домены и почта.</p></article>
+    </div>
+    <p class="fine" data-rv>Цены — стартовые. Точную стоимость называем после бесплатного разбора, до начала работ.</p>
+  </div>
+</section>
+
+<section class="sec" id="cases">
+  <div class="wrap">
+    <span class="kick" data-rv>Что уже сделали</span>
+    <h2 class="h2" data-rv>Работает <em>у наших клиентов</em></h2>
+    <p class="lead" data-rv>Названия компаний покажем после их согласия. Подробности каждого проекта расскажем на разборе.</p>
+    <div class="cases">
+      <article class="panel" data-rv><span class="who">Автоимпорт · Владивосток</span><h3>Спам-заявки на сайте остановлены полностью</h3>
+        <dl><div><dt>Было</dt><dd>Боты заваливали форму фейковыми заявками, менеджеры тратили время на разбор мусора. Сайт перестал открываться у операторов РФ.</dd></div>
+        <div><dt>Сделали</dt><dd>Защита формы в 6 слоёв, перенос сайта на новый сервер, доступ из России восстановлен, заявки уходят на почту владельца.</dd></div></dl>
+        <div class="tags"><span>защита форм</span><span>сервер</span><span>безопасность</span></div></article>
+      <article class="panel" data-rv><span class="who">Работа с Китаем · ВЭД и логистика</span><h3>Заявки, консультации и оплата — без ручного переноса</h3>
+        <dl><div><dt>Было</dt><dd>Заявки по 9 направлениям приходили в разные чаты, запись на консультации и напоминания вели вручную.</dd></div>
+        <div><dt>Сделали</dt><dd>Бот с анкетами — каждая заявка сразу в Битрикс24 и нужному менеджеру. ИИ-агент консультирует по базе знаний. Приложение в Telegram: запись, оплата, встреча в Zoom и напоминания создаются сами.</dd></div></dl>
+        <div class="tags"><span>Telegram-бот</span><span>ИИ-агент</span><span>Битрикс24</span><span>оплата</span></div></article>
+      <article class="panel" data-rv><span class="who">Привоз автомобилей</span><h3>ИИ-ассистент ведёт первый диалог за менеджера</h3>
+        <dl><div><dt>Было</dt><dd>Менеджер вручную искал покупателей в чатах и отвечал каждому на одни и те же вопросы.</dd></div>
+        <div><dt>Сделали</dt><dd>Система сама находит в чатах сообщения «куплю», ассистент отвечает от имени менеджера, понимает голосовые и передаёт готового клиента. Менеджер может перехватить диалог в любой момент.</dd></div></dl>
+        <div class="tags"><span>поиск клиентов</span><span>Telegram Business</span><span>голосовые</span></div></article>
+      <article class="panel" data-rv><span class="who">Контент для бренда</span><h3>Контент по системе, а не «когда будет время»</h3>
+        <dl><div><dt>Было</dt><dd>Темы, сценарии и монтаж каждый раз собирались с нуля, контент выходил нерегулярно.</dd></div>
+        <div><dt>Сделали</dt><dd>Система разбирает конкурентов, отбирает темы по 7 критериям, пишет сценарии и статьи под 8 площадок, монтирует ролики с субтитрами автоматически.</dd></div></dl>
+        <div class="tags"><span>контент</span><span>монтаж видео</span><span>аналитика</span></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="about">
+  <div class="wrap">
+    <span class="kick" data-rv>О нас</span>
+    <h2 class="h2" data-rv>Нас двое, и мы <em>делаем всё сами</em></h2>
+    <p class="lead" data-rv>Мы из Владивостока. Приезжаем к вам, разбираемся в процессах и сами пишем код, без подрядчиков и посредников. Вы всегда знаете, кто отвечает за результат.</p>
+    <div class="team">
+      <article class="panel" data-rv><div class="ph">Т</div><div><h3>Тимур</h3><div class="role">Автоматизация и разработка</div>
+        <p>Telegram-боты и приложения, ИИ-агенты, интеграции с CRM и сервисами, серверы и защита сайтов. Ведёт внедрение от разбора до запуска.</p></div></article>
+      <article class="panel" data-rv><div class="ph">Я</div><div><h3>Ярик</h3><div class="role">Контент-системы и веб-сервисы</div>
+        <p>Системы для контента: разбор конкурентов, сценарии, монтаж видео кодом, публикация и аналитика. Веб-сервисы и внутренние инструменты.</p></div></article>
+    </div>
+    <div class="facts" data-rv><span>Владивосток</span><span>Приезжаем на разбор в офис</span><span>Дальний Восток — удалённо</span><span>Код и доступы остаются у вас</span></div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <span class="kick" data-rv>Вопросы</span>
+    <h2 class="h2" data-rv>Что обычно <em>спрашивают</em></h2>
+    <div class="faq">
+      <details class="panel" data-rv><summary>Что такое ИИ-агент простыми словами?</summary><p>Это программа, которая выполняет рутинную работу сотрудника: отвечает клиентам, переносит заявки в CRM, собирает отчёты, напоминает о встречах. Она работает по вашим правилам и передаёт человеку то, что требует решения.</p></details>
+      <details class="panel" data-rv><summary>Сколько стоит разбор и к чему он обязывает?</summary><p>Разбор бесплатный и ни к чему не обязывает. Вы получаете карту рутины: какие процессы можно автоматизировать, сколько времени они занимают сейчас и сколько стоит внедрение. Дальше решаете сами.</p></details>
+      <details class="panel" data-rv><summary>Нужно ли менять программы, которыми мы пользуемся?</summary><p>Нет. Мы подключаемся к тому, что у вас уже есть: Telegram, Instagram, почта, сайт, Битрикс24, Google Таблицы и Диск. Другие системы смотрим на разборе.</p></details>
+      <details class="panel" data-rv><summary>Что будет, если агент ошибётся?</summary><p>Агент работает в рамках заданных правил, а сложные вопросы передаёт человеку. Вы видите все диалоги и действия агента, а мы регулярно разбираем ошибки и дорабатываем его.</p></details>
+      <details class="panel" data-rv><summary>Как быстро всё заработает?</summary><p>Первые агенты начинают работать примерно через 2 недели после разбора. Если проект большой, срок называем заранее, до начала работ.</p></details>
+      <details class="panel" data-rv><summary>Насколько это безопасно для наших данных?</summary><p>Доступы хранятся в одном защищённом месте, а не в переписке. Перед любыми изменениями делаем резервную копию. Код и доступы остаются у вас.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec cta-sec" id="form">
+  <div class="wrap form-grid">
+    <div>
+      <span class="kick" data-rv>Бесплатный разбор процессов</span>
+      <h2 class="h2" data-rv>Покажем, что можно <em>передать агентам</em></h2>
+      <ul class="gets" data-rv>
+        <li>Разговор с вами и сотрудниками — 1–2 часа</li>
+        <li>Через день — карта рутины вашего бизнеса</li>
+        <li>Что забираем, сколько часов это занимает, сколько стоит</li>
+        <li>Ни к чему не обязывает</li>
+      </ul>
+      <div class="contact" data-rv><span class="soon">Telegram и телефон — к запуску</span></div>
+    </div>
+    <form class="panel lead-form" id="leadForm" novalidate data-rv>
+      <label>Как вас зовут<input name="name" autocomplete="name" required maxlength="80"></label>
+      <label>Телефон или Telegram<input name="contact" autocomplete="tel" required maxlength="80" placeholder="+7 … или @username"></label>
+      <label>Что отнимает у команды больше всего времени?<textarea name="pain" maxlength="1500" placeholder="Например: менеджеры весь день отвечают в WhatsApp на одни и те же вопросы"></textarea></label>
+      <div class="hp" aria-hidden="true"><label>Компания<input name="company" tabindex="-1" autocomplete="off"></label></div>
+      <button type="submit">Записаться на бесплатный разбор</button>
+      <p class="ok" id="formMsg" role="status" aria-live="polite"></p>
+      <small>Отправляя форму, вы соглашаетесь на обработку персональных данных для связи с вами.</small>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <a class="logo" href="#stage"><span>vostok<b>.ai</b></span></a>
+    <nav><a href="#how">Как работаем</a><a href="#services">Услуги</a><a href="#cases">Кейсы</a><a href="#about">О нас</a><a href="#faq">Вопросы</a><a href="#form">Разбор</a></nav>
+    <span>Владивосток · © 2026 Восток AI</span>
+  </div>
+</footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 window.STORY = {
-  nav: [['Как работаем', '#after'], ['Услуги', '#after'], ['Кейсы', '#after'], ['О нас', '#after']],
+  nav: [['Как работаем', '#how'], ['Услуги', '#services'], ['Кейсы', '#cases'], ['О нас', '#about']],
   cta: 'Бесплатный разбор процессов',
   top: {mode: 'clock'},
   num: {peak: 84, after: 30},
@@ -43,5 +188,6 @@ window.THEME_BG = el => {
   return {};
 };
 </script>
-<script src="engine.js?v=6"></script>
+<script src="engine.js?v=9"></script>
+<script src="site.js?v=9"></script>
 </body></html>

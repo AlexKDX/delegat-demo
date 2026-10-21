@@ -4,13 +4,15 @@
   const T = window.STORY;
   gsap.registerPlugin(ScrollTrigger);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce) { const lenis = new Lenis({lerp: .075}); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+  let lenis = null;
+  if (!reduce) { lenis = new Lenis({lerp: .075}); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+  // in-page links: smooth scroll past the pinned scene to the section
+  document.addEventListener('click', e => { const a = e.target.closest('a[href^="#"]'); const el = a && a.hash.length > 1 && document.querySelector(a.hash); if (!el) return; e.preventDefault(); lenis ? lenis.scrollTo(el, {offset: -70}) : el.scrollIntoView(); });
   const pad2 = n => String(n).padStart(2, '0');
 
   // ---------- chrome
   const sun = `<svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="hsea"><polygon points="0,0 100,0 ${Array.from({length:51},(_,i)=>{const x=100-i*2;return x+','+(58-3.75*Math.sin(Math.PI*(x-10)/20)).toFixed(2)}).join(' ')}"/></clipPath></defs><circle cx="50" cy="54" r="25" fill="var(--acc)" clip-path="url(#hsea)"/>${[58,71,84].map((y,i)=>`<path d="M10 ${y}c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" fill="none" stroke="${i?'currentColor':'var(--acc)'}" stroke-width="6" stroke-linecap="round" opacity="${[1,.75,.45][i]}"/>`).join('')}</svg>`;
-  document.body.insertAdjacentHTML('afterbegin', `<header class="top"><a class="logo" href="./">${sun}<span>vostok<b>.ai</b></span></a><nav>${T.nav.map(([t, h]) => `<a href="${h}">${t}</a>`).join('')}<a class="btn" href="#after"><span class="l">${T.cta}</span><span class="s">Бесплатный разбор</span></a></nav></header>`);
-  document.body.insertAdjacentHTML('beforeend', `<section class="after" id="after"><p>Здесь начинается обычный сайт: разбор, услуги, кейсы, команда, форма.</p></section>`);
+  document.body.insertAdjacentHTML('afterbegin', `<header class="top"><a class="logo" href="./">${sun}<span>vostok<b>.ai</b></span></a><nav>${T.nav.map(([t, h]) => `<a href="${h}">${t}</a>`).join('')}<a class="btn" href="#form"><span class="l">${T.cta}</span><span class="s">Бесплатный разбор</span></a></nav></header>`);
 
   const stage = document.getElementById('stage');
   const cap = (c, i) => `<div class="cap" id="c${i + 1}"><span class="k">${c.k}</span>${i ? `<h2>${c.h}</h2>` : `<h1>${c.h}</h1>`}${c.p ? `<p>${c.p}</p>` : ''}</div>`;
@@ -20,7 +22,7 @@
     ${T.caps.map(cap).join('')}
     <div class="result"><div>${T.result.map(r => `<div class="row ${r.c || ''}" data-r>${r.t}</div>`).join('')}
       <ol class="steps" data-r>${T.steps.map((s, i) => `<li><span class="sn">${pad2(i + 1)}</span><b>${s[0]}</b><span>${s[1]}</span></li>`).join('')}</ol>
-      <a class="cta" data-r href="#after">${T.cta} →</a><p class="note" data-r>${T.note}</p></div></div>
+      <a class="cta" data-r href="#form">${T.cta} →</a><p class="note" data-r>${T.note}</p></div></div>
     <div class="hint" id="hint"><div class="mouse"></div><span class="lbl">Листайте вниз</span><div class="chev"><i></i><i></i></div></div>`);
   const bgApi = window.THEME_BG ? window.THEME_BG(document.getElementById('bg')) || {} : {};
 

@@ -87,7 +87,8 @@ body{margin:0;background:var(--ink);color:var(--fg);font:16px/1.5 var(--display)
 .v5 .orbit em{position:absolute;width:44px;height:44px;margin:-22px;border-radius:12px;display:grid;place-items:center;box-shadow:0 8px 24px -6px #000;animation:spin 18s linear infinite reverse}
 .v5 .orbit em svg{width:26px;height:26px;transform:rotate(calc(var(--i)*-60deg))}
 @keyframes spin{to{transform:rotate(360deg)}}
-.v5 .lbl{margin-top:calc(var(--s)*.36)}
+.v5 .lbl{margin-top:calc(var(--s)*.5)}
+.agent.v3 .body{display:block}
 .cap{position:absolute;left:max(24px,env(safe-area-inset-left,0px));bottom:max(15vh,120px);z-index:7;max-width:min(720px,90vw)}
 .cap .k{display:block;font:500 14px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
 .cap h2{margin:0;font:800 clamp(32px,4.4vw,64px)/1.02 var(--display);letter-spacing:-.035em;text-wrap:balance}

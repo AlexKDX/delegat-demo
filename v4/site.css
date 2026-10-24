@@ -164,3 +164,5 @@ form.lead-form{padding:clamp(22px,3vw,34px);display:grid;gap:16px}
 .join-form .wide,.join-form button,.join-form .ok{grid-column:1/-1}
 .join-form button{justify-self:start}
 @media (max-width:760px){.join summary{flex-wrap:wrap;gap:14px;padding:20px}.ji{width:48px;height:48px}.ji svg{width:24px;height:24px}.jb{width:100%;text-align:center}.join-form{grid-template-columns:1fr;padding:0 20px 20px}}
+.team .award{margin-top:12px;padding-left:26px;position:relative;color:var(--fg);font-size:14.5px}
+.team .award::before{content:"🏆";position:absolute;left:0;top:0}

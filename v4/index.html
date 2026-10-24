@@ -9,8 +9,8 @@
 <meta name="theme-color" content="#141413">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Manrope:wght@800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="engine.css?v=15">
-<link rel="stylesheet" href="site.css?v=15">
+<link rel="stylesheet" href="engine.css?v=16">
+<link rel="stylesheet" href="site.css?v=16">
 <style>
 /* Главная «Восток AI». Тема «Claude · ночь». */
 :root{--ink:#141413;--fg:#F0EFEA;--muted:#a3a29c;--acc:#D97757;--acc-ink:#141413;--hot:#6A9BCC;--card:#1c1c1a;--card-2:#232320;--card-line:#ffffff12;--card-fg:#F0EFEA;--card-muted:#91918D;--scrim:20,20,19}
@@ -72,28 +72,49 @@
   <div class="wrap">
     <span class="kick" data-rv>Что уже сделали</span>
     <h2 class="h2" data-rv>Работает <em>у наших клиентов</em></h2>
-    <p class="lead" data-rv>Названия компаний покажем после их согласия. Подробности каждого проекта расскажем на разборе.</p>
-    <div class="cases">
-      <article class="panel" data-rv><span class="who">Автоимпорт · Владивосток</span><h3>Спам-заявки на сайте остановлены полностью</h3>
+    <p class="lead" data-rv>Реальные проекты, которые мы сделали и сопровождаем. Подробности каждого расскажем на разборе.</p>
+
+    <article class="case panel" data-rv>
+      <div class="case-txt">
+        <span class="who">GENIXAUTO · импорт автомобилей · Владивосток</span>
+        <h3>Спам-заявки на сайте остановлены полностью</h3>
         <dl><div><dt>Было</dt><dd>Боты заваливали форму фейковыми заявками, менеджеры тратили время на разбор мусора. Сайт перестал открываться у операторов РФ.</dd></div>
         <div><dt>Сделали</dt><dd>Защита формы в 6 слоёв, перенос сайта на новый сервер, доступ из России восстановлен, заявки уходят на почту владельца.</dd></div></dl>
-        <div class="tags"><span>защита форм</span><span>сервер</span><span>безопасность</span></div></article>
-      <article class="panel" data-rv><span class="who">Работа с Китаем · ВЭД и логистика</span><h3>Заявки, консультации и оплата — без ручного переноса</h3>
+        <div class="tags"><span>защита форм</span><span>сервер</span><span>безопасность</span></div>
+        <a class="go" href="https://genixauto.ru/" target="_blank" rel="noopener">genixauto.ru ↗</a>
+      </div>
+      <div class="case-media">
+        <figure class="mac"><div class="lid"><img src="img/genixauto.jpg" width="1800" height="1125" alt="Сайт genixauto.ru — импорт автомобилей из Японии, Кореи, Китая" loading="lazy" decoding="async"></div><div class="base"></div></figure>
+      </div>
+    </article>
+
+    <article class="case panel rev" data-rv>
+      <div class="case-txt">
+        <span class="who">ChinaGoTrade · LT Group · работа с Китаем</span>
+        <h3>Заявки, консультации и оплата — без ручного переноса</h3>
         <dl><div><dt>Было</dt><dd>Заявки по 9 направлениям приходили в разные чаты, запись на консультации и напоминания вели вручную.</dd></div>
         <div><dt>Сделали</dt><dd>Бот с анкетами — каждая заявка сразу в Битрикс24 и нужному менеджеру. ИИ-агент консультирует по базе знаний. Приложение в Telegram: запись, оплата, встреча в Zoom и напоминания создаются сами.</dd></div></dl>
-        <div class="tags"><span>Telegram-бот</span><span>ИИ-агент</span><span>Битрикс24</span><span>оплата</span></div></article>
+        <div class="tags"><span>Telegram-бот</span><span>ИИ-агент</span><span>Битрикс24</span><span>оплата</span></div>
+        <a class="go" href="https://t.me/ChinaGoTrade_bot" target="_blank" rel="noopener">@ChinaGoTrade_bot ↗</a>
+      </div>
+      <div class="case-media phones">
+        <figure class="phone"><img src="img/cgt-home.jpg" width="780" height="1688" alt="Мини-приложение ChinaGoTrade в Telegram: главный экран" loading="lazy" decoding="async"></figure>
+        <figure class="phone"><img src="img/cgt-consult.jpg" width="780" height="1688" alt="Мини-приложение ChinaGoTrade: запись на стратегическую сессию" loading="lazy" decoding="async"></figure>
+      </div>
+    </article>
+
+    <div class="cases">
       <article class="panel" data-rv><span class="who">Привоз автомобилей</span><h3>ИИ-ассистент ведёт первый диалог за менеджера</h3>
-        <dl><div><dt>Было</dt><dd>Менеджер вручную искал покупателей в чатах и отвечал каждому на одни и те же вопросы.</dd></div>
-        <div><dt>Сделали</dt><dd>Система сама находит в чатах сообщения «куплю», ассистент отвечает от имени менеджера, понимает голосовые и передаёт готового клиента. Менеджер может перехватить диалог в любой момент.</dd></div></dl>
-        <div class="tags"><span>поиск клиентов</span><span>Telegram Business</span><span>голосовые</span></div></article>
-      <article class="panel" data-rv><span class="who">Контент для бренда</span><h3>Контент по системе, а не «когда будет время»</h3>
+        <dl><div><dt>Было</dt><dd>Менеджер вручную искал покупателей и отвечал каждому на одни и те же вопросы.</dd></div>
+        <div><dt>Сделали</dt><dd>Ассистент пишет и отвечает от имени менеджера, понимает голосовые и передаёт готового клиента. Менеджер может перехватить диалог в любой момент.</dd></div></dl>
+        <div class="tags"><span>ИИ-ассистент</span><span>Telegram Business</span><span>голосовые</span></div></article>
+      <article class="panel" data-rv><span class="who">ChinaGoTrade · контент</span><h3>Контент по системе, а не «когда будет время»</h3>
         <dl><div><dt>Было</dt><dd>Темы, сценарии и монтаж каждый раз собирались с нуля, контент выходил нерегулярно.</dd></div>
         <div><dt>Сделали</dt><dd>Система разбирает конкурентов, отбирает темы по 7 критериям, пишет сценарии и статьи под 8 площадок, монтирует ролики с субтитрами автоматически.</dd></div></dl>
         <div class="tags"><span>контент</span><span>монтаж видео</span><span>аналитика</span></div></article>
     </div>
   </div>
 </section>
-
 <section class="sec" id="about">
   <div class="wrap">
     <span class="kick" data-rv>О нас</span>
@@ -189,6 +210,6 @@ window.THEME_BG = el => {
   return {};
 };
 </script>
-<script src="engine.js?v=15"></script>
-<script src="site.js?v=15"></script>
+<script src="engine.js?v=16"></script>
+<script src="site.js?v=16"></script>
 </body></html>

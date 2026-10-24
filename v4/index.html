@@ -9,8 +9,8 @@
 <meta name="theme-color" content="#141413">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Manrope:wght@800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="engine.css?v=16">
-<link rel="stylesheet" href="site.css?v=16">
+<link rel="stylesheet" href="engine.css?v=17">
+<link rel="stylesheet" href="site.css?v=17">
 <style>
 /* Главная «Восток AI». Тема «Claude · ночь». */
 :root{--ink:#141413;--fg:#F0EFEA;--muted:#a3a29c;--acc:#D97757;--acc-ink:#141413;--hot:#6A9BCC;--card:#1c1c1a;--card-2:#232320;--card-line:#ffffff12;--card-fg:#F0EFEA;--card-muted:#91918D;--scrim:20,20,19}
@@ -118,13 +118,26 @@
 <section class="sec" id="about">
   <div class="wrap">
     <span class="kick" data-rv>О нас</span>
-    <h2 class="h2" data-rv>Нас двое, и мы <em>делаем всё сами</em></h2>
+    <h2 class="h2" data-rv>Команда, которая <em>делает всё сама</em></h2>
     <p class="lead" data-rv>Мы из Владивостока. Приезжаем к вам, разбираемся в процессах и сами пишем код, без подрядчиков и посредников. Вы всегда знаете, кто отвечает за результат.</p>
     <div class="team">
-      <article class="panel" data-rv><div class="ph">Т</div><div><h3>Тимур</h3><div class="role">Автоматизация и разработка</div>
+      <article class="panel" data-rv><div class="ph">А</div><div><h3>Александр Умаров</h3><div class="role">Автоматизация и разработка</div>
         <p>Telegram-боты и приложения, ИИ-агенты, интеграции с CRM и сервисами, серверы и защита сайтов. Ведёт внедрение от разбора до запуска.</p></div></article>
-      <article class="panel" data-rv><div class="ph">Я</div><div><h3>Ярик</h3><div class="role">Контент-системы и веб-сервисы</div>
-        <p>Системы для контента: разбор конкурентов, сценарии, монтаж видео кодом, публикация и аналитика. Веб-сервисы и внутренние инструменты.</p></div></article>
+      <article class="panel" data-rv><div class="ph"><img src="img/yaroslav.jpg" width="400" height="400" alt="Ярослав Черчик" loading="lazy" decoding="async"></div><div><h3>Ярослав Черчик</h3><div class="role">ИИ-агенты, DevOps, контент-системы</div>
+        <p>Системный и DevOps-инженер, ВВГУ («Информационные технологии и программирование»). Telegram-боты и Mini App, ИИ-агенты, интеграции с Битрикс24 и маркетплейсами, контент-системы с монтажом видео кодом.</p></div></article>
+      <details class="panel join" id="join" data-rv>
+        <summary><span class="ji" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M19 7v6M16 10h6"/></svg></span>
+          <span class="jt"><b>Ищем людей в команду</b><span>Молодой, креативный и разбираешься в ИИ, автоматизации, дизайне или разработке? Присоединяйся к нам.</span></span>
+          <span class="jb">Хочу в команду</span></summary>
+        <form class="lead-form join-form" data-kind="join" novalidate>
+          <label>Как тебя зовут<input name="name" autocomplete="name" required maxlength="80"></label>
+          <label>Телефон или Telegram<input name="contact" autocomplete="tel" required maxlength="80" placeholder="+7 … или @username"></label>
+          <label class="wide">Что умеешь и что хочешь делать<textarea name="pain" maxlength="1500" placeholder="Пара строк о себе и ссылки на работы: GitHub, Behance, канал"></textarea></label>
+          <div class="hp" aria-hidden="true"><label>Компания<input name="company" tabindex="-1" autocomplete="off"></label></div>
+          <button type="submit">Отправить заявку</button>
+          <p class="ok" role="status" aria-live="polite"></p>
+        </form>
+      </details>
     </div>
     <div class="facts" data-rv><span>Владивосток</span><span>Приезжаем на разбор в офис</span><span>Дальний Восток — удалённо</span><span>Код и доступы остаются у вас</span></div>
   </div>
@@ -164,7 +177,7 @@
       <label>Что отнимает у команды больше всего времени?<textarea name="pain" maxlength="1500" placeholder="Например: менеджеры весь день отвечают в WhatsApp на одни и те же вопросы"></textarea></label>
       <div class="hp" aria-hidden="true"><label>Компания<input name="company" tabindex="-1" autocomplete="off"></label></div>
       <button type="submit">Записаться на бесплатный разбор</button>
-      <p class="ok" id="formMsg" role="status" aria-live="polite"></p>
+      <p class="ok" role="status" aria-live="polite"></p>
       <small>Отправляя форму, вы соглашаетесь на обработку персональных данных для связи с вами.</small>
     </form>
   </div>
@@ -210,6 +223,6 @@ window.THEME_BG = el => {
   return {};
 };
 </script>
-<script src="engine.js?v=16"></script>
-<script src="site.js?v=16"></script>
+<script src="engine.js?v=17"></script>
+<script src="site.js?v=17"></script>
 </body></html>

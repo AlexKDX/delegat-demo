@@ -126,7 +126,7 @@
   gsap.set('#center', {autoAlpha: 0, y: 30});
   const hot = getComputedStyle(document.documentElement).getPropertyValue('--hot').trim(), acc = getComputedStyle(document.documentElement).getPropertyValue('--acc').trim(), fg = getComputedStyle(document.documentElement).getPropertyValue('--fg').trim();
 
-  var tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: stage, start: 'top top', end: '+=750%', pin: true, scrub: 1, onUpdate: s => { st.p = s.progress; }}});
+  var tl = gsap.timeline({defaults: {ease: 'none'}, scrollTrigger: {trigger: stage, start: 'top top', end: '+=420%', pin: true, scrub: 1, onUpdate: s => { st.p = s.progress; }}});
   tl.to('#hint', {autoAlpha: 0, duration: .3}, .3)
     .to('#c1', {autoAlpha: 0, y: -20, duration: .4}, .7)
     .to('#center', {autoAlpha: 1, y: 0, duration: .4, ease: 'power3.out'}, 1.0)

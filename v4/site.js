@@ -34,7 +34,7 @@
 
   // Forms → mini-backend on our VPS (Telegram bot). Until it exists, say so honestly.
   // On vostokai.ru the form talks to our API (server/form_api.py); on the GitHub demo it stays off.
-  const LIVE = /(^|\.)vostokai\.ru$/.test(location.hostname), FORM_URL = LIVE ? '/api/lead' : '', t0 = Date.now();
+  const LIVE = /(^|\.)vostokai\.ru$/.test(location.hostname), FORM_URL = LIVE ? '/api/lead' : '';
   // signed time-trap token: fetched on page load, so its age = time on page (autofill + fast submit still passes the 3 s check)
   let tokenP = null;
   const getToken = () => tokenP || (tokenP = fetch('/api/token', {cache: 'no-store'}).then(r => r.json()).then(j => j.t).catch(() => { tokenP = null; return ''; }));
@@ -51,7 +51,7 @@
     if (!form.consent.checked) { msg.textContent = 'Отметьте согласие на обработку персональных данных.'; form.consent.focus(); return; }
     // bots: hidden field filled or sent faster than a human types → pretend success, send nothing.
     // The field is named hp_note on purpose: a field called «company» gets filled by browser autofill → real leads were lost.
-    if (d.hp_note || Date.now() - t0 < 3000) return done();
+    if (d.hp_note) return done();  // слишком быструю отправку отсекает сервер (подписанный токен)
     if (!FORM_URL) { msg.textContent = 'Форма заработает после запуска сайта. Совсем скоро.'; return; }
     const btn = form.querySelector('button[type=submit]');
     if (btn.disabled) return;

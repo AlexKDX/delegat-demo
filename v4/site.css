@@ -187,3 +187,7 @@ form.lead-form{padding:clamp(22px,3vw,34px);display:grid;gap:16px}
 .cookie a{color:var(--fg);text-decoration-color:var(--acc);text-underline-offset:3px}
 .cookie button{flex:none;padding:10px 16px;border:0;border-radius:999px;background:var(--acc);color:var(--acc-ink);font:700 14px var(--display);cursor:pointer}
 .cookie button:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+.lead-form .policy-note{margin:-4px 0 0 32px;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.lead-form .policy-note a{color:var(--muted);text-underline-offset:3px}
+.join-form .policy-note{grid-column:1/-1}
+.lead-form .consent.opt{font-size:13px}

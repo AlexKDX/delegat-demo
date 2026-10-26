@@ -13,7 +13,7 @@
 <link rel="preload" href="fonts/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts.css?v=1">
 <link rel="stylesheet" href="engine.css?v=26">
-<link rel="stylesheet" href="site.css?v=26">
+<link rel="stylesheet" href="site.css?v=27">
 <link rel="stylesheet" href="mobile.css?v=4">
 <style>
 /* Главная «Восток AI». Тема «Claude · ночь». */
@@ -140,7 +140,7 @@
           <label>Телефон или Telegram<input name="contact" autocomplete="tel" required maxlength="80" placeholder="+7 … или @username"></label>
           <label class="wide">Что умеешь и что хочешь делать<textarea name="pain" maxlength="1500" placeholder="Пара строк о себе и ссылки на работы: GitHub, Behance, канал"></textarea></label>
           <div class="hp" aria-hidden="true"><label>Компания<input name="company" tabindex="-1" autocomplete="off"></label></div>
-          <label class="consent"><input type="checkbox" name="consent" value="1" required> <span>Я даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a> и ознакомлен с <a href="policy.html" target="_blank" rel="noopener">политикой обработки персональных данных</a></span></label>
+          <label class="consent"><input type="checkbox" name="consent" value="1" required> <span>Я даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a></span></label><p class="policy-note">Как мы храним и защищаем данные — в <a href="policy.html" target="_blank" rel="noopener">политике обработки персональных данных</a>.</p>
           <button type="submit">Отправить заявку</button>
           <p class="ok" role="status" aria-live="polite"></p>
         </form>
@@ -183,7 +183,7 @@
       <label>Телефон или Telegram<input name="contact" autocomplete="tel" required maxlength="80" placeholder="+7 … или @username"></label>
       <label>Что отнимает у команды больше всего времени?<textarea name="pain" maxlength="1500" placeholder="Например: менеджеры весь день отвечают в WhatsApp на одни и те же вопросы"></textarea></label>
       <div class="hp" aria-hidden="true"><label>Компания<input name="company" tabindex="-1" autocomplete="off"></label></div>
-      <label class="consent"><input type="checkbox" name="consent" value="1" required> <span>Я даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a> и ознакомлен с <a href="policy.html" target="_blank" rel="noopener">политикой обработки персональных данных</a></span></label>
+      <label class="consent"><input type="checkbox" name="consent" value="1" required> <span>Я даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a></span></label><label class="consent opt"><input type="checkbox" name="ads" value="1"> <span>Согласен получать <a href="ads-consent.html" target="_blank" rel="noopener">информационные и рекламные сообщения</a> о новых услугах и кейсах (необязательно)</span></label><p class="policy-note">Как мы храним и защищаем данные — в <a href="policy.html" target="_blank" rel="noopener">политике обработки персональных данных</a>.</p>
       <button type="submit">Записаться на бесплатный разбор</button>
       <p class="ok" role="status" aria-live="polite"></p>
     </form>
@@ -199,7 +199,7 @@
   </div>
   <div class="wrap legal">
     <p><span class="req">[ФИО полностью или наименование]</span> · ИНН <span class="req">[ИНН]</span> · <span class="req">[ОГРНИП/ОГРН]</span> · <a href="mailto:[email]"><span class="req">[email]</span></a></p>
-    <p><a href="policy.html">Политика обработки персональных данных и cookie</a> · <a href="consent.html">Согласие на обработку персональных данных</a></p>
+    <p><a href="policy.html">Политика обработки персональных данных и cookie</a> · <a href="consent.html">Согласие на обработку персональных данных</a> · <a href="ads-consent.html">Согласие на рекламные сообщения</a></p>
     <p>Информация на сайте носит ознакомительный характер и не является публичной офертой (ст. 437 ГК РФ).</p>
   </div>
 </footer>
@@ -209,5 +209,5 @@
 <script src="vendor/lenis.min.js?v=1.1.13"></script>
 <script src="story.js?v=2"></script>
 <script src="engine.js?v=26"></script>
-<script src="site.js?v=27"></script>
+<script src="site.js?v=28"></script>
 </body></html>

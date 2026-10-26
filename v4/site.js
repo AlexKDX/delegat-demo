@@ -53,7 +53,7 @@
     if (d.company || Date.now() - t0 < 3000) return done();
     if (!FORM_URL) { msg.textContent = 'Форма заработает после запуска сайта. Совсем скоро.'; return; }
     try {
-      const r = await fetch(FORM_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({...d, consent: true, kind: form.dataset.kind || 'audit', t: await getToken()})});
+      const r = await fetch(FORM_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({...d, consent: true, ads: !!(form.ads && form.ads.checked), kind: form.dataset.kind || 'audit', t: await getToken()})});
       if (!r.ok) throw 0;
       done();
     } catch { msg.textContent = 'Не получилось отправить. Попробуйте ещё раз через минуту.'; }

@@ -68,4 +68,12 @@
   .svc-cta{display:inline-flex;justify-content:center;margin-top:14px;padding:12px 18px;border-radius:999px;background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:15px;text-decoration:none}
   [data-acc]:not(.open) .svc-cta{display:none}
 }
-@media (min-width:601px){.svc-cta{display:none}}
+/* планшет и десктоп: карточка услуги кликается, раскрывается кнопка заявки */
+@media (min-width:601px){
+  .svc>article:not(.more){cursor:pointer}
+  .svc-cta{display:flex;justify-content:center;margin-top:14px;padding:13px 20px;border-radius:999px;background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:15px;text-decoration:none;animation:ctaIn .3s ease-out}
+  .svc article:not(.open) .svc-cta{display:none}
+  .svc article.open{border-color:var(--acc)}
+  .svc-cta:hover,.svc-cta:focus-visible{filter:brightness(1.08)}
+  @keyframes ctaIn{from{opacity:0;transform:translateY(-6px)}}
+}

@@ -20,7 +20,8 @@
     const cta = e.target.closest('.svc-cta');
     if (cta) { const pain = document.querySelector('#leadForm [name=pain]'); if (pain && !pain.value) pain.value = 'Интересует: ' + cta.closest('article').querySelector('h3').textContent; return; }
     const el = e.target.closest('[data-acc]');
-    if (el && innerWidth <= 600 && !e.target.closest('a,button,input,textarea')) el.classList.toggle('open');
+    // phones: every card is an accordion; wider screens: only service cards open (to reveal the request button)
+    if (el && (innerWidth <= 600 || el.closest('.svc')) && !e.target.closest('a,button,input,textarea')) el.classList.toggle('open');
   });
 
   // Forms → mini-backend on our VPS (Telegram bot). Until it exists, say so honestly.

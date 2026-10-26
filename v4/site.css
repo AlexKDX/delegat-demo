@@ -166,3 +166,7 @@ form.lead-form{padding:clamp(22px,3vw,34px);display:grid;gap:16px}
 @media (max-width:760px){.join summary{flex-wrap:wrap;gap:14px;padding:20px}.ji{width:48px;height:48px}.ji svg{width:24px;height:24px}.jb{width:100%;text-align:center}.join-form{grid-template-columns:1fr;padding:0 20px 20px}}
 .team .award{margin-top:12px;padding-left:26px;position:relative;color:var(--fg);font-size:14.5px}
 .team .award::before{content:"🏆";position:absolute;left:0;top:0}
+.team .lead-card{grid-column:1/-1;grid-template-columns:180px 1fr}
+.team .lead-card .ph{width:180px}
+.team .quote{margin-top:14px;padding-left:16px;border-left:2px solid var(--acc);color:var(--fg);font-style:italic}
+@media (max-width:560px){.team .lead-card{grid-template-columns:84px 1fr}.team .lead-card .ph{width:84px}}

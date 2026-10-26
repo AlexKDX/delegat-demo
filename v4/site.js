@@ -4,11 +4,10 @@
   const hdr = document.querySelector('.top .logo svg');
   if (hdr) document.querySelector('.foot .logo').prepend(hdr.cloneNode(true));
 
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    gsap.utils.toArray('[data-rv]').forEach(el => gsap.from(el, {
-      y: 40, autoAlpha: 0, duration: .8, ease: 'power3.out',
-      scrollTrigger: {trigger: el, start: 'top 88%', once: true},
-    }));
+  // reveal on scroll: one IntersectionObserver + CSS transition (cheaper than a ScrollTrigger per block)
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {rootMargin: '0px 0px -12% 0px'});
+    document.querySelectorAll('[data-rv]').forEach(el => { el.classList.add('rv'); io.observe(el); });
   }
 
   // Phones (≤600px, CSS in mobile.css): cards collapse to accordions, tap to open

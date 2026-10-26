@@ -19,7 +19,7 @@
   stage.insertAdjacentHTML('beforeend', `
     <div id="bg"></div><div class="pile" id="pile"></div><div class="scrim"></div><div class="capscrim"></div><div class="agent" id="agent"></div>
     <div class="center" id="center"><div><div class="week" id="week"></div><div class="clock" id="clock"></div><div class="num" id="num">0</div><div class="unit" id="unit">${T.unit[0]}</div></div></div>
-    ${T.caps.map(cap).join('')}
+    ${T.caps.map(cap).filter((_, i) => i || !document.getElementById('c1')).join('')}
     <div class="result"><div>${T.result.map(r => `<div class="row ${r.c || ''}" data-r>${r.t}</div>`).join('')}
       <ol class="steps" data-r>${T.steps.map((s, i) => `<li><span class="sn">${pad2(i + 1)}</span><b>${s[0]}</b><span>${s[1]}</span></li>`).join('')}</ol>
       <a class="cta" data-r href="#form">${T.cta} →</a><p class="note" data-r>${T.note}</p></div></div>
@@ -66,14 +66,19 @@
   const caps0 = ['#c2', '#c3'].map(s => box(s, 28)), numBox = box('#num', mob ? 4 : 30), unitBox = box('#unit', 10);
   const keepOut = [...caps0, numBox, unitBox, {l: -1e4, t: -1e4, r: 1e4, b: 72}];
   const hits = (a, b) => a.l < b.r && a.r > b.l && a.t < b.b && a.b > b.t;
-  const cards = Array.from({length: N}, (_, i) => {
+  // build all cards in one fragment, then read every size in one layout pass (no per-card reflow)
+  const els = Array.from({length: N}, (_, i) => {
     const [ic, app, nm, msg, tag] = pick(i), el = document.createElement('div');
     el.className = 'card';
     const hh = 9 + (i * 5 % 9), mm = (i * 17) % 60;
     el.innerHTML = `<div class="hd"><div class="ic" style="background:${IC[ic][0]}"><svg viewBox="0 0 24 24">${IC[ic][1]}</svg></div><div class="who"><div class="app">${app}</div><div class="nm">${nm}</div></div><div class="tm">${pad2(hh)}:${pad2(mm)}</div></div><div class="msg">${msg}</div><div class="ft"><span class="tag">${tag}</span><span>${i % 3 === 0 ? 'не прочитано' : 'в работе'}</span></div>` + (i % 3 === 0 ? `<div class="badge">${Math.round(rnd(2, 38))}</div>` : '');
-    pile.append(el);
-    // depth: far cards are smaller, softer and dimmer; keep the centre clear for the counter
-    const z = rnd(0, 1), s = .62 + z * .42, w = el.offsetWidth, h = el.offsetHeight;
+    return el;
+  });
+  const frag = document.createDocumentFragment(); els.forEach(el => frag.append(el)); pile.append(frag);
+  const sizes = els.map(el => [el.offsetWidth, el.offsetHeight]);
+  const cards = els.map((el, i) => {
+    // depth: far cards are smaller and dimmer; keep the centre clear for the counter
+    const z = rnd(0, 1), s = .62 + z * .42, [w, h] = sizes[i];
     // scale is around the centre, so test the visual (scaled) rect; the drift up of ≤40px is covered by the padding
     let x, y, ok = false;
     for (let k = 0; k < 300 && !ok; k++) {
@@ -82,9 +87,10 @@
       ok = !keepOut.some(z => hits(vis, z));
     }
     if (!ok) { el.remove(); return null; }
-    Object.assign(el, {_x: x, _y: y, _z: z});
+    Object.assign(el, {_x: x, _y: y, _z: z, _w: w, _h: h});
     el.style.zIndex = Math.round(z * 10);
-    gsap.set(el, {x: el._x, y: el._y + 60, rotation: rnd(-6, 6), autoAlpha: 0, scale: s, filter: `blur(${((1 - z) * 2.2).toFixed(1)}px) brightness(${(.62 + z * .38).toFixed(2)})`});
+    // blur is a paint cost: static and desktop-only; phones get depth from opacity alone
+    gsap.set(el, {x, y: y + 60, rotation: rnd(-6, 6), autoAlpha: 0, scale: s, ...(mob ? {} : {filter: `blur(${((1 - z) * 2.2).toFixed(1)}px) brightness(${(.62 + z * .38).toFixed(2)})`})});
     return el;
   }).filter(Boolean);
 
@@ -141,10 +147,10 @@
   });
   // cards fly into the agent (screen centre)
   const bodyC = () => { const r = agent.querySelector('.body').getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; };
-  const cx = c => bodyC().x - c.offsetWidth / 2, cy = c => bodyC().y - c.offsetHeight / 2;
+  const cx = c => bodyC().x - c._w / 2, cy = c => bodyC().y - c._h / 2;
   tl.to('#center', {autoAlpha: 0, scale: .96, duration: .3}, 4.8)
     .to(agent, {autoAlpha: 1, scale: .35, duration: .3, ease: 'power2.out'}, 4.8);
-  cards.forEach((c, i) => tl.call(() => c.classList.add('done'), null, 4.95).to(c, {x: () => cx(c), y: () => cy(c), rotation: 0, scale: .05, autoAlpha: 0, filter: 'blur(0px) brightness(1.4)', duration: .6, ease: 'power3.in'}, 5.0 + (i / cards.length) * .7));
+  cards.forEach((c, i) => tl.call(() => c.classList.add('done'), null, 4.95).to(c, {x: () => cx(c), y: () => cy(c), rotation: 0, scale: .05, autoAlpha: 0, duration: .6, ease: 'power3.in'}, 5.0 + (i / cards.length) * .7));
   tl.to(agent, {scale: 1, duration: 1.1, ease: 'power2.out'}, 5.1)
     .to(proc, {n: cards.length, duration: .9, onUpdate: renderProc}, 5.2)
     .fromTo('#agent .lbl', {autoAlpha: 0, y: 12}, {autoAlpha: 1, y: 0, duration: .3}, 5.7)
@@ -162,6 +168,5 @@
     .from('.steps li', {autoAlpha: 0, y: 24, duration: .4, stagger: .18, ease: 'power3.out'}, AFTER + 2.4)
     .to({}, {duration: .7});
 
-  gsap.to('.card .badge', {scale: 1.15, duration: .6, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: {each: .12, from: 'random'}});
   if (bgApi.tick) gsap.ticker.add(t => bgApi.tick(t, st.p));
 })();

@@ -170,3 +170,5 @@ form.lead-form{padding:clamp(22px,3vw,34px);display:grid;gap:16px}
 .team .lead-card .ph{width:180px}
 .team .quote{margin-top:14px;padding-left:16px;border-left:2px solid var(--acc);color:var(--fg);font-style:italic}
 @media (max-width:560px){.team .lead-card{grid-template-columns:84px 1fr}.team .lead-card .ph{width:84px}}
+.rv{opacity:0;transform:translateY(32px);transition:opacity .7s ease-out,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}

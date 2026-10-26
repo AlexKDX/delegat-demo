@@ -24,8 +24,12 @@
   });
 
   // Forms → mini-backend on our VPS (Telegram bot). Until it exists, say so honestly.
-  // ponytail: endpoint empty until the VPS is up; then set FORM_URL and the server re-checks honeypot + timing.
-  const FORM_URL = '', t0 = Date.now();
+  // On vostokai.ru the form talks to our API (server/form_api.py); on the GitHub demo it stays off.
+  const LIVE = /(^|\.)vostokai\.ru$/.test(location.hostname), FORM_URL = LIVE ? '/api/lead' : '', t0 = Date.now();
+  // signed time-trap token from the server; fetched once, when someone starts filling a form
+  let tokenP = null;
+  const getToken = () => tokenP || (tokenP = fetch('/api/token', {cache: 'no-store'}).then(r => r.json()).then(j => j.t).catch(() => ''));
+  if (LIVE) document.querySelectorAll('form.lead-form').forEach(f => f.addEventListener('focusin', getToken, {once: true}));
   document.querySelectorAll('form.lead-form').forEach(form => form.addEventListener('submit', async e => {
     e.preventDefault();
     const msg = form.querySelector('.ok'), d = Object.fromEntries(new FormData(form));
@@ -36,7 +40,7 @@
     if (d.company || Date.now() - t0 < 3000) return done();
     if (!FORM_URL) { msg.textContent = 'Форма заработает после запуска сайта. Совсем скоро.'; return; }
     try {
-      const r = await fetch(FORM_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({...d, kind: form.dataset.kind || 'audit', ms: Date.now() - t0})});
+      const r = await fetch(FORM_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({...d, kind: form.dataset.kind || 'audit', t: await getToken()})});
       if (!r.ok) throw 0;
       done();
     } catch { msg.textContent = 'Не получилось отправить. Попробуйте ещё раз через минуту.'; }

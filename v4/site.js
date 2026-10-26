@@ -35,10 +35,10 @@
   // Forms → mini-backend on our VPS (Telegram bot). Until it exists, say so honestly.
   // On vostokai.ru the form talks to our API (server/form_api.py); on the GitHub demo it stays off.
   const LIVE = /(^|\.)vostokai\.ru$/.test(location.hostname), FORM_URL = LIVE ? '/api/lead' : '', t0 = Date.now();
-  // signed time-trap token from the server; fetched once, when someone starts filling a form
+  // signed time-trap token: fetched on page load, so its age = time on page (autofill + fast submit still passes the 3 s check)
   let tokenP = null;
-  const getToken = () => tokenP || (tokenP = fetch('/api/token', {cache: 'no-store'}).then(r => r.json()).then(j => j.t).catch(() => ''));
-  if (LIVE) document.querySelectorAll('form.lead-form').forEach(f => f.addEventListener('focusin', getToken, {once: true}));
+  const getToken = () => tokenP || (tokenP = fetch('/api/token', {cache: 'no-store'}).then(r => r.json()).then(j => j.t).catch(() => { tokenP = null; return ''; }));
+  if (LIVE) getToken();
   document.querySelectorAll('form.lead-form').forEach(form => form.addEventListener('submit', async e => {
     e.preventDefault();
     const msg = form.querySelector('.ok'), d = Object.fromEntries(new FormData(form));
@@ -49,13 +49,20 @@
     const box = form.querySelector('.consent');
     box.classList.toggle('err', !form.consent.checked);
     if (!form.consent.checked) { msg.textContent = 'Отметьте согласие на обработку персональных данных.'; form.consent.focus(); return; }
-    // bots: hidden field filled or sent faster than a human types → pretend success, send nothing
-    if (d.company || Date.now() - t0 < 3000) return done();
+    // bots: hidden field filled or sent faster than a human types → pretend success, send nothing.
+    // The field is named hp_note on purpose: a field called «company» gets filled by browser autofill → real leads were lost.
+    if (d.hp_note || Date.now() - t0 < 3000) return done();
     if (!FORM_URL) { msg.textContent = 'Форма заработает после запуска сайта. Совсем скоро.'; return; }
+    const btn = form.querySelector('button[type=submit]');
+    if (btn.disabled) return;
+    btn.disabled = true; msg.textContent = 'Отправляем…';
     try {
       const r = await fetch(FORM_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({...d, consent: true, ads: !!(form.ads && form.ads.checked), kind: form.dataset.kind || 'audit', t: await getToken()})});
+      const j = await r.json().catch(() => ({}));
+      if (r.status === 422) { msg.textContent = j.error || 'Проверьте поля формы.'; return; }  // ошибка в полях — человек исправит
       if (!r.ok) throw 0;
       done();
-    } catch { msg.textContent = 'Не получилось отправить. Попробуйте ещё раз через минуту.'; }
+    } catch { msg.textContent = 'Не получилось отправить. Напишите нам в Telegram — ссылка рядом с формой.'; }
+    finally { btn.disabled = false; }
   }));
 })();

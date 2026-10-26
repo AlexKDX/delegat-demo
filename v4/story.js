@@ -21,7 +21,9 @@ window.STORY = {
   note: 'Цифры на экране — пример для одного сотрудника: до 4 часов в день на рутину (НАФИ и «Яндекс 360», 2025), ИИ может взять до 60–70% такой работы (McKinsey, 2023). Цифры вашего бизнеса покажем на разборе.',
 };
 window.THEME_BG = el => {
+  // ambient motion starts after the page has loaded, so it never competes with first render
+  const start = fn => (document.readyState === 'complete' ? setTimeout(fn, 800) : addEventListener('load', () => setTimeout(fn, 800), {once: true}));
   el.style.background = 'repeating-linear-gradient(135deg,#ffffff05 0 1px,transparent 1px 14px),#141413';
-  ['#D97757', '#CC785C', '#6A9BCC'].forEach((col, i) => { const g = document.createElement('div'); g.style.cssText = `position:absolute;width:60vmax;height:60vmax;border-radius:50%;left:${[10, 60, 30][i]}%;top:${[60, 10, 80][i]}%;margin:-30vmax 0 0 -30vmax;background:radial-gradient(circle,${col}${i == 2 ? '22' : '38'},transparent 62%);will-change:transform`; el.append(g); gsap.to(g, {scale: 1.25, x: (i - 1) * 120, duration: 8 + i * 3, yoyo: true, repeat: -1, ease: 'sine.inOut'}); });
+  ['#D97757', '#CC785C', '#6A9BCC'].forEach((col, i) => { const g = document.createElement('div'); g.style.cssText = `position:absolute;width:60vmax;height:60vmax;border-radius:50%;left:${[10, 60, 30][i]}%;top:${[60, 10, 80][i]}%;margin:-30vmax 0 0 -30vmax;background:radial-gradient(circle,${col}${i == 2 ? '22' : '38'},transparent 62%);will-change:transform`; el.append(g); start(() => gsap.to(g, {scale: 1.25, x: (i - 1) * 120, duration: 8 + i * 3, yoyo: true, repeat: -1, ease: 'sine.inOut'})); });
   return {};
 };

@@ -59,7 +59,7 @@
   const pile = document.getElementById('pile');
   const prefList = T.prefer ? MSG.filter(m => T.prefer.includes(m[0])) : [];
   const pick = i => (prefList.length && i % 3 !== 2) ? prefList[i % prefList.length] : MSG[i % MSG.length];
-  const mob = innerWidth < 760, N = mob ? 30 : 60, rnd = gsap.utils.random;
+  const mob = innerWidth < 760, N = mob ? 24 : 60, rnd = gsap.utils.random;
   // keep-out zones: the captions (left) and the counter; cards only land where there is no text
   const box = (sel, pad) => { const r = document.querySelector(sel).getBoundingClientRect(); return {l: r.left - pad, t: r.top - pad, r: r.right + pad, b: r.bottom + pad}; };
   document.getElementById('num').textContent = T.num.peak; // measure the counter at its widest
@@ -106,7 +106,11 @@
   if (T.num.peak >= 10000) num.classList.add('wide');
   render();
   // the agent: grows in the centre while it swallows the cards, then parks next to the counter
-  const numC = () => { const r = num.getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; };
+  // positions are measured once (and again on resize), never inside tweens: a read per card per frame forces layout
+  let NC;
+  const measureNum = () => { const r = num.getBoundingClientRect(); NC = {x: r.left + r.width / 2, y: r.top + r.height / 2}; };
+  measureNum(); ScrollTrigger.addEventListener('refreshInit', measureNum);
+  const numC = () => NC;
   const AV = Math.min(5, Math.max(1, +new URLSearchParams(location.search).get('a') || T.agentV || 1));
   const agent = document.getElementById('agent'), logoW = sun.replaceAll('hsea', 'hsea2');
   const TASKS = ['Заявка с сайта → CRM', 'Ответ клиенту в WhatsApp', 'Счёт сверен с оплатой', 'КП отправлено клиенту', 'Запись в календарь', 'Отчёт за неделю собран', 'Трек-номер отправлен', 'Прайс отправлен в Telegram'];
@@ -146,7 +150,10 @@
       .to(c, {y: c._y - rnd(10, 40) * (.5 + c._z), rotation: `+=${rnd(-3, 3)}`, duration: 4.5 - (at - 1.3)}, at + .45);
   });
   // cards fly into the agent (screen centre)
-  const bodyC = () => { const r = agent.querySelector('.body').getBoundingClientRect(); return {x: r.left + r.width / 2, y: r.top + r.height / 2}; };
+  // the agent sits centred on screen; its icon is above the label, offset scaled to the agent's mid-growth size
+  const body = agent.querySelector('.body');
+  let BC = null; ScrollTrigger.addEventListener('refreshInit', () => { BC = null; });
+  const bodyC = () => BC || (BC = {x: innerWidth / 2, y: innerHeight / 2 + (body.offsetTop + body.offsetHeight / 2 - agent.offsetHeight / 2) * .6});
   const cx = c => bodyC().x - c._w / 2, cy = c => bodyC().y - c._h / 2;
   tl.to('#center', {autoAlpha: 0, scale: .96, duration: .3}, 4.8)
     .to(agent, {autoAlpha: 1, scale: .35, duration: .3, ease: 'power2.out'}, 4.8);

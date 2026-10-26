@@ -4,6 +4,15 @@
   const hdr = document.querySelector('.top .logo svg');
   if (hdr) document.querySelector('.foot .logo').prepend(hdr.cloneNode(true));
 
+  // cookie notice (152-ФЗ): shown until accepted; remembered for 180 days
+  const COOKIE_KEY = 'vostokai-cookie-ok';
+  let seen = 0; try { seen = +localStorage.getItem(COOKIE_KEY) || 0; } catch (e) {}
+  if (Date.now() - seen > 180 * 864e5) {
+    document.body.insertAdjacentHTML('beforeend', '<div class="cookie" role="region" aria-label="Уведомление о cookie"><span>Продолжая пользоваться сайтом, вы соглашаетесь с <a href="policy.html">политикой обработки персональных данных</a> и использованием cookie-файлов.</span><button type="button">Хорошо</button></div>');
+    const bar = document.body.lastElementChild;
+    bar.querySelector('button').addEventListener('click', () => { try { localStorage.setItem(COOKIE_KEY, String(Date.now())); } catch (e) {} bar.remove(); });
+  }
+
   // reveal on scroll: one IntersectionObserver + CSS transition (cheaper than a ScrollTrigger per block)
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {rootMargin: '0px 0px -12% 0px'});
@@ -33,14 +42,18 @@
   document.querySelectorAll('form.lead-form').forEach(form => form.addEventListener('submit', async e => {
     e.preventDefault();
     const msg = form.querySelector('.ok'), d = Object.fromEntries(new FormData(form));
-    const done = () => { msg.className = 'ok good'; msg.textContent = form.dataset.kind === 'join' ? 'Спасибо! Посмотрим и напишем тебе.' : 'Спасибо! Свяжемся с вами в течение рабочего дня.'; form.reset(); };
+    const done = () => { form.querySelector('.consent').classList.remove('err'); msg.className = 'ok good'; msg.textContent = form.dataset.kind === 'join' ? 'Спасибо! Посмотрим и напишем тебе.' : 'Спасибо! Свяжемся с вами в течение рабочего дня.'; form.reset(); };
     msg.className = 'ok';
     if (!d.name.trim() || !d.contact.trim()) { msg.textContent = 'Заполните имя и телефон или Telegram.'; (d.name.trim() ? form.contact : form.name).focus(); return; }
+    // 152-ФЗ: без согласия заявку не принимаем (галочка не отмечена по умолчанию)
+    const box = form.querySelector('.consent');
+    box.classList.toggle('err', !form.consent.checked);
+    if (!form.consent.checked) { msg.textContent = 'Отметьте согласие на обработку персональных данных.'; form.consent.focus(); return; }
     // bots: hidden field filled or sent faster than a human types → pretend success, send nothing
     if (d.company || Date.now() - t0 < 3000) return done();
     if (!FORM_URL) { msg.textContent = 'Форма заработает после запуска сайта. Совсем скоро.'; return; }
     try {
-      const r = await fetch(FORM_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({...d, kind: form.dataset.kind || 'audit', t: await getToken()})});
+      const r = await fetch(FORM_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({...d, consent: true, kind: form.dataset.kind || 'audit', t: await getToken()})});
       if (!r.ok) throw 0;
       done();
     } catch { msg.textContent = 'Не получилось отправить. Попробуйте ещё раз через минуту.'; }

@@ -172,3 +172,18 @@ form.lead-form{padding:clamp(22px,3vw,34px);display:grid;gap:16px}
 @media (max-width:560px){.team .lead-card{grid-template-columns:84px 1fr}.team .lead-card .ph{width:84px}}
 .rv{opacity:0;transform:translateY(32px);transition:opacity .7s ease-out,transform .7s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
+
+/* 152-ФЗ: согласие, подвал, плашка cookie */
+.lead-form .consent{display:flex;gap:12px;align-items:flex-start;font:400 14px/1.45 var(--display);letter-spacing:0;text-transform:none;color:var(--muted);cursor:pointer}
+.lead-form .consent input{flex:none;width:20px;height:20px;margin:1px 0 0;padding:0;accent-color:var(--acc);cursor:pointer}
+.lead-form .consent a{color:var(--fg);text-decoration-color:var(--acc);text-underline-offset:3px}
+.lead-form .consent.err{color:var(--acc)}
+.join-form .consent{grid-column:1/-1}
+.foot .legal{margin-top:22px;padding-top:18px;border-top:1px solid #ffffff0d;display:block;font-size:13px;line-height:1.6}
+.foot .legal p{margin:4px 0}
+.foot .legal a{color:var(--muted)}.foot .legal a:hover{color:var(--fg)}
+.req{background:color-mix(in srgb,var(--acc) 18%,transparent);border-radius:4px;padding:0 4px}
+.cookie{position:fixed;left:16px;bottom:16px;z-index:70;max-width:min(420px,calc(100vw - 32px));display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;background:#1c1c1af2;border:1px solid #ffffff1a;box-shadow:0 18px 50px -12px #000;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:13.5px;line-height:1.45;color:var(--muted)}
+.cookie a{color:var(--fg);text-decoration-color:var(--acc);text-underline-offset:3px}
+.cookie button{flex:none;padding:10px 16px;border:0;border-radius:999px;background:var(--acc);color:var(--acc-ink);font:700 14px var(--display);cursor:pointer}
+.cookie button:focus-visible{outline:2px solid var(--fg);outline-offset:3px}

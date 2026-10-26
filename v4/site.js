@@ -11,26 +11,17 @@
     }));
   }
 
-  // Mobile layout variants (phones only, CSS in mobile.css): ?m=1..5
-  // ponytail: query switch is for choosing; after the pick, hardcode the winner and delete the rest.
-  const M = new URLSearchParams(location.search).get('m');
-  if (/^[1-5]$/.test(M || '')) {
-    document.documentElement.dataset.m = M;
-    if (M === '2') ['.how', '.svc', '.cases', '.team'].forEach(sel => { const el = document.querySelector(sel); el && el.insertAdjacentHTML('afterend', '<div class="swipe">Листайте</div>'); });
-    if (M === '3') {
-      document.querySelectorAll('.how>li, .svc>article:not(.more), .case, .cases>article, .team>article').forEach(el => el.setAttribute('data-acc', ''));
-      document.querySelectorAll('.team>article h3').forEach(h => h.classList.add('acc-h'));
-      document.addEventListener('click', e => { const el = e.target.closest('[data-acc]'); if (el && innerWidth <= 600 && !e.target.closest('a,button,input,textarea')) el.classList.toggle('open'); });
-    }
-    if (M === '5') {
-      const I = {how: '<path d="M4 6h16M4 12h10M4 18h6"/>', services: '<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>', cases: '<path d="M4 8h16v11H4zM9 8V5h6v3"/>', about: '<circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3.5 19c.7-3 2.9-4.5 5.5-4.5s4.8 1.5 5.5 4.5M15 15c2.6 0 4.6 1.2 5.3 4"/>', form: '<path d="M5 12l5 5L20 7"/>'};
-      const T = [['how', 'Процесс'], ['services', 'Услуги'], ['cases', 'Кейсы'], ['about', 'Команда'], ['form', 'Разбор']];
-      document.body.insertAdjacentHTML('beforeend', `<nav class="tabbar" aria-label="Разделы">${T.map(([id, t]) => `<a href="#${id}"${id === 'form' ? ' class="cta"' : ''}><svg viewBox="0 0 24 24">${I[id]}</svg>${t}</a>`).join('')}</nav>`);
-      const links = [...document.querySelectorAll('.tabbar a:not(.cta)')];
-      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle('on', a.hash === '#' + e.target.id)); }), {rootMargin: '-45% 0px -50% 0px'});
-      ['how', 'services', 'cases', 'about'].forEach(id => io.observe(document.getElementById(id)));
-    }
-  }
+  // Phones (≤600px, CSS in mobile.css): cards collapse to accordions, tap to open
+  document.querySelectorAll('.how>li, .svc>article:not(.more), .case, .cases>article, .team>article').forEach(el => el.setAttribute('data-acc', ''));
+  document.querySelectorAll('.team>article h3').forEach(h => h.classList.add('acc-h'));
+  // a service card opened on a phone offers a request with the service already filled in
+  document.querySelectorAll('.svc>article:not(.more)').forEach(el => el.insertAdjacentHTML('beforeend', '<a class="svc-cta" href="#form">Оставить заявку</a>'));
+  document.addEventListener('click', e => {
+    const cta = e.target.closest('.svc-cta');
+    if (cta) { const pain = document.querySelector('#leadForm [name=pain]'); if (pain && !pain.value) pain.value = 'Интересует: ' + cta.closest('article').querySelector('h3').textContent; return; }
+    const el = e.target.closest('[data-acc]');
+    if (el && innerWidth <= 600 && !e.target.closest('a,button,input,textarea')) el.classList.toggle('open');
+  });
 
   // Forms → mini-backend on our VPS (Telegram bot). Until it exists, say so honestly.
   // ponytail: endpoint empty until the VPS is up; then set FORM_URL and the server re-checks honeypot + timing.

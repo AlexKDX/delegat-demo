@@ -1,0 +1,142 @@
+/* Мобильные варианты (только телефоны ≤600px). Выбор: ?m=1..5 → html[data-m]. Планшеты и десктоп не трогаем. */
+@media (max-width:600px){
+  /* ---------- общее для всех вариантов: плотнее типографика и отступы */
+  html[data-m] .sec{padding:52px 16px}
+  html[data-m] .kick{font-size:11.5px;margin-bottom:10px}
+  html[data-m] .h2{font-size:30px;line-height:1.05}
+  html[data-m] .lead{font-size:15px;margin-top:12px}
+  html[data-m] .how,html[data-m] .svc,html[data-m] .cases,html[data-m] .team,html[data-m] .case{margin-top:24px}
+  html[data-m] .panel{border-radius:16px}
+  html[data-m] .how li{padding:18px}
+  html[data-m] .how h3{font-size:21px;margin:8px 0 2px}
+  html[data-m] .how p,html[data-m] .how ul li{font-size:14px}
+  html[data-m] .how ul{margin-top:10px;gap:5px}
+  html[data-m] .how>li:not(:last-child)::after{display:none}
+  html[data-m] .svc{gap:8px}
+  html[data-m] .svc article{padding:16px}
+  html[data-m] .svc .pain{font-size:11px;min-height:0}
+  html[data-m] .svc h3{font-size:17px;margin-top:6px}
+  html[data-m] .svc p{font-size:14px;margin:6px 0 12px}
+  html[data-m] .svc .price{font-size:18px;padding-top:10px}
+  html[data-m] .case{padding:18px;gap:18px}
+  html[data-m] .case h3,html[data-m] .cases h3{font-size:20px}
+  html[data-m] .case dd,html[data-m] .cases dd{font-size:14px}
+  html[data-m] .cases{gap:8px}
+  html[data-m] .cases article{padding:18px;gap:10px}
+  html[data-m] .team{gap:8px}
+  html[data-m] .team article,html[data-m] .team .lead-card{grid-template-columns:64px 1fr;gap:14px;padding:16px}
+  html[data-m] .team .ph,html[data-m] .team .lead-card .ph{width:64px;border-radius:14px}
+  html[data-m] .team h3{font-size:19px}
+  html[data-m] .team .role{font-size:10.5px}
+  html[data-m] .team p{font-size:14px;margin-top:8px}
+  html[data-m] .join summary{padding:16px;gap:12px}
+  html[data-m] .ji{width:40px;height:40px;border-radius:12px}
+  html[data-m] .jt b{font-size:18px}
+  html[data-m] .jt span{font-size:14px}
+  html[data-m] .jb{padding:11px}
+  html[data-m] .facts{font-size:14px;gap:6px 18px;margin-top:18px}
+  html[data-m] .faq{gap:6px}
+  html[data-m] .faq details{padding:0 16px}
+  html[data-m] .faq summary{font-size:15.5px;padding:15px 0}
+  html[data-m] .faq details p{font-size:14.5px}
+  html[data-m] .gets li{font-size:15px}
+  html[data-m] form.lead-form{padding:18px;gap:12px}
+  html[data-m] .lead-form input,html[data-m] .lead-form textarea{padding:12px 14px}
+  html[data-m] .lead-form textarea{min-height:90px}
+  html[data-m] .lead-form button{padding:15px 20px;font-size:16px}
+  html[data-m] .result .row{font-size:30px}
+  html[data-m] .steps{margin-top:18px}
+  html[data-m] .steps li{padding:10px 14px}
+  html[data-m] .steps b{font-size:16px}
+  html[data-m] .steps li span:last-child{font-size:13px}
+
+  /* ---------- 1 · Компакт: та же структура, всё плотнее, длинное прячем */
+  html[data-m="1"] .svc p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  html[data-m="1"] .how ul{display:none}
+  html[data-m="1"] .case dl>div:first-child,html[data-m="1"] .cases dl>div:first-child{display:none}
+  html[data-m="1"] .phone{width:38%}
+  html[data-m="1"] .team p{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* ---------- 2 · Карусели: блоки листаются вбок, каждый ≈ один экран */
+  html[data-m="2"] .how,html[data-m="2"] .svc,html[data-m="2"] .cases,html[data-m="2"] .team{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin-left:-16px;margin-right:-16px;padding:0 16px 6px;scroll-padding:0 16px;scrollbar-width:none}
+  html[data-m="2"] .how::-webkit-scrollbar,html[data-m="2"] .svc::-webkit-scrollbar,html[data-m="2"] .cases::-webkit-scrollbar,html[data-m="2"] .team::-webkit-scrollbar{display:none}
+  html[data-m="2"] .how>li,html[data-m="2"] .svc>article,html[data-m="2"] .cases>article,html[data-m="2"] .team>*{flex:0 0 84%;scroll-snap-align:start}
+  html[data-m="2"] .team>.join{flex-basis:84%}
+  html[data-m="2"] .team article{grid-template-columns:1fr}
+  html[data-m="2"] .team .ph,html[data-m="2"] .team .lead-card .ph{width:96px;border-radius:18px}
+  html[data-m="2"] .join summary{flex-direction:column;align-items:flex-start}
+  html[data-m="2"] .swipe{display:flex;align-items:center;gap:8px;margin-top:14px;font:500 11.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+  html[data-m="2"] .swipe::after{content:"→";font-size:15px;animation:swipe 1.6s ease-in-out infinite}
+  @keyframes swipe{50%{transform:translateX(6px)}}
+  html[data-m="2"] .phone{width:40%}
+
+  /* ---------- 3 · Аккордеоны: видны только заголовки и цены, подробности по тапу */
+  html[data-m="3"] [data-acc]{cursor:pointer;position:relative}
+  html[data-m="3"] [data-acc] h3,html[data-m="3"] [data-acc] .who{padding-right:28px}
+  html[data-m="3"] [data-acc]>h3::after,html[data-m="3"] [data-acc] .case-txt>h3::after,html[data-m="3"] [data-acc] .acc-h::after{content:"+";position:absolute;right:16px;top:16px;font:400 24px/1 var(--mono);color:var(--acc);transition:transform .25s}
+  html[data-m="3"] [data-acc].open>h3::after,html[data-m="3"] [data-acc].open .case-txt>h3::after,html[data-m="3"] [data-acc].open .acc-h::after{transform:rotate(45deg)}
+  html[data-m="3"] [data-acc]:not(.open) p,html[data-m="3"] [data-acc]:not(.open) ul,html[data-m="3"] [data-acc]:not(.open) dl,html[data-m="3"] [data-acc]:not(.open) .tags,html[data-m="3"] [data-acc]:not(.open) .ch,html[data-m="3"] [data-acc]:not(.open) .case-media{display:none}
+  html[data-m="3"] .svc article{display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:baseline}
+  html[data-m="3"] .svc article>*{grid-column:1/-1}
+  html[data-m="3"] .svc article:not(.open) .pain{display:none}
+  html[data-m="3"] .svc article:not(.open) h3{grid-column:1;margin:0}
+  html[data-m="3"] .svc article:not(.open) .price{grid-column:2;grid-row:1;border:0;padding:0 26px 0 0;font-size:15px}
+  html[data-m="3"] .svc article:not(.open) .price small{display:none}
+  html[data-m="3"] .svc article:not(.open) h3{padding-right:0}
+  html[data-m="3"] .svc article>h3::after{top:15px}
+  html[data-m="3"] .team article:not(.open) .award,html[data-m="3"] .team article:not(.open) .quote{display:none}
+
+  /* ---------- 4 · Плитки: сетка 2×, минимум текста */
+  html[data-m="4"] .svc{grid-template-columns:1fr 1fr}
+  html[data-m="4"] .svc article{padding:14px}
+  html[data-m="4"] .svc .pain,html[data-m="4"] .svc .ch,html[data-m="4"] .svc p{display:none}
+  html[data-m="4"] .svc h3{font-size:15px;margin:0 0 10px;flex:1}
+  html[data-m="4"] .svc .price{font-size:15px;padding-top:8px}
+  html[data-m="4"] .svc .price small{display:block;width:100%}
+  html[data-m="4"] .svc .more{grid-column:1/-1}
+  html[data-m="4"] .svc .more p{display:block;margin:0}
+  html[data-m="4"] .how{grid-template-columns:repeat(3,1fr);gap:6px}
+  html[data-m="4"] .how li{padding:12px 10px}
+  html[data-m="4"] .how h3{font-size:15px}
+  html[data-m="4"] .how .t{font-size:10.5px;line-height:1.3;display:block}
+  html[data-m="4"] .how p,html[data-m="4"] .how ul{display:none}
+  html[data-m="4"] .case .case-media{order:-1}
+  html[data-m="4"] .case dl>div:first-child,html[data-m="4"] .cases dl>div:first-child{display:none}
+  html[data-m="4"] .phone{width:40%}
+  html[data-m="4"] .cases{grid-template-columns:1fr 1fr}
+  html[data-m="4"] .cases article{padding:14px}
+  html[data-m="4"] .cases h3{font-size:15px}
+  html[data-m="4"] .cases dl,html[data-m="4"] .cases .tags{display:none}
+  html[data-m="4"] .team{grid-template-columns:1fr 1fr}
+  html[data-m="4"] .team article{grid-template-columns:1fr;padding:12px;gap:10px}
+  html[data-m="4"] .team .ph{width:100%;border-radius:12px}
+  html[data-m="4"] .team article p{display:none}
+  html[data-m="4"] .team h3{font-size:16px}
+  html[data-m="4"] .team .lead-card{grid-column:1/-1;grid-template-columns:96px 1fr}
+  html[data-m="4"] .team .lead-card .ph{width:96px}
+  html[data-m="4"] .team .lead-card p:not(.quote){display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  html[data-m="4"] .team .lead-card .quote{display:block}
+
+  /* ---------- 5 · Приложение: нижняя панель вкладок как в мобильном приложении */
+  html[data-m="5"] body{padding-bottom:76px}
+  html[data-m="5"] .top nav{display:none}
+  html[data-m="5"] .hint{bottom:96px}
+  html[data-m="5"] .tabbar{position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom,0px));z-index:60;display:grid;grid-template-columns:repeat(5,1fr);padding:6px;border-radius:22px;background:#1c1c1aee;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #ffffff14;box-shadow:0 16px 40px -10px #000}
+  html[data-m="5"] .tabbar a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:16px;color:var(--muted);text-decoration:none;font:600 10.5px var(--display)}
+  html[data-m="5"] .tabbar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  html[data-m="5"] .tabbar a.on{color:var(--fg);background:#ffffff0d}
+  html[data-m="5"] .tabbar a.cta{color:var(--acc-ink);background:var(--acc)}
+  html[data-m="5"] .svc article{display:grid;grid-template-columns:1fr auto;column-gap:12px}
+  html[data-m="5"] .svc article>*{grid-column:1/-1}
+  html[data-m="5"] .svc h3{grid-column:1}
+  html[data-m="5"] .svc .price{grid-column:2;grid-row:2;border:0;padding:0;align-self:center;font-size:15px;flex-direction:column;align-items:flex-end;gap:0}
+  html[data-m="5"] .svc .price small{font-size:11px}
+  html[data-m="5"] .svc p{margin-bottom:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  html[data-m="5"] .how ul{display:none}
+  html[data-m="5"] .case dl>div:first-child,html[data-m="5"] .cases dl>div:first-child{display:none}
+  html[data-m="5"] .phone{width:38%}
+  html[data-m="5"] .foot{padding-bottom:110px}
+}
+/* на планшете и десктопе вспомогательные элементы вариантов не нужны */
+@media (min-width:601px){.tabbar,.swipe{display:none!important}}
+.tabbar,.swipe{display:none}

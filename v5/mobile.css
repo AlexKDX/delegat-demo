@@ -1,0 +1,53 @@
+/* Мобильная версия (только телефоны ≤600px): плотная типографика + аккордеоны. Планшеты и десктоп не трогаем. */
+@media (max-width:600px){
+  /* ---------- общее для всех вариантов: плотнее типографика и отступы */
+  .sec{padding:52px 16px}
+  .kick{font-size:11.5px;margin-bottom:10px}
+  .h2{font-size:30px;line-height:1.05}
+  .lead{font-size:15px;margin-top:12px}
+  .how,.svc,.cases,.team,.case{margin-top:24px}
+  .panel{border-radius:16px}
+  .how li{padding:18px}
+  .how h3{font-size:21px;margin:8px 0 2px}
+  .how p,.how ul li{font-size:14px}
+  .how ul{margin-top:10px;gap:5px}
+  .how>li:not(:last-child)::after{display:none}
+  .svc{gap:8px}
+  .svc article{padding:16px}
+  .svc .pain{font-size:11px;min-height:0}
+  .svc h3{font-size:17px;margin-top:6px}
+  .svc p{font-size:14px;margin:6px 0 12px}
+  .svc .price{font-size:18px;padding-top:10px}
+  .case{padding:18px;gap:18px}
+  .case h3,.cases h3{font-size:20px}
+  .case dd,.cases dd{font-size:14px}
+  .cases{gap:8px}
+  .cases article{padding:18px;gap:10px}
+  .team{gap:8px}
+  .team article,.team .lead-card{grid-template-columns:64px 1fr;gap:14px;padding:16px}
+  .team .ph,.team .lead-card .ph{width:64px;border-radius:14px}
+  .team h3{font-size:19px}
+  .team .role{font-size:10.5px}
+  .team p{font-size:14px;margin-top:8px}
+  .join summary{padding:16px;gap:12px}
+  .ji{width:40px;height:40px;border-radius:12px}
+  .jt b{font-size:18px}
+  .jt span{font-size:14px}
+  .jb{padding:11px}
+  .facts{font-size:14px;gap:6px 18px;margin-top:18px}
+  .faq{gap:6px}
+  .faq details{padding:0 16px}
+  .faq summary{font-size:15.5px;padding:15px 0}
+  .faq details p{font-size:14.5px}
+  .gets li{font-size:15px}
+  form.lead-form{padding:18px;gap:12px}
+  .lead-form input,.lead-form textarea{padding:12px 14px}
+  .lead-form textarea{min-height:90px}
+  .lead-form button{padding:15px 20px;font-size:16px}
+  .result .row{font-size:30px}
+  .steps{margin-top:18px}
+  .steps li{padding:10px 14px}
+  .steps b{font-size:16px}
+  .steps li span:last-child{font-size:13px}
+
+}

@@ -1,0 +1,124 @@
+/* Короткие карточки и подробности по «+». html[data-d] — способ раскрытия, html[data-p] — вид кнопки. */
+
+/* ---------- подробности: свёрнуты, плавно раскрываются на месте */
+.xc .det{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.2,.7,.2,1)}
+.xc .det-in{overflow:hidden;min-height:0}
+.xc.open .det{grid-template-rows:1fr}
+.xc .det-in>*:first-child{margin-top:12px}
+.svc .xc .price{margin-top:auto}
+.xc{cursor:pointer}
+.det-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+.det-list li{position:relative;padding-left:22px;font-size:14.5px;line-height:1.45;color:var(--fg);opacity:.88}
+.det-list li::before{content:"✓";position:absolute;left:0;color:var(--acc);font-weight:700}
+.det-term{margin:12px 0 0;font:500 13px var(--mono);color:var(--muted)}.det-term b{color:var(--fg);font-weight:600}
+.det-acts{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 4px}
+.det-acts .svc-cta,.det-acts .kp-btn{display:inline-flex;align-items:center;gap:6px;padding:12px 18px;border-radius:999px;font:700 14.5px var(--display);text-decoration:none;transition:filter .2s,background .2s}
+.det-acts .svc-cta{background:var(--acc);color:var(--acc-ink)}
+.det-acts .kp-btn{border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);color:var(--fg)}
+.det-acts .svc-cta:hover{filter:brightness(1.08)}.det-acts .kp-btn:hover{background:color-mix(in srgb,var(--acc) 14%,transparent)}
+
+/* ---------- кнопка: общая часть */
+.more-btn{appearance:none;border:0;background:none;color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:0;font:600 14px var(--display);align-self:flex-start;position:relative}
+.more-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;transition:transform .3s}
+.more-btn .mb-ic{display:grid;place-items:center;color:var(--acc)}
+.more-btn[aria-expanded="true"] svg{transform:rotate(45deg)}
+.more-btn:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:999px}
+
+/* 1 · кнопка-таблетка «Подробнее +» */
+html[data-p="1"] .more-btn{padding:9px 16px 9px 12px;border:1px solid color-mix(in srgb,var(--acc) 55%,transparent);border-radius:999px;transition:background .2s,color .2s}
+html[data-p="1"] .xc:hover .more-btn,html[data-p="1"] .more-btn:hover{background:var(--acc);color:var(--acc-ink)}
+html[data-p="1"] .xc:hover .more-btn .mb-ic,html[data-p="1"] .more-btn:hover .mb-ic{color:var(--acc-ink)}
+
+/* 2 · пульсирующий круг */
+html[data-p="2"] .more-btn .mb-ic{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--acc);position:relative}
+html[data-p="2"] .more-btn .mb-ic::after{content:"";position:absolute;inset:-1.5px;border-radius:50%;border:1.5px solid var(--acc);animation:mbPulse 2s ease-out infinite}
+html[data-p="2"] .more-btn[aria-expanded="true"] .mb-ic::after{animation:none;opacity:0}
+html[data-p="2"] .more-btn .mb-t{color:var(--muted);font-weight:500}
+html[data-p="2"] .xc:hover .more-btn .mb-ic{background:var(--acc);color:var(--acc-ink)}
+@keyframes mbPulse{from{transform:scale(1);opacity:.8}to{transform:scale(1.7);opacity:0}}
+
+/* 3 · плюс, при наведении выезжает подсказка */
+html[data-p="3"] .more-btn .mb-ic{width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,var(--acc) 16%,transparent)}
+html[data-p="3"] .more-btn .mb-t{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;transition:max-width .35s,opacity .25s}
+html[data-p="3"] .xc:hover .more-btn .mb-t,html[data-p="3"] .more-btn:focus-visible .mb-t,html[data-p="3"] .more-btn[aria-expanded="true"] .mb-t{max-width:200px;opacity:1}
+html[data-p="3"] .xc:hover .more-btn svg{transform:rotate(90deg)}
+html[data-p="3"] .more-btn .mb-t::before{content:"Нажмите — "}
+html[data-p="3"] .more-btn[aria-expanded="true"] .mb-t::before{content:""}
+@media (hover:none){html[data-p="3"] .more-btn .mb-t{max-width:200px;opacity:1}}
+
+/* 4 · полоса на всю ширину с бегущим бликом */
+html[data-p="4"] .more-btn{align-self:stretch;justify-content:space-between;flex-direction:row-reverse;padding:12px 14px;border-radius:12px;background:linear-gradient(110deg,#ffffff08 30%,color-mix(in srgb,var(--acc) 22%,transparent) 50%,#ffffff08 70%) 0 0/250% 100%;border:1px solid #ffffff12;animation:mbShine 3.2s linear infinite}
+html[data-p="4"] .more-btn[aria-expanded="true"]{animation:none;background:#ffffff08}
+html[data-p="4"] .xc:hover .more-btn{border-color:color-mix(in srgb,var(--acc) 50%,transparent)}
+@keyframes mbShine{from{background-position:100% 0}to{background-position:-150% 0}}
+
+/* 5 · ссылка со стрелкой и понятной подписью */
+html[data-p="5"] .more-btn{color:var(--acc)}
+html[data-p="5"] .more-btn .mb-ic{display:none}
+html[data-p="5"] .more-btn .mb-t{background:linear-gradient(currentColor,currentColor) 0 100%/0 1.5px no-repeat;transition:background-size .3s;padding-bottom:2px}
+html[data-p="5"] .xc:hover .more-btn .mb-t{background-size:100% 1.5px}
+html[data-p="5"] .more-btn::after{content:"→";display:inline-block;animation:mbNudge 1.6s ease-in-out infinite}
+html[data-p="5"] .more-btn[aria-expanded="true"]::after{content:"↑";animation:none}
+@keyframes mbNudge{50%{transform:translateX(5px)}}
+
+/* ---------- 2 и 3 · окно по центру и панель сбоку */
+.xd{border:0;padding:0;background:transparent;color:var(--fg);width:min(760px,92vw);max-height:88vh;overflow:visible}
+.xd::backdrop{background:rgba(10,10,9,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.xd[open]{animation:xdIn .3s cubic-bezier(.2,.7,.2,1)}
+.xd .xd-body{max-height:88vh;overflow:auto;border-radius:22px;overscroll-behavior:contain}
+.xd .xd-wrap{display:block;margin:0;max-width:none;padding:0}
+.xd .xd-wrap>*{margin:0;height:auto}
+.xd .xd-wrap .case{grid-template-columns:1fr}
+.xd-close{position:absolute;right:-12px;top:-12px;z-index:2;width:40px;height:40px;border-radius:50%;border:1px solid #ffffff22;background:var(--card-2);color:var(--fg);font-size:24px;line-height:1;cursor:pointer}
+.xd-close:hover{background:var(--acc);color:var(--acc-ink)}
+@keyframes xdIn{from{opacity:0;transform:translateY(16px) scale(.98)}}
+.xd.drawer{margin:0 0 0 auto;height:100vh;max-height:100vh;width:min(560px,100vw);animation:xdSide .35s cubic-bezier(.2,.7,.2,1)}
+.xd.drawer .xd-body{height:100%;max-height:none;border-radius:0;background:var(--card)}
+.xd.drawer .xd-wrap>*{border-radius:0;border:0;min-height:100%;padding:56px 32px 32px}
+.xd.drawer .xd-close{right:16px;top:16px}
+@keyframes xdSide{from{transform:translateX(100%)}}
+
+/* ---------- 4 · карточка раскрывается на всю ширину ряда */
+html[data-d="4"] .xc.wide{grid-column:1/-1}
+html[data-d="4"] .svc .xc.wide .det-in{display:grid;grid-template-columns:1fr auto;column-gap:28px;align-items:end}
+html[data-d="4"] .svc .xc.wide .det-acts{margin:0}
+
+/* ---------- 5 · услуги: список слева, подробности справа */
+@media (min-width:961px){
+  html[data-d="5"] .svc{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:start}
+  html[data-d="5"] .svc>article{grid-column:1;padding:18px 20px;flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:14px}
+  html[data-d="5"] .svc>article .pain{display:none}
+  html[data-d="5"] .svc>article h3{flex:1;margin:0;font-size:18px}
+  html[data-d="5"] .svc>article .price{margin:0;padding:0;border:0;font-size:17px}
+  html[data-d="5"] .svc>article .more-btn{display:none}
+  html[data-d="5"] .svc>article.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,var(--card))}
+  html[data-d="5"] .svc>article.sel h3::after{content:" →";color:var(--acc)}
+  html[data-d="5"] .svc-panel{grid-column:2;grid-row:1/span 20;position:sticky;top:90px}
+  html[data-d="5"] .svc-panel .xd-wrap{display:block;margin:0}
+  html[data-d="5"] .svc-panel article{padding:30px;cursor:default}
+  html[data-d="5"] .svc-panel h3{font-size:26px}
+}
+html[data-d="5"] .svc-panel .xd-wrap>*{margin:0}
+@media (max-width:960px){.svc-panel{display:none}}
+
+/* ---------- телефон: всё раскрывается на месте; услуга свёрнута в строку «название — цена» */
+@media (max-width:600px){
+  .svc .xc{display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:baseline}
+  .svc .xc>*{grid-column:1/-1}
+  .svc .xc:not(.open) .pain{display:none}
+  .svc .xc h3{grid-column:1;grid-row:2;margin:0}
+  .svc .xc .price{grid-column:2;grid-row:2;border:0;padding:0;margin:0;font-size:15px}
+  .svc .xc .price small{display:none}
+  .svc .xc .det{grid-row:auto}
+  .more-btn{margin-top:12px}
+  .det-acts a{flex:1;justify-content:center;padding:12px 10px;font-size:14px;white-space:nowrap}
+}
+
+/* ---------- переключатель вариантов (тестовая страница) */
+.vsw{position:fixed;right:16px;bottom:16px;z-index:80;display:grid;gap:6px;padding:10px 12px;border-radius:16px;background:#1c1c1af2;border:1px solid #ffffff1a;box-shadow:0 16px 40px -10px #000;font:500 12.5px var(--mono);color:var(--muted)}
+.vsw div{display:flex;align-items:center;gap:4px}
+.vsw b{width:84px;font-weight:600;color:var(--fg)}
+.vsw a{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--fg);text-decoration:none}
+.vsw a.on{background:var(--acc);color:var(--acc-ink)}
+.vsw em{font-style:normal;margin-left:6px;color:var(--fg)}
+@media (max-width:600px){.vsw{left:8px;right:8px;bottom:8px}.vsw em{display:none}}

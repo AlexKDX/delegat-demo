@@ -68,7 +68,6 @@
 .ex-go{display:inline-flex;align-items:center;gap:6px;margin-top:22px;padding:15px 24px;border-radius:999px;background:var(--acc);color:var(--acc-ink);font:700 16px var(--display);text-decoration:none;transition:filter .2s}
 .ex-go:hover{filter:brightness(1.08)}
 .ex-no{appearance:none;border:0;background:none;margin-left:16px;padding:0;color:var(--muted);font:500 14px var(--display);text-decoration:underline;cursor:pointer}
-.ex small{display:block;margin-top:18px;font-size:12px;line-height:1.45;color:var(--muted);opacity:.85}.ex small a{color:inherit}
 @media (max-width:600px){
   .ex-in{grid-template-columns:1fr;gap:18px;padding:28px 20px}
   .ex-in img{width:120px;margin:0 auto}

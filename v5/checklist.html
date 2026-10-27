@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Чек-лист: 10 рутинных задач для ИИ · Восток AI</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="fonts.css?v=1">
+<link rel="stylesheet" href="kp.css?v=4">
+<!-- Исходник PDF для бота (vostokai-checklist.pdf). Пересобрать: см. server/README.md → «Чек-лист» -->
+<style>
+.task{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:22px 0;border-bottom:1px solid var(--line)}
+.task:last-child{border-bottom:0}
+.task i{width:24px;height:24px;margin-top:3px;border:2px solid var(--acc);border-radius:6px}
+.task h3{margin:0 0 7px;font:800 19px/1.3 Onest,sans-serif;color:var(--ink)}
+.task h3 span{font:600 12px "JetBrains Mono",monospace;color:var(--acc);margin-right:8px}
+.task p{margin:0;font-size:15px;line-height:1.55;color:var(--sub)}
+.task p b{color:var(--text);font-weight:600}
+.score{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 24px}
+.score div{padding:16px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+.score b{display:block;font:800 22px Onest,sans-serif;color:var(--acc);margin-bottom:4px}
+.score span{font-size:13.5px;line-height:1.45;color:var(--sub)}
+.note{margin-top:auto;padding:16px 20px;border-left:3px solid var(--acc);background:#fff;border-radius:0 14px 14px 0;font-size:14.5px;color:var(--ink)}
+.intro{font-size:16px;color:var(--ink);margin:0 0 6px}
+</style>
+</head>
+<body>
+<main>
+<section class="sheet cover">
+  <div class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="sea"><rect width="100" height="58"/></clipPath></defs><circle cx="50" cy="54" r="25" fill="#D97757" clip-path="url(#sea)"/><g fill="none" stroke-width="6" stroke-linecap="round"><path d="M10 58c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="#D97757"/><path d="M10 71c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".75"/><path d="M10 84c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".45"/></g></svg><span>vostok<b>.ai</b></span></div>
+  <div class="cv-mid">
+    <span class="kick">Чек-лист · 10 пунктов</span>
+    <h1>10 рутинных задач, которые можно передать ИИ уже сейчас</h1>
+    <p class="tag">Пройдитесь по списку и отметьте то, что у вас делают руками. Так за 5 минут видно, где команда тратит часы на повторяющуюся работу.</p>
+  </div>
+  <div class="cv-foot"><span>Владивосток · vostokai.ru</span><div class="contacts"><a href="https://t.me/VostokAI_VL">Telegram: @VostokAI_VL</a><a href="mailto:vostokai@yandex.ru">vostokai@yandex.ru</a><a href="https://vostokai.ru">vostokai.ru</a></div></div>
+  <div class="glow"></div>
+</section>
+
+<section class="sheet light">
+  <div class="sh-head"><div class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="54" r="25" fill="#D97757" clip-path="url(#sea)"/><g fill="none" stroke-width="6" stroke-linecap="round"><path d="M10 58c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="#D97757"/><path d="M10 71c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".75"/><path d="M10 84c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".45"/></g></svg><span>vostok<b>.ai</b></span></div><span>Клиенты и заявки · 1–5</span></div>
+  <p class="intro">Отметьте пункт, если у вас это делает человек вручную.</p>
+  <div class="task"><i></i><div><h3><span>01</span>Ответы на одни и те же вопросы клиентов</h3><p><b>Признак:</b> менеджер по много раз в день пишет про цены, наличие, сроки и график работы. <b>Агент:</b> отвечает в Telegram, WhatsApp, MAX и на сайте круглосуточно, сложные вопросы передаёт человеку.</p></div></div>
+  <div class="task"><i></i><div><h3><span>02</span>Приём и уточнение заявок</h3><p><b>Признак:</b> заявки с сайта, Авито и мессенджеров копируют в таблицу, потом перезванивают уточнить детали. <b>Агент:</b> сам задаёт уточняющие вопросы и кладёт готовую заявку в CRM или таблицу.</p></div></div>
+  <div class="task"><i></i><div><h3><span>03</span>Запись и напоминания</h3><p><b>Признак:</b> администратор вручную записывает клиентов, переносит время и обзванивает накануне. <b>Агент:</b> записывает в свободные окна, напоминает и сам переносит запись по просьбе клиента.</p></div></div>
+  <div class="task"><i></i><div><h3><span>04</span>Повторные касания с клиентами</h3><p><b>Признак:</b> про клиентов, которые не ответили или давно не покупали, вспоминают, когда есть время. <b>Агент:</b> по расписанию пишет им, собирает ответы и показывает менеджеру тех, кто готов к разговору.</p></div></div>
+  <div class="task"><i></i><div><h3><span>05</span>Ответы на отзывы и сообщения в соцсетях</h3><p><b>Признак:</b> отзывы на картах и комментарии висят без ответа по несколько дней. <b>Агент:</b> готовит ответы в вашем тоне, человек только проверяет и нажимает «отправить».</p></div></div>
+  <p class="note"><b>Совет:</b> начните с пункта, который случается чаще всего за день. Его проще всего передать агенту, и разницу команда почувствует уже в первую неделю.</p>
+</section>
+
+<section class="sheet light">
+  <div class="sh-head"><div class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="54" r="25" fill="#D97757" clip-path="url(#sea)"/><g fill="none" stroke-width="6" stroke-linecap="round"><path d="M10 58c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="#D97757"/><path d="M10 71c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".75"/><path d="M10 84c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".45"/></g></svg><span>vostok<b>.ai</b></span></div><span>Документы и команда · 6–10</span></div>
+  <div class="task"><i></i><div><h3><span>06</span>Перенос данных между программами</h3><p><b>Признак:</b> одни и те же цифры набирают в таблицу, CRM и 1С по отдельности. <b>Агент:</b> сам переносит данные между сервисами и сообщает, если что-то не сходится.</p></div></div>
+  <div class="task"><i></i><div><h3><span>07</span>Отчёты руководителю</h3><p><b>Признак:</b> раз в день или неделю кто-то собирает цифры из нескольких мест в один отчёт. <b>Агент:</b> собирает отчёт сам и присылает в Telegram к нужному часу.</p></div></div>
+  <div class="task"><i></i><div><h3><span>08</span>Счета, накладные и сверки</h3><p><b>Признак:</b> входящие документы читают глазами и сверяют с заказами вручную. <b>Агент:</b> разбирает документы, сверяет суммы и позиции и показывает только расхождения.</p></div></div>
+  <div class="task"><i></i><div><h3><span>09</span>КП и типовые документы</h3><p><b>Признак:</b> коммерческие предложения и договоры каждый раз собирают из старых файлов. <b>Агент:</b> по паре вопросов готовит документ по вашему шаблону — человеку остаётся проверить.</p></div></div>
+  <div class="task"><i></i><div><h3><span>10</span>Ответы на вопросы новых сотрудников</h3><p><b>Признак:</b> новички по десять раз спрашивают у опытных коллег, «как у нас принято». <b>Агент:</b> база знаний компании, которая отвечает на вопросы сотрудников в Telegram.</p></div></div>
+  <p class="note"><b>Важно:</b> агент не заменяет сотрудника, а забирает у него повторяющиеся операции. Решения, переговоры и сложные случаи остаются за людьми.</p>
+</section>
+
+<section class="sheet light">
+  <div class="sh-head"><div class="logo"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="54" r="25" fill="#D97757" clip-path="url(#sea)"/><g fill="none" stroke-width="6" stroke-linecap="round"><path d="M10 58c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="#D97757"/><path d="M10 71c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".75"/><path d="M10 84c6.7-5 13.3-5 20 0s13.3 5 20 0 13.3-5 20 0 13.3 5 20 0" stroke="currentColor" opacity=".45"/></g></svg><span>vostok<b>.ai</b></span></div><span>Что дальше</span></div>
+  <h2>Сколько пунктов вы отметили?</h2>
+  <div class="score">
+    <div><b>0–2</b><span>Рутины немного. Начните с самого частого пункта — его проще всего передать агенту.</span></div>
+    <div><b>3–5</b><span>Команда заметно занята повторяющейся работой. Стоит разобрать процессы целиком.</span></div>
+    <div><b>6+</b><span>Большая часть дня уходит на ручные операции. Здесь агенты освободят больше всего часов.</span></div>
+  </div>
+  <h2>Как мы работаем</h2>
+  <ol class="steps">
+    <li><span class="n">01</span><b>Разбор</b><em>бесплатно</em><p>Смотрим, как устроены процессы сейчас и где уходит время.</p></li>
+    <li><span class="n">02</span><b>Предложение</b><em>1–2 дня</em><p>Карта рутины, смета и сроки. Решаете — делаем или нет.</p></li>
+    <li><span class="n">03</span><b>Внедрение</b><em>от недели</em><p>Настраиваем агентов и подключаем к вашим сервисам.</p></li>
+    <li><span class="n">04</span><b>Сопровождение</b><em>дальше</em><p>Учим команду и дорабатываем по мере роста задач.</p></li>
+  </ol>
+  <div class="why">
+    <div><b>Делаем сами</b><span>Пишем код и настраиваем без подрядчиков.</span></div>
+    <div><b>Данные в России</b><span>Серверы в РФ, соблюдаем 152-ФЗ.</span></div>
+    <div><b>Сначала разбор</b><span>Бесплатно и ни к чему не обязывает.</span></div>
+  </div>
+  <div class="cta">
+    <div><h2>Разберём ваши процессы бесплатно</h2><p>Пришлите в Telegram номера пунктов, которые отметили, — подскажем, с чего начать.</p></div>
+    <div class="contacts"><a href="https://t.me/VostokAI_VL">Telegram: @VostokAI_VL</a><a href="mailto:vostokai@yandex.ru">vostokai@yandex.ru</a><a href="https://vostokai.ru">vostokai.ru</a></div>
+  </div>
+  <p class="legal">Черчик Ярослав Олегович, ИНН 253501718300, плательщик налога на профессиональный доход. Материал носит информационный характер.</p>
+</section>
+</main>
+</body></html>

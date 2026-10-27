@@ -19,17 +19,14 @@
     document.querySelectorAll('[data-rv]').forEach(el => { el.classList.add('rv'); io.observe(el); });
   }
 
-  // Phones (≤600px, CSS in mobile.css): cards collapse to accordions, tap to open
-  document.querySelectorAll('.how>li, .svc>article:not(.more), .case, .cases>article, .team>article').forEach(el => el.setAttribute('data-acc', ''));
-  document.querySelectorAll('.team>article h3').forEach(h => h.classList.add('acc-h'));
-  // a service card opened on a phone offers a request with the service already filled in
-  document.querySelectorAll('.svc>article:not(.more)').forEach(el => el.insertAdjacentHTML('beforeend', '<a class="svc-cta" href="#form">Оставить заявку</a>'));
+  // пришли из КП по «Оставить заявку» — подставить услугу в форму
+  try { const k = sessionStorage.getItem('vostokai-interest'); if (k) { const pain = document.querySelector('#leadForm [name=pain]'); if (pain && !pain.value) pain.value = 'Интересует: ' + k; sessionStorage.removeItem('vostokai-interest'); } } catch (e) {}
+  // «Оставить заявку» из карточки услуги: подставить услугу в форму (кнопки создаёт reveal.js)
   document.addEventListener('click', e => {
     const cta = e.target.closest('.svc-cta');
-    if (cta) { const pain = document.querySelector('#leadForm [name=pain]'); if (pain && !pain.value) pain.value = 'Интересует: ' + cta.closest('article').querySelector('h3').textContent; return; }
-    const el = e.target.closest('[data-acc]');
-    // phones: every card is an accordion; wider screens: only service cards open (to reveal the request button)
-    if (el && (innerWidth <= 600 || el.closest('.svc')) && !e.target.closest('a,button,input,textarea')) el.classList.toggle('open');
+    if (!cta) return;
+    const pain = document.querySelector('#leadForm [name=pain]');
+    if (pain && !pain.value) pain.value = 'Интересует: ' + cta.dataset.service;
   });
 
   // Forms → mini-backend on our VPS (Telegram bot). Until it exists, say so honestly.

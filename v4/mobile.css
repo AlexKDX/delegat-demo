@@ -50,30 +50,4 @@
   .steps b{font-size:16px}
   .steps li span:last-child{font-size:13px}
 
-  /* ---------- аккордеоны: видны только заголовки и цены, подробности по тапу */
-  [data-acc]{cursor:pointer;position:relative}
-  [data-acc] h3,[data-acc] .who{padding-right:28px}
-  [data-acc]>h3::after,[data-acc] .case-txt>h3::after,[data-acc] .acc-h::after{content:"+";position:absolute;right:16px;top:16px;font:400 24px/1 var(--mono);color:var(--acc);transition:transform .25s}
-  [data-acc].open>h3::after,[data-acc].open .case-txt>h3::after,[data-acc].open .acc-h::after{transform:rotate(45deg)}
-  [data-acc]:not(.open) p,[data-acc]:not(.open) ul,[data-acc]:not(.open) dl,[data-acc]:not(.open) .tags,[data-acc]:not(.open) .ch,[data-acc]:not(.open) .case-media{display:none}
-  .svc article{display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:baseline}
-  .svc article>*{grid-column:1/-1}
-  .svc article:not(.open) .pain{display:none}
-  .svc article:not(.open) h3{grid-column:1;margin:0}
-  .svc article:not(.open) .price{grid-column:2;grid-row:1;border:0;padding:0 26px 0 0;font-size:15px}
-  .svc article:not(.open) .price small{display:none}
-  .svc article:not(.open) h3{padding-right:0}
-  .svc article>h3::after{top:15px}
-  .team article:not(.open) .award,.team article:not(.open) .quote{display:none}
-  .svc-cta{display:inline-flex;justify-content:center;margin-top:14px;padding:12px 18px;border-radius:999px;background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:15px;text-decoration:none}
-  [data-acc]:not(.open) .svc-cta{display:none}
-}
-/* планшет и десктоп: карточка услуги кликается, раскрывается кнопка заявки */
-@media (min-width:601px){
-  .svc>article:not(.more){cursor:pointer}
-  .svc-cta{display:flex;justify-content:center;margin-top:14px;padding:13px 20px;border-radius:999px;background:var(--acc);color:var(--acc-ink);font-weight:700;font-size:15px;text-decoration:none;animation:ctaIn .3s ease-out}
-  .svc article:not(.open) .svc-cta{display:none}
-  .svc article.open{border-color:var(--acc)}
-  .svc-cta:hover,.svc-cta:focus-visible{filter:brightness(1.08)}
-  @keyframes ctaIn{from{opacity:0;transform:translateY(-6px)}}
 }

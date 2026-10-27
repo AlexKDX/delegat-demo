@@ -17,7 +17,7 @@
   const logo = `<div class="logo">${sun}<span>vostok<b>.ai</b></span></div>`;
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join('');
   const date = new Date().toLocaleDateString('ru-RU', {day: 'numeric', month: 'long', year: 'numeric'});
-  const contacts = `<div class="contacts"><a href="https://t.me/CherchikYaroslaV">Telegram: @CherchikYaroslaV</a><a href="mailto:vostokai@yandex.ru">vostokai@yandex.ru</a><a href="https://vostokai.ru">vostokai.ru</a></div>`;
+  const contacts = `<div class="contacts"><a href="https://t.me/VostokAI_VL">Telegram: @VostokAI_VL</a><a href="mailto:vostokai@yandex.ru">vostokai@yandex.ru</a><a href="https://vostokai.ru">vostokai.ru</a></div>`;
   const steps = [
     ['Разбор', 'бесплатно, 1–2 часа', 'Говорим с вами и сотрудниками, смотрим, как устроен процесс сейчас.'],
     ['Предложение', '1–2 дня', 'Карта рутины, точная смета и сроки. Решаете — делаем или нет.'],
